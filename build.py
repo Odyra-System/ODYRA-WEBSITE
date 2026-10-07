@@ -54,19 +54,19 @@ def layout(slug, title, desc, body, noindex=False, canonical=None):
 {alt}
 <meta property="og:type" content="website"><meta property="og:site_name" content="Odyra System">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
-<meta property="og:url" content="{SITE}{path}"><meta property="og:image" content="{SITE}/assets/og.png">
+<meta property="og:url" content="{SITE}{path}"><meta property="og:image" content="{SITE}/assets/og-v2.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#04132E">
-<link rel="icon" href="/assets/favicon.ico" sizes="any"><link rel="icon" href="/assets/icon-48.png" type="image/png" sizes="48x48"><link rel="apple-touch-icon" href="/assets/icon-180.png">
+<link rel="icon" href="/assets/favicon-v2.ico" sizes="any"><link rel="icon" href="/assets/fav-48.png" type="image/png" sizes="48x48"><link rel="apple-touch-icon" href="/assets/fav-180.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="/styles.css?v=5">
+<link rel="stylesheet" href="/styles.css?v=6">
 </head>
 <body>
 <a class="skip" href="#main">{t('Vai al contenuto','Ir al contenido')}</a>
 <header class="hdr" id="top"><div class="wrap">
-  <a class="brand" href="{url('home')}" aria-label="Odyra System"><img src="/assets/logos/odyra.png" alt="Odyra System" width="163" height="44"></a>
+  <a class="brand" href="{url('home')}" aria-label="Odyra System"><img src="/assets/logos/odyra-system.png" alt="Odyra System" width="163" height="44"></a>
   {nav}
   <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
 </div></header>
@@ -74,7 +74,7 @@ def layout(slug, title, desc, body, noindex=False, canonical=None):
 {body}
 </main>
 {footer()}
-<script src="/script.js?v=5" defer></script>
+<script src="/script.js?v=6" defer></script>
 </body>
 </html>
 '''
@@ -83,7 +83,7 @@ def footer():
     pv = '/privacy.html' if L == 'it' else '/es/privacy.html'
     return f'''<footer class="ftr"><div class="wrap">
   <div class="top">
-    <div><img class="flogo" src="/assets/logos/odyra.png" alt="Odyra System">
+    <div><img class="flogo" src="/assets/logos/odyra-system.png" alt="Odyra System">
       <p>{t('Agenti AI di settore, in white-label per i gestionali. Software proprietari. Milano.','Agentes IA sectoriales, en white-label para software de gestión. Software propio. Milán.')}</p>
       <div class="partners"><img src="/assets/logos/whatsapp.svg" alt="WhatsApp"><img src="/assets/logos/meta.svg" alt="Meta"><img src="/assets/logos/vonage.svg" alt="Vonage"></div></div>
     <div><h4>{t('Prodotti','Productos')}</h4><ul>
@@ -196,63 +196,54 @@ def verts():
     ]
     return '<ul class="verts">' + ''.join(f'<li class="{"on" if on else ""}"><b>{n}</b><span>{s}</span></li>' for n, s, on in items) + '</ul>'
 
+def chips(items):
+    return '<div class="chips">' + ''.join(f'<span>{i}</span>' for i in items) + '</div>'
+
 def page_home():
     body = f'''
-<section class="hero">{hero_art()}<div class="wrap">
+<section class="hero">{hero_art()}<div class="wrap hero-grid">
   <div>
     <h1>{t('Ogni mestiere ha il suo agente AI. Noi li portiamo dentro i gestionali.','Cada oficio tiene su agente IA. Nosotros los llevamos dentro del software de gestión.')}</h1>
     <p class="lead">{t('Odyra costruisce agenti AI di settore, li collega al software di gestione e li offre ai suoi clienti con il marchio del gestionale.','Odyra construye agentes IA sectoriales, los conecta al software de gestión y los ofrece a sus clientes con la marca del software.')}</p>
     <div class="btns"><a class="btn btn-p" href="{url('partner')}">{t('Diventa partner','Hazte socio')}</a><a class="btn btn-o" href="#video">{t('Guarda il video','Mira el vídeo')}</a></div>
-    <div class="proof"><img src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><p><b>GoAgent</b> · {t('l\'agente AI di BOSS per la rete GoWeb, più di 1.500 saloni.','el agente IA de BOSS para la red GoWeb, más de 1.500 salones.')}</p></div>
   </div>
-</div></section>
-
-<section class="sec sec-alt" id="video"><div class="wrap split">
-  <div><h2>{t('Chi è Odyra, in due minuti.','Quién es Odyra, en dos minutos.')}</h2><p class="lead" style="margin-top:18px">{t('Cosa facciamo, come funziona il programma per i partner e perché un agente di settore è un\'altra cosa rispetto a un\'AI generica.','Qué hacemos, cómo funciona el programa para socios y por qué un agente sectorial es otra cosa frente a una IA genérica.')}</p></div>
-  {vid('odyra-presentazione', t('Audio in italiano, sottotitoli selezionabili.','Audio en italiano, subtítulos seleccionables.'))}
+  {app_demo()}
 </div></section>
 
 <section class="sec"><div class="wrap">
-  {sec_h(t('Come funziona con un gestionale.','Cómo funciona con un software de gestión.'), t('Il partner porta i clienti. Odyra porta agente, tecnologia e gestione.','El socio aporta los clientes. Odyra aporta agente, tecnología y gestión.'))}
-  {steps([
-    (t('Ci colleghiamo alle API','Nos conectamos a las API'), t('Leggiamo clienti, servizi, operatori e disponibilità; scriviamo appuntamenti. Il resto della piattaforma non cambia.','Leemos clientes, servicios, profesionales y disponibilidad; escribimos citas. El resto de la plataforma no cambia.')),
-    (t('Attiviamo i clienti','Activamos a los clientes'), t('Staff e listino si sincronizzano da soli. Numero, WhatsApp e voce li configura uno specialista Odyra, in circa dieci minuti.','Equipo y tarifas se sincronizan solos. Número, WhatsApp y voz los configura un especialista de Odyra, en unos diez minutos.')),
-    (t('Gestiamo tutto','Gestionamos todo'), t('Controlli di qualità, errori, consumi, passaggio a una persona. Il gestionale incassa un canone ricorrente e non gestisce niente.','Controles de calidad, errores, consumos, paso a una persona. El software cobra una cuota recurrente y no gestiona nada.')),
-  ])}
-  <p style="margin-top:36px"><a class="link" href="{url('partner')}">{t('Il programma per i partner','El programa para socios')}</a></p>
+  <div class="sec-h"><h2>{t('Come funziona con un gestionale.','Cómo funciona con un software de gestión.')}</h2><p>{t('Il partner porta i clienti. Odyra porta agente, tecnologia e gestione.','El socio aporta los clientes. Odyra aporta agente, tecnología y gestión.')}</p></div>
+  <div class="cards3">
+    <div class="card"><span class="n">1</span><h3>{t('Ci colleghiamo alle API','Nos conectamos a las API')}</h3><p>{t('Leggiamo clienti, servizi, operatori e disponibilità. Scriviamo appuntamenti.','Leemos clientes, servicios, profesionales y disponibilidad. Escribimos citas.')}</p>{chips([t('Cerca cliente','Buscar cliente'), t('Disponibilità','Disponibilidad'), t('Crea appuntamento','Crear cita'), t('Cancella','Cancelar')])}</div>
+    <div class="card"><span class="n">2</span><h3>{t('Attiviamo i clienti','Activamos a los clientes')}</h3><p>{t('Staff e listino si sincronizzano da soli. Uno specialista Odyra configura numero, WhatsApp e voce in circa dieci minuti.','Equipo y tarifas se sincronizan solos. Un especialista de Odyra configura número, WhatsApp y voz en unos diez minutos.')}</p>{chips([t('Staff','Equipo'), t('Listino','Tarifas'), t('Numero','Número'), 'WhatsApp', t('Voce','Voz')])}</div>
+    <div class="card"><span class="n">3</span><h3>{t('Gestiamo tutto','Gestionamos todo')}</h3><p>{t('Il gestionale incassa un canone ricorrente e non gestisce niente.','El software cobra una cuota recurrente y no gestiona nada.')}</p>{chips([t('Qualità','Calidad'), t('Errori','Errores'), t('Consumi','Consumos'), t('Passaggio a una persona','Paso a una persona')])}</div>
+  </div>
+  <p style="margin-top:32px"><a class="link" href="{url('partner')}">{t('Il programma per i partner','El programa para socios')}</a></p>
 </div></section>
 
-<section class="sec sec-alt"><div class="wrap split">
-  <div><h2>{t('Lo stesso agente. Il marchio del gestionale.','El mismo agente. La marca del software.')}</h2>
-    <p class="lead" style="margin-top:18px">{t('Il cliente del gestionale vede il suo software, non Odyra. Lo stesso agente porta il logo e il nome di chi lo offre.','El cliente del software ve su software, no a Odyra. El mismo agente lleva el logo y el nombre de quien lo ofrece.')}</p></div>
-  {app_demo()}
+<section class="sec sec-alt" id="video"><div class="wrap">
+  <div class="sec-h center"><h2>{t('Chi è Odyra, in due minuti.','Quién es Odyra, en dos minutos.')}</h2><p>{t('Cosa facciamo, come funziona il programma per i partner e perché un agente di settore è un\'altra cosa rispetto a un\'AI generica.','Qué hacemos, cómo funciona el programa para socios y por qué un agente sectorial es otra cosa frente a una IA genérica.')}</p></div>
+  <div class="vid-wide">{vid('odyra-presentazione', t('Audio in italiano, sottotitoli selezionabili.','Audio en italiano, subtítulos seleccionables.'))}</div>
 </div></section>
 
 <section class="sec"><div class="wrap split">
   <div><h2>{t('Non è un\'AI generica. Conosce il mestiere.','No es una IA genérica. Conoce el oficio.')}</h2>
-    <p class="lead" style="margin-top:18px">{t('Le regole del mestiere sono nel codice, non solo in un prompt: l\'agente non le dimentica e non le sbaglia. Nel beauty sono decine. Alcune:','Las reglas del oficio están en el código, no solo en un prompt: el agente no las olvida ni las falla. En beauty son decenas. Algunas:')}</p>
+    <p class="lead" style="margin-top:18px">{t('Le regole del mestiere sono nel codice, non solo in un prompt. Nel beauty sono decine. Alcune:','Las reglas del oficio están en el código, no solo en un prompt. En beauty son decenas. Algunas:')}</p>
     <p style="margin-top:22px"><a class="link" href="{url('goagent')}">{t('Tutte le funzioni di GoAgent','Todas las funciones de GoAgent')}</a></p></div>
   <div>{beauty_rules(6)}</div>
 </div></section>
 
 <section class="sec sec-alt"><div class="wrap">
-  {sec_h(t('Un mestiere alla volta.','Un oficio a la vez.'), t('Impariamo un mestiere a fondo e costruiamo l\'agente che lo fa. Lo portiamo ai clienti con i gestionali del settore.','Aprendemos un oficio a fondo y construimos el agente que lo hace. Lo llevamos a los clientes con los software de gestión del sector.'))}
+  <div class="sec-h"><h2>{t('Un mestiere alla volta.','Un oficio a la vez.')}</h2><p>{t('Impariamo un mestiere a fondo e costruiamo l\'agente che lo fa. Oggi in italiano; altre lingue e gestionali europei sono nel piano.','Aprendemos un oficio a fondo y construimos el agente que lo hace. Hoy en italiano; otros idiomas y software europeos están en el plan.')}</p></div>
   {verts()}
-  <p style="margin-top:40px">{t('Oggi in italiano. Altre lingue e gestionali di altri paesi europei sono nel piano.','Hoy en italiano. Otros idiomas y software de gestión de otros países europeos están en el plan.')}</p>
 </div></section>
 
-<section class="sec"><div class="wrap split">
-  <div><img class="hako-logo" src="/assets/logos/hako-white.png" alt="HAKO"><h2>{t('Lo stesso metodo, venduto direttamente.','El mismo método, vendido directamente.')}</h2>
-    <p class="lead" style="margin-top:18px">{t('HAKO gestisce i pacchi nelle portinerie dei condomini. È un software proprietario di Odyra, costruito sulla stessa piattaforma.','HAKO gestiona los paquetes en las conserjerías de las comunidades. Es un software propio de Odyra, construido sobre la misma plataforma.')}</p>
-    <div class="btns"><a class="btn btn-o" href="{url('hako')}">{t('Scopri HAKO','Descubre HAKO')}</a></div></div>
-  {vid('hako', '')}
-</div></section>
-
-<section class="sec sec-alt"><div class="wrap split">
-  <div><h2>{t('Anche su misura.','También a medida.')}</h2></div>
-  <div><p class="lead">{t('Per aziende con grandi volumi costruiamo agenti e automazioni sui loro processi. Per Gruppo Colzani, Sportit.com e Global Trading: un agente che richiama ogni lead in pochi secondi.','Para empresas con grandes volúmenes construimos agentes y automatizaciones sobre sus procesos. Para Gruppo Colzani, Sportit.com y Global Trading: un agente que llama a cada lead en pocos segundos.')}</p>
-    <div style="margin-top:28px"><span class="tile"><img src="/assets/logos/sportit.png" alt="Sportit.com"></span></div>
-    <div class="btns"><a class="btn btn-o" href="{url('custom')}">{t('Progetti su misura','Proyectos a medida')}</a></div></div>
+<section class="sec"><div class="wrap">
+  <div class="sec-h"><h2>{t('Cosa abbiamo costruito.','Lo que hemos construido.')}</h2></div>
+  <div class="tiles">
+    <a class="tilecard" href="{url('goagent')}"><img class="tl" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><h3>GoAgent AI Concierge</h3><p>{t('L\'agente AI di BOSS per i saloni GoWeb, oltre 1.500. Il primo verticale: beauty.','El agente IA de BOSS para los salones GoWeb, más de 1.500. El primer vertical: beauty.')}</p><span class="more">{t('Scopri GoAgent','Descubre GoAgent')}</span></a>
+    <a class="tilecard" href="{url('hako')}"><img class="tl w" src="/assets/logos/hako-white.png" alt="HAKO"><h3>{t('Gestione pacchi','Gestión de paquetes')}</h3><p>{t('Software proprietario di Odyra per le portinerie dei condomini, venduto direttamente.','Software propio de Odyra para las conserjerías de las comunidades, vendido directamente.')}</p><span class="more">{t('Scopri HAKO','Descubre HAKO')}</span></a>
+    <a class="tilecard" href="{url('custom')}"><span class="tile tl"><img src="/assets/logos/sportit.png" alt="Sportit.com"></span><h3>{t('Progetti su misura','Proyectos a medida')}</h3><p>{t('Agenti e automazioni per aziende con grandi volumi, come Gruppo Colzani.','Agentes y automatizaciones para empresas con grandes volúmenes, como Gruppo Colzani.')}</p><span class="more">{t('Scopri i progetti','Descubre los proyectos')}</span></a>
+  </div>
 </div></section>
 
 {cta()}'''

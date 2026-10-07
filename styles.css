@@ -225,3 +225,36 @@ textarea{min-height:120px;resize:vertical}
   .form .row{grid-template-columns:1fr}
   th,td{display:block;width:100%}th{border-bottom:0;padding-bottom:2px}
 }
+
+/* Home pulita: apertura con demo, schede, prodotti */
+.hero{min-height:0;padding:72px 0 88px;align-items:center}
+.hero-grid{display:grid;grid-template-columns:5fr 7fr;gap:clamp(32px,5vw,72px);align-items:center}
+.hero h1{max-width:none;font-size:clamp(2.1rem,3.9vw,3.4rem);line-height:1.08}
+.hero .lead{max-width:40ch}
+.hero-art{opacity:.55;width:min(60vw,760px)}
+.sec-h.center{text-align:center;margin-inline:auto}
+.sec-h.center p{margin-inline:auto}
+.vid-wide{max-width:920px;margin:0 auto}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:12px}
+.card .n{width:34px;height:34px;border-radius:50%;border:2px solid var(--cyan);display:grid;place-items:center;font:700 .9rem var(--font-h);color:var(--cyan);box-shadow:0 0 14px rgba(111,211,255,.3)}
+.card p{font-size:.98rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:8px}
+.chips span{font:500 .8rem var(--font-b);padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);color:#D3E2F5}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tilecard{display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:28px;transition:border-color .2s,transform .2s}
+.tilecard:hover{border-color:var(--cyan);transform:translateY(-3px)}
+.tilecard .tl{height:64px;width:auto;max-width:100%;align-self:flex-start;margin-bottom:10px;object-fit:contain}
+.tilecard img.tl{border-radius:12px}
+.tilecard img.tl.w{height:44px;border-radius:0}
+.tilecard .tile.tl{height:auto}
+.tilecard .tile img{height:30px}
+.tilecard p{font-size:.98rem}
+.tilecard .more{margin-top:auto;padding-top:10px;color:var(--cyan);font-weight:600}
+.tilecard .more::after{content:" →"}
+@media (max-width:1020px){.hero-grid,.cards3,.tiles{grid-template-columns:1fr}.hero-art{width:90vw;opacity:.3}}
+.tilecard .tl{height:56px!important;width:auto;margin-bottom:10px}
+.tilecard .tile.tl{padding:0 18px;align-items:center;height:56px!important}
+.tilecard .tile.tl img{height:28px}
+.tilecard img.tl.w{height:40px!important;margin-top:8px;margin-bottom:18px}
+.hero-art{opacity:.35}
