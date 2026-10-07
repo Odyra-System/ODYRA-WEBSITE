@@ -63,18 +63,18 @@ def layout(slug, title, desc, body, extra_head='', hero_c=None):
     other = 'es' if L == 'it' else 'it'
     nav_active = lambda s: ' aria-current="page"' if s == slug else ''
     prods = [
-        ('voce', 'var(--c-voce)', t('Agenti AI vocali e WhatsApp', 'Agentes IA de voz y WhatsApp'), t('La receptionist AI che prenota nel gestionale', 'La recepcionista IA que reserva en tu software')),
+        ('voce', 'var(--c-voce)', t('Receptionist AI · voce e WhatsApp', 'Recepcionista IA · voz y WhatsApp'), t('Risponde e prenota nel gestionale', 'Responde y reserva en el software')),
         ('commerciale', 'var(--c-comm)', t('Agente commerciale AI', 'Agente comercial IA'), t('Ogni lead richiamato in meno di un minuto', 'Cada lead llamado en menos de un minuto')),
-        ('hako', 'var(--c-hako)', 'HAKO', t('Pacchi in portineria, condomini avvisati', 'Paquetes en conserjería, vecinos avisados')),
     ]
     dd = ''.join(f'<a href="{url(s)}"><i class="dot" style="background:{c}"></i><span><b>{e(n)}</b><small>{e(d)}</small></span></a>' for s, c, n, d in prods)
     sdd = ''.join(f'<a href="{url(s)}"><i class="dot" style="background:var(--blue)"></i><span><b>{e(n)}</b><small>{e(d)}</small></span></a>' for s, n, d in [
-        ('software-house', t('Per le software house', 'Para software houses'), t('AI white-label con il tuo marchio', 'IA white-label con tu marca')),
+        ('software-house', t('Software house · white-label', 'Software houses · white-label'), t('AI col tuo marchio nel tuo gestionale', 'IA con tu marca en tu software')),
         ('enterprise', 'Enterprise', t('Progetti su misura per grandi volumi', 'Proyectos a medida para grandes volúmenes')),
     ])
     nav = f'''<nav class="nav" id="nav" aria-label="{t('Principale','Principal')}">
-      <div class="dd"><button aria-expanded="false" aria-haspopup="true">{t('Prodotti','Productos')} <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button><div class="dd-menu">{dd}</div></div>
-      <div class="dd"><button aria-expanded="false" aria-haspopup="true">{t('Servizi','Servicios')} <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button><div class="dd-menu">{sdd}</div></div>
+      <div class="dd"><button aria-expanded="false" aria-haspopup="true">{t('Partner','Socios')} <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button><div class="dd-menu">{sdd}</div></div>
+      <div class="dd"><button aria-expanded="false" aria-haspopup="true">{t('Soluzioni AI','Soluciones IA')} <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button><div class="dd-menu">{dd}</div></div>
+      <a href="{url('hako')}"{nav_active('hako')}>HAKO</a>
       <a href="{url('casi')}"{nav_active('casi')}>{t('Casi studio','Casos de éxito')}</a>
       <a href="{url('tecnologia')}"{nav_active('tecnologia')}>{t('Tecnologia','Tecnología')}</a>
       <a href="{url('gruppo')}"{nav_active('gruppo')}>{t('Il gruppo','El grupo')}</a>
@@ -101,14 +101,14 @@ def layout(slug, title, desc, body, extra_head='', hero_c=None):
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Exo+2:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="/styles.css?v=1">
 {extra_head}
 </head>
 <body{style}>
 <a class="skip" href="#main">{t('Vai al contenuto','Ir al contenido')}</a>
 <header class="hdr" id="top"><div class="wrap">
-  <a class="brand" href="{url('home')}" aria-label="Odyra System"><img src="/assets/logos/odyra.png" alt="Odyra System" width="150" height="40"></a>
+  <a class="brand" href="{url('home')}" aria-label="Odyra System"><img src="/assets/logos/odyra.png" alt="Odyra System" width="167" height="40"></a>
   {nav}
   <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
 </div></header>
@@ -125,14 +125,14 @@ def footer():
     return f'''<footer class="ftr"><div class="wrap">
   <div class="top">
     <div>
-      <div class="pill"><img src="/assets/logos/odyra.png" alt="Odyra System"></div>
-      <p>{t('Software AI proprietari, progettati a Milano. Agenti che rispondono, vendono e organizzano dentro i software che usi già.','Software de IA propio, diseñado en Milán. Agentes que responden, venden y organizan dentro del software que ya usas.')}</p>
+      <img class="flogo" src="/assets/logos/odyra-white.png" alt="Odyra System">
+      <p>{t('Partner white-label per software house e gruppo di software AI proprietari, progettati a Milano.','Socio white-label para software houses y grupo de software de IA propio, diseñado en Milán.')}</p>
       <div class="partners" aria-label="{t('Canali e infrastruttura','Canales e infraestructura')}">
         <img src="/assets/logos/whatsapp.svg" alt="WhatsApp"><img src="/assets/logos/meta.svg" alt="Meta"><img src="/assets/logos/vonage.svg" alt="Vonage">
       </div>
     </div>
-    <div><h4>{t('Prodotti','Productos')}</h4><ul>
-      <li><a href="{url('voce')}">{t('Agenti AI vocali e WhatsApp','Agentes IA de voz y WhatsApp')}</a></li>
+    <div><h4>{t('Soluzioni','Soluciones')}</h4><ul>
+      <li><a href="{url('voce')}">{t('Receptionist AI · voce e WhatsApp','Recepcionista IA · voz y WhatsApp')}</a></li>
       <li><a href="{url('commerciale')}">{t('Agente commerciale AI','Agente comercial IA')}</a></li>
       <li><a href="{url('hako')}">HAKO</a></li></ul></div>
     <div><h4>{t('Azienda','Empresa')}</h4><ul>
@@ -174,7 +174,7 @@ def call_demo():
 </div>'''
 
 def goagent_wm(sm=False):
-    return f'<span class="wm{" sm" if sm else ""}"><span class="g">G</span>GoAgent</span>'
+    return f'<span class="wm{" sm" if sm else ""}">GoAgent</span>'
 
 def video_slot(name):
     return f'<div class="media rv" hidden data-video="/assets/video/{name}.mp4"><video controls playsinline preload="metadata" poster="/assets/video/{name}.jpg"></video></div>'
@@ -185,98 +185,115 @@ def audio_slot():
   <div class="audio-list"></div></div></section>'''
 
 # ───────────────────────── HOME ─────────────────────────
+def stack_diagram():
+    chips = lambda xs: ''.join(f'<span>{x}</span>' for x in xs)
+    return f'''<div class="stack rv" aria-label="{t('Come funziona la partnership','Cómo funciona la alianza')}">
+  <div class="st-row st-clients"><small>{t('I clienti del partner','Los clientes del socio')}</small><div class="chips">{chips([t('Saloni','Salones'), t('Cliniche','Clínicas'), t('Studi','Despachos'), t('Centri sportivi','Centros deportivos'), t('Aziende','Empresas')])}</div></div>
+  <div class="st-arrow" aria-hidden="true">↑</div>
+  <div class="st-row st-partner"><small>{t('Il gestionale del partner · con il suo marchio','El software del socio · con su marca')}</small>
+    <div class="st-partner-box"><img src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><div><b>GoWeb + GoAgent</b><span>{t('Esempio reale: BOSS','Ejemplo real: BOSS')}</span></div></div></div>
+  <div class="st-arrow" aria-hidden="true">↑</div>
+  <div class="st-row st-odyra"><img src="/assets/logos/odyra-white.png" alt="Odyra System"><div class="chips">{chips([t('Agente vocale','Agente de voz'), 'WhatsApp', t('Agente commerciale','Agente comercial'), 'Dashboard', 'Revenue share'])}</div><small>{t('Piattaforma proprietaria · connettori · gestione operativa','Plataforma propia · conectores · gestión operativa')}</small></div>
+</div>'''
+
 def page_home():
     nums = [
-        ('24/7', t('Sempre attivo, giorno e notte, festivi inclusi', 'Siempre activo, de día y de noche, festivos incluidos'), None),
-        ('<60<em>s</em>', t('Ogni nuovo lead richiamato in meno di un minuto', 'Cada nuevo lead llamado en menos de un minuto'), None),
-        ('<1<em>s</em>', t('Conversazioni vocali in tempo reale, senza attese', 'Conversaciones de voz en tiempo real, sin esperas'), None),
-        ('262', t('chiamate gestite da GoAgent in 15 giorni, nel primo salone in produzione', 'llamadas gestionadas por GoAgent en 15 días, en el primer salón en producción'), 262),
         ('~1.500', t('saloni nella rete GoWeb a cui BOSS offre GoAgent', 'salones en la red GoWeb a la que BOSS ofrece GoAgent'), None),
-        ('10→1.000', t('chiamate: la capacità cresce senza aggiungere personale', 'llamadas: la capacidad crece sin añadir personal'), None),
+        ('262', t('chiamate gestite in 15 giorni nel primo salone in produzione', 'llamadas gestionadas en 15 días en el primer salón en producción'), 262),
+        ('<60<em>s</em>', t('ogni nuovo lead richiamato in meno di un minuto', 'cada nuevo lead llamado en menos de un minuto'), None),
+        ('24/7', t('sempre attivo, giorno e notte, festivi inclusi', 'siempre activo, de día y de noche, festivos incluidos'), None),
+        ('18+', t('mesi di sviluppo della piattaforma proprietaria', 'meses de desarrollo de la plataforma propia'), None),
+        ('2', t('paesi: Italia e Spagna', 'países: Italia y España'), None),
     ]
     nh = ''.join(f'<div class="rv"><b{f" data-count={c}" if c else ""}>{n}</b><span>{d}</span></div>' for n, d, c in nums)
-    claims = [t('Non perdere più una chiamata.', 'No pierdas ni una llamada más.'), t('Il tuo gestionale, ora risponde.', 'Tu software, ahora responde.'), t('Da ore a secondi.', 'De horas a segundos.'), t('Dieci chiamate o mille, stesso team.', 'Diez llamadas o mil, el mismo equipo.'), t('L\'AI che lavora dentro il software che usi già.', 'La IA que trabaja dentro del software que ya usas.'), t('Software proprietari. Risultati misurabili.', 'Software propio. Resultados medibles.')]
+    claims = [t('Il tuo gestionale, ora risponde.', 'Tu software, ahora responde.'), t('Non perdere più una chiamata.', 'No pierdas ni una llamada más.'), t('Da ore a secondi.', 'De horas a segundos.'), t('Dieci chiamate o mille, stesso team.', 'Diez llamadas o mil, el mismo equipo.'), t('L\'AI che lavora dentro il software che usi già.', 'La IA que trabaja dentro del software que ya usas.'), t('Software proprietari. Risultati misurabili.', 'Software propio. Resultados medibles.')]
     mq = ''.join(f'<span>{c}</span>' for c in claims) * 2
     body = f'''
 <section class="hero"><div class="wrap">
   <div>
-    <span class="eyebrow">{t('Gruppo tecnologico · Milano','Grupo tecnológico · Milán')}</span>
-    <h1>{t('L\'AI che risponde, vende e organizza <span class="grad">al posto tuo.</span>','La IA que responde, vende y organiza <span class="grad">por ti.</span>')}</h1>
-    <p class="lead">{t('Software AI proprietari che lavorano dentro le aziende, 24 ore su 24: agenti vocali, agenti su WhatsApp e prodotti verticali, integrati nei gestionali che usi già.','Software de IA propio que trabaja dentro de las empresas, 24 horas al día: agentes de voz, agentes en WhatsApp y productos verticales, integrados en el software que ya usas.')}</p>
-    <div class="cta"><a class="btn btn-p" href="#prodotti">{t('Scopri i prodotti','Descubre los productos')}</a><a class="btn btn-o" href="{url('contatti')}">{t('Richiedi una demo','Solicita una demo')}</a></div>
-    <div class="proof"><div><b>24/7</b><span>{t('sempre presente','siempre presente')}</span></div><div><b>&lt;60 s</b><span>{t('dal lead alla chiamata','del lead a la llamada')}</span></div><div><b>{t('2 canali','2 canales')}</b><span>{t('voce e WhatsApp','voz y WhatsApp')}</span></div></div>
+    <span class="eyebrow">{t('Partner white-label per software house · Milano','Socio white-label para software houses · Milán')}</span>
+    <h1>{t('Porta l\'AI nel tuo gestionale. <span class="grad">Con il tuo marchio.</span>','Lleva la IA a tu software. <span class="grad">Con tu marca.</span>')}</h1>
+    <p class="lead">{t('Odyra permette a gestionali e software verticali di offrire ai propri clienti agenti AI vocali e WhatsApp, senza costruire nulla. È anche il gruppo che sviluppa e possiede software proprietari, come HAKO.','Odyra permite a software de gestión y software verticales ofrecer a sus clientes agentes de IA de voz y WhatsApp, sin construir nada. Es también el grupo que desarrolla y posee software propio, como HAKO.')}</p>
+    <div class="cta"><a class="btn btn-p" href="{url('software-house')}">{t('Diventa partner','Hazte socio')}</a><a class="btn btn-o" href="#software-gruppo">{t('I software del gruppo','Los software del grupo')}</a></div>
+    <div class="proof"><div><b>~1.500</b><span>{t('saloni nella rete BOSS','salones en la red BOSS')}</span></div><div><b>18+</b><span>{t('mesi di piattaforma','meses de plataforma')}</span></div><div><b>IT · ES</b><span>{t('due paesi','dos países')}</span></div></div>
   </div>
-  {call_demo()}
+  {stack_diagram()}
 </div></section>
 
-<div class="strip"><div class="wrap"><small>{t('In produzione con','En producción con')}</small>
+<div class="strip"><div class="wrap"><small>{t('Partner e prodotti','Socios y productos')}</small>
   <div class="logos">
-    <span class="lg"><img class="boss-logo" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><span>BOSS · GoWeb</span></span>
-    <span class="lg"><span class="wordmark">Global Trading<small>Gruppo Colzani · Sportit.com</small></span></span>
+    <span class="lg"><img class="boss-logo" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><span>BOSS · GoWeb · GoAgent</span></span>
+    <span class="lg"><span class="wordmark">Global Trading<small>Sportit.com</small></span></span>
     <span class="lg"><img src="/assets/logos/hako.png" alt="HAKO" style="height:32px"></span>
-  </div></div></div>
+  </div>
+  <div class="logos" style="margin-top:22px;gap:14px 34px"><span style="color:var(--muted);font-size:.8rem">{t('Canali e infrastruttura ufficiali','Canales e infraestructura oficiales')}</span><img src="/assets/logos/whatsapp.svg" alt="WhatsApp" style="height:26px"><img src="/assets/logos/meta.svg" alt="Meta" style="height:22px"><img src="/assets/logos/vonage.svg" alt="Vonage" style="height:22px"></div></div></div>
 
-<section id="prodotti"><div class="wrap">
-  <div class="sec-h"><span class="eyebrow">{t('Il portafoglio','La cartera')}</span><h2>{t('Un gruppo, tanti prodotti, una sola piattaforma.','Un grupo, varios productos, una sola plataforma.')}</h2><p class="lead">{t('Ogni prodotto ha la propria identità e il proprio mercato. Tutti condividono la stessa infrastruttura proprietaria: ogni nuovo prodotto nasce più veloce e più solido del precedente.','Cada producto tiene su propia identidad y su propio mercado. Todos comparten la misma infraestructura propia: cada nuevo producto nace más rápido y más sólido que el anterior.')}</p></div>
+<section><div class="wrap">
+  <div class="sec-h"><span class="eyebrow">{t('Come lavoriamo','Cómo trabajamos')}</span><h2>{t('Tre modi di lavorare con Odyra.','Tres formas de trabajar con Odyra.')}</h2></div>
   <div class="grid g3">
-    <a class="card prod rv" style="--c:var(--c-voce)" href="{url('voce')}"><div class="bar"></div><div class="top">{goagent_wm()}<p style="margin-top:12px"><span class="badge">{t('Agenti AI vocali e WhatsApp','Agentes IA de voz y WhatsApp')}</span></p></div>
-      <div class="bd"><p>{t('La receptionist AI risponde a ogni chiamata e messaggio WhatsApp, giorno e notte, e prenota direttamente nel gestionale. Nasce per i saloni con GoAgent, in partnership con BOSS.','La recepcionista IA responde a cada llamada y mensaje de WhatsApp, de día y de noche, y reserva directamente en el software. Nace para los salones con GoAgent, en alianza con BOSS.')}</p><span class="more">{t('Scopri il prodotto','Descubre el producto')}</span></div></a>
-    <a class="card prod rv" style="--c:var(--c-comm)" href="{url('commerciale')}"><div class="bar"></div><div class="top"><span class="wm"><span class="g" style="background:var(--c-comm);color:#fff;box-shadow:0 8px 18px -8px rgba(124,92,252,.9)">↗</span>{t('Agente commerciale','Agente comercial')}</span><p style="margin-top:12px"><span class="badge">{t('Speed-to-lead','Speed-to-lead')}</span></p></div>
-      <div class="bd"><p>{t('Richiama ogni nuovo lead in meno di un minuto, lo qualifica al telefono in italiano e fissa l\'appuntamento nel calendario del team vendite.','Llama a cada nuevo lead en menos de un minuto, lo califica por teléfono y fija la cita en el calendario del equipo de ventas.')}</p><span class="more">{t('Scopri il prodotto','Descubre el producto')}</span></div></a>
-    <a class="card prod rv" style="--c:var(--c-hako)" href="{url('hako')}"><div class="bar"></div><div class="top"><img src="/assets/logos/hako.png" alt="HAKO"><span class="badge">{t('Condomini e portinerie','Comunidades y conserjerías')}</span></div>
-      <div class="bd"><p>{t('Il programma della portineria che sostituisce il quaderno dei pacchi: foto, avviso su WhatsApp, SMS o e-mail nella lingua del condomino, ritiro con codice.','El programa de la conserjería que sustituye al cuaderno de paquetes: foto, aviso por WhatsApp, SMS o e-mail en el idioma del vecino, recogida con código.')}</p><span class="more">{t('Scopri il prodotto','Descubre el producto')}</span></div></a>
+    <a class="card pillar rv" href="{url('software-house')}"><span class="num">01</span>{ic('handshake')}<h3>{t('Partner white-label','Socio white-label')}</h3><p>{t('Per software house, gestionali verticali e SaaS: agenti AI col tuo marchio, integrati nel tuo software, con onboarding, dashboard e revenue share già pronti.','Para software houses, software verticales y SaaS: agentes IA con tu marca, integrados en tu software, con onboarding, panel y revenue share ya listos.')}</p><span class="more">{t('Scopri il modello','Descubre el modelo')}</span></a>
+    <a class="card pillar rv" href="{url('hako')}"><span class="num">02</span>{ic('layers')}<h3>{t('Software proprietari','Software propio')}</h3><p>{t('Prodotti verticali sviluppati e posseduti da Odyra, come HAKO per le portinerie, sulla stessa piattaforma.','Productos verticales desarrollados y propiedad de Odyra, como HAKO para conserjerías, sobre la misma plataforma.')}</p><span class="more">{t('Scopri HAKO','Descubre HAKO')}</span></a>
+    <a class="card pillar rv" href="{url('enterprise')}"><span class="num">03</span>{ic('cog')}<h3>Enterprise</h3><p>{t('Progetti su misura per gruppi e aziende con grandi volumi: vendite, customer service e back office.','Proyectos a medida para grupos y empresas con grandes volúmenes: ventas, atención al cliente y back office.')}</p><span class="more">{t('Scopri i progetti','Descubre los proyectos')}</span></a>
   </div>
 </div></section>
 
 <section class="alt"><div class="wrap">
-  <div class="sec-h center"><span class="eyebrow">{t('Numeri','Números')}</span><h2>{t('Risultati misurabili, già in produzione.','Resultados medibles, ya en producción.')}</h2></div>
-  <div class="nums">{nh}</div>
-</div></section>
-
-<section><div class="wrap grid g2" style="align-items:center;gap:56px">
-  <div class="rv"><span class="eyebrow">Manifesto</span><h2>{t('Le aziende non hanno bisogno di un altro chatbot.','Las empresas no necesitan otro chatbot.').replace('chatbot','<s style="text-decoration-thickness:3px;text-decoration-color:var(--blue)">chatbot</s>')}</h2>
-    <p class="lead">{t('Hanno bisogno di qualcuno che risponda sempre, che conosca i loro servizi, i loro orari, i loro clienti, e che faccia davvero il lavoro: prenotare, qualificare, ricordare, richiamare.','Necesitan a alguien que responda siempre, que conozca sus servicios, sus horarios, sus clientes, y que haga realmente el trabajo: reservar, calificar, recordar, volver a llamar.')}</p>
-    <p class="lead">{t('Noi costruiamo quel qualcuno. Software proprietari, progettati in Italia, che si integrano dove il lavoro succede e restano invisibili finché non servono.','Nosotros construimos ese alguien. Software propio, diseñado en Italia, que se integra donde ocurre el trabajo y permanece invisible hasta que hace falta.')}</p>
-    {video_slot('manifesto-odyra')}
-  </div>
-  <div class="grid" style="gap:16px">
-    <div class="card rv">{ic('bell')}<h3>{t('Sempre presente','Siempre presente')}</h3><p>{t('L\'AI di Odyra risponde quando le persone non possono.','La IA de Odyra responde cuando las personas no pueden.')}</p></div>
-    <div class="card rv">{ic('plug')}<h3>{t('Dentro i tuoi strumenti','Dentro de tus herramientas')}</h3><p>{t('Lavora nel gestionale e nel CRM che usi già.','Trabaja en el software de gestión y el CRM que ya usas.')}</p></div>
-    <div class="card rv">{ic('layers')}<h3>{t('Software proprietario','Software propio')}</h3><p>{t('Prodotti sviluppati e posseduti da Odyra, su una piattaforma che cresce con ogni nuovo verticale.','Productos desarrollados y propiedad de Odyra, sobre una plataforma que crece con cada nuevo vertical.')}</p></div>
+  <div class="sec-h"><span class="eyebrow">{t('Moduli AI per i partner','Módulos de IA para socios')}</span><h2>{t('Quello che il tuo gestionale può offrire ai clienti.','Lo que tu software puede ofrecer a los clientes.')}</h2><p class="lead">{t('Moduli pronti, un solo agente per voce e WhatsApp, che lavorano dentro il software che i tuoi clienti usano già.','Módulos listos, un solo agente para voz y WhatsApp, que trabajan dentro del software que tus clientes ya usan.')}</p></div>
+  <div class="grid g4">
+    <a class="card rv" href="{url('voce')}">{ic('phone')}<h3>{t('Receptionist AI','Recepcionista IA')}</h3><p>{t('Risponde al telefono e su WhatsApp 24/7 e prenota nel gestionale.','Responde al teléfono y por WhatsApp 24/7 y reserva en el software.')}</p></a>
+    <a class="card rv" href="{url('commerciale')}">{ic('bolt')}<h3>{t('Agente commerciale','Agente comercial')}</h3><p>{t('Richiama ogni lead in meno di un minuto e fissa l\'appuntamento.','Llama a cada lead en menos de un minuto y fija la cita.')}</p></a>
+    <a class="card rv" href="{url('enterprise')}">{ic('mail')}<h3>{t('Customer service','Atención al cliente')}</h3><p>{t('Automazione dell\'assistenza e-mail, come per i marketplace di Global Trading.','Automatización de la atención por e-mail, como en los marketplaces de Global Trading.')}</p></a>
+    <div class="card rv">{ic('bell')}<span class="badge soon" style="margin-left:10px">{t('In arrivo','Próximamente')}</span><h3>Retention AI</h3><p>{t('Richiama i clienti che non tornano da tempo e li riporta in agenda.','Vuelve a llamar a los clientes que no regresan y los devuelve a la agenda.')}</p></div>
   </div>
 </div></section>
 
 <section class="dark"><div class="wrap">
-  <div class="sec-h"><span class="eyebrow">{t('Servizi','Servicios')}</span><h2>{t('La stessa tecnologia, dentro software house e grandi aziende.','La misma tecnología, dentro de software houses y grandes empresas.')}</h2></div>
-  <div class="grid g4">
-    <a class="card rv" href="{url('software-house')}">{ic('handshake')}<h3>{t('AI white-label','IA white-label')}</h3><p>{t('Agenti AI con il marchio del partner, integrati nel suo gestionale, con revenue share già pronto.','Agentes IA con la marca del socio, integrados en su software, con revenue share listo.')}</p></a>
-    <a class="card rv" href="{url('enterprise')}">{ic('cog')}<h3>{t('Progetti enterprise','Proyectos enterprise')}</h3><p>{t('Agenti e automazioni su misura per vendite, customer service e back office.','Agentes y automatizaciones a medida para ventas, atención al cliente y back office.')}</p></a>
-    <a class="card rv" href="{url('tecnologia')}#whatsapp">{ic('chat')}<h3>{t('Infrastruttura WhatsApp Business','Infraestructura WhatsApp Business')}</h3><p>{t('Numeri, template e gestione come Tech Provider Meta tramite Vonage.','Números, plantillas y gestión como Tech Provider de Meta a través de Vonage.')}</p></a>
-    <a class="card rv" href="{url('tecnologia')}#conformita">{ic('shield')}<h3>{t('Conformità AI e privacy','Cumplimiento de IA y privacidad')}</h3><p>{t('Progettazione nel perimetro di AI Act e GDPR, per settori regolati.','Diseño dentro del perímetro del AI Act y el RGPD, para sectores regulados.')}</p></a>
+  <div class="sec-h"><span class="eyebrow">{t('Il modello','El modelo')}</span><h2>{t('Il partner porta i clienti. Odyra porta tutto il resto.','El socio aporta los clientes. Odyra aporta todo lo demás.')}</h2></div>
+  <div class="grid g3">
+    <div class="card rv">{ic('user')}<h3>{t('Il partner','El socio')}</h3><p>{t('Offre un nuovo servizio AI col proprio nome, crea un ricavo ricorrente e non costruisce nulla internamente.','Ofrece un nuevo servicio de IA con su nombre, crea un ingreso recurrente y no construye nada internamente.')}</p></div>
+    <div class="card rv">{ic('server')}<h3>Odyra</h3><p>{t('Prodotto, tecnologia, integrazione, WhatsApp Business e gestione operativa: piattaforma proprietaria, connettore dedicato.','Producto, tecnología, integración, WhatsApp Business y gestión operativa: plataforma propia, conector dedicado.')}</p></div>
+    <div class="card rv">{ic('chart')}<h3>{t('La formula','La fórmula')}</h3><p>{t('Condivisione dei ricavi oppure licenza a volume. Dashboard per i titolari e piattaforma di revenue share già pronte.','Reparto de ingresos o licencia por volumen. Panel para los titulares y plataforma de revenue share ya listos.')}</p></div>
+  </div>
+  <p style="margin-top:34px"><a class="btn btn-w" href="{url('software-house')}">{t('Scopri la partnership','Descubre la alianza')} →</a></p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="case rv" style="grid-template-columns:.8fr 1.2fr">
+    <div class="side"><img class="boss-logo" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers" style="width:96px;height:96px;border-radius:18px;margin-bottom:20px"><span class="badge">{t('Caso partner','Caso socio')}</span><h3 style="margin-top:14px">BOSS × GoAgent</h3><div class="kpi"><div><b>~1.500</b><span>{t('saloni nella rete','salones en la red')}</span></div><div><b>262</b><span>{t('chiamate in 15 giorni','llamadas en 15 días')}</span></div></div></div>
+    <div class="main"><h3>{t('BOSS ha aggiunto l\'AI al suo gestionale. Odyra l\'ha costruita.','BOSS ha añadido la IA a su software. Odyra la ha construido.')}</h3>
+      <p>{t('GoAgent è l\'agente AI che BOSS offre ai saloni GoWeb col proprio marchio: risponde al telefono e su WhatsApp, legge servizi, operatori e disponibilità del gestionale e scrive le prenotazioni in agenda. Odyra ha realizzato anche onboarding, dashboard e gestione dei ricavi condivisi. In produzione da giugno 2026.','GoAgent es el agente IA que BOSS ofrece a los salones GoWeb con su marca: responde al teléfono y por WhatsApp, lee servicios, operarios y disponibilidad del software y escribe las reservas en la agenda. Odyra también ha realizado onboarding, panel y gestión de ingresos compartidos. En producción desde junio de 2026.')}</p>
+      <p style="margin-top:18px"><a class="btn btn-o btn-sm" href="{url('casi')}#boss">{t('Leggi il caso studio','Lee el caso de éxito')}</a></p></div>
+  </div>
+</div></section>
+
+<section class="alt" id="software-gruppo"><div class="wrap">
+  <div class="sec-h"><span class="eyebrow">{t('Software del gruppo','Software del grupo')}</span><h2>{t('Software proprietari, sulla stessa piattaforma.','Software propio, sobre la misma plataforma.')}</h2><p class="lead">{t('Ogni prodotto ha la propria identità e il proprio mercato. Ogni nuovo prodotto nasce più veloce e più solido del precedente.','Cada producto tiene su propia identidad y su propio mercado. Cada nuevo producto nace más rápido y más sólido que el anterior.')}</p></div>
+  <div class="grid g2">
+    <a class="card prod rv" style="--c:var(--c-hako)" href="{url('hako')}"><div class="bar"></div><div class="top"><img src="/assets/logos/hako.png" alt="HAKO"><span class="badge">{t('Condomini e portinerie','Comunidades y conserjerías')}</span></div>
+      <div class="bd"><p>{t('Il programma della portineria che sostituisce il quaderno dei pacchi: foto del pacco, avviso su WhatsApp, SMS o e-mail nella lingua del condomino, ritiro con codice.','El programa de la conserjería que sustituye al cuaderno de paquetes: foto del paquete, aviso por WhatsApp, SMS o e-mail en el idioma del vecino, recogida con código.')}</p><span class="more">{t('Scopri HAKO','Descubre HAKO')}</span></div></a>
+    <div class="card prod rv" style="--c:var(--blue)"><div class="bar"></div><div class="top"><img src="/assets/logos/odyra.png" alt="Odyra System" style="height:40px"><span class="badge soon">{t('In sviluppo','En desarrollo')}</span></div>
+      <div class="bd"><p>{t('Nuovi verticali in sviluppo sulla stessa infrastruttura: un nuovo prodotto, un nuovo mercato, senza ripartire da zero.','Nuevos verticales en desarrollo sobre la misma infraestructura: un nuevo producto, un nuevo mercado, sin partir de cero.')}</p></div></div>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <div class="sec-h"><span class="eyebrow">{t('Casi studio','Casos de éxito')}</span><h2>{t('Due clienti, due prodotti, risultati reali.','Dos clientes, dos productos, resultados reales.')}</h2></div>
-  <div class="grid g2">
-    <a class="card rv" href="{url('casi')}#boss"><img class="boss-logo" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers" style="width:64px;height:64px;border-radius:12px"><h3>BOSS — {t('l\'AI dentro il gestionale dei saloni','la IA dentro el software de los salones')}</h3><p>{t('GoAgent, l\'agente AI che BOSS offre ai saloni col proprio marchio. In produzione da giugno 2026: 262 chiamate gestite in 15 giorni nel salone pilota.','GoAgent, el agente IA que BOSS ofrece a los salones con su marca. En producción desde junio de 2026: 262 llamadas gestionadas en 15 días en el salón piloto.')}</p></a>
-    <a class="card rv" href="{url('casi')}#global-trading"><span class="wordmark" style="margin-bottom:16px">Global Trading<small>Gruppo Colzani · Sportit.com</small></span><h3>{t('L\'agente commerciale che non dorme mai','El agente comercial que nunca duerme')}</h3><p>{t('Primo contatto sotto il minuto e capacità da 10 a 1.000 chiamate allo stesso costo, indipendente dall\'organico.','Primer contacto en menos de un minuto y capacidad de 10 a 1.000 llamadas al mismo coste, independiente de la plantilla.')}</p></a>
-  </div>
+  <div class="sec-h center"><span class="eyebrow">{t('Numeri','Números')}</span><h2>{t('Risultati misurabili, già in produzione.','Resultados medibles, ya en producción.')}</h2></div>
+  <div class="nums">{nh}</div>
 </div></section>
 
 <div class="claims" aria-hidden="true"><div>{mq}</div></div>
 
-{cta()}
+{cta(t('Vuoi l\'AI nel tuo gestionale?','¿Quieres la IA en tu software?'), t('Ti mostriamo come funziona la partnership, con tempi e formula commerciale.','Te mostramos cómo funciona la alianza, con plazos y fórmula comercial.'), 'software-house')}
 '''
-    return layout('home', t('Odyra System — Software AI proprietari per chi non può perdere un cliente', 'Odyra System — Software de IA propio para quien no puede perder un cliente'),
-        t('Odyra sviluppa software AI proprietari: agenti vocali e WhatsApp, agente commerciale, HAKO. Integrati nei gestionali, in produzione in Italia.', 'Odyra desarrolla software de IA propio: agentes de voz y WhatsApp, agente comercial, HAKO. Integrados en el software de gestión, en producción en Italia.'), body)
+    return layout('home', t('Odyra System — AI white-label per gestionali e software proprietari', 'Odyra System — IA white-label para software de gestión y software propio'),
+        t('Odyra è il partner white-label che porta agenti AI vocali e WhatsApp nei gestionali, e il gruppo che sviluppa software proprietari come HAKO.', 'Odyra es el socio white-label que lleva agentes IA de voz y WhatsApp a los software de gestión, y el grupo que desarrolla software propio como HAKO.'), body)
 
 # ───────────────────────── GRUPPO ─────────────────────────
 def page_gruppo():
     body = f'''
 <section class="page-hero solo"><div class="wrap"><div>
   <span class="eyebrow">{t('Il gruppo','El grupo')}</span>
-  <h1>{t('Il gruppo europeo dei software AI verticali.','El grupo europeo del software de IA vertical.')}</h1>
+  <h1>{t('Partner white-label per i gestionali. Gruppo di software proprietari.','Socio white-label para software de gestión. Grupo de software propio.')}</h1>
   <p class="lead">{t('Odyra è un gruppo tecnologico milanese che sviluppa e possiede software di intelligenza artificiale: agenti vocali, agenti conversazionali, piattaforme e prodotti verticali che lavorano dentro le aziende, 24 ore su 24.','Odyra es un grupo tecnológico milanés que desarrolla y posee software de inteligencia artificial: agentes de voz, agentes conversacionales, plataformas y productos verticales que trabajan dentro de las empresas, 24 horas al día.')}</p>
 </div></div></section>
 <section><div class="wrap grid g2" style="gap:28px">
@@ -317,9 +334,9 @@ def page_voce():
     body = f'''
 <section class="page-hero" style="--hero-c:rgba(59,130,246,.22)"><div class="wrap">
   <div>
-    <span class="pill-logo"><i style="background:var(--c-voce)"></i>{t('Prodotto · Agenti AI vocali e WhatsApp','Producto · Agentes IA de voz y WhatsApp')}</span>
+    <span class="pill-logo"><i style="background:var(--c-voce)"></i>{t('Soluzione AI · Receptionist voce e WhatsApp','Solución IA · Recepcionista voz y WhatsApp')}</span>
     <h1>{t('Non perdere più <span class="grad">una chiamata.</span>','No pierdas ni <span class="grad">una llamada más.</span>')}</h1>
-    <p class="lead">{t('La receptionist AI di Odyra risponde a ogni chiamata e a ogni messaggio WhatsApp, giorno e notte, e prenota direttamente nel gestionale dell\'azienda.','La recepcionista IA de Odyra responde a cada llamada y a cada mensaje de WhatsApp, de día y de noche, y reserva directamente en el software de la empresa.')}</p>
+    <p class="lead">{t('La receptionist AI risponde a ogni chiamata e a ogni messaggio WhatsApp, giorno e notte, e prenota direttamente nel gestionale. Odyra la offre ai software house in white-label, col loro marchio.','La recepcionista IA responde a cada llamada y a cada mensaje de WhatsApp, de día y de noche, y reserva directamente en el software. Odyra la ofrece a las software houses en white-label, con su marca.')}</p>
     <div class="cta" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:30px"><a class="btn btn-p" href="{url('contatti')}?interesse=voce">{t('Richiedi una demo','Solicita una demo')}</a><a class="btn btn-o" href="#cosa-fa">{t('Cosa fa','Qué hace')}</a></div>
   </div>
   {call_demo()}
@@ -356,8 +373,8 @@ def page_voce():
     <p class="lead">{t('Saloni, centri estetici, studi dentistici, cliniche veterinarie, centri sportivi. Distribuito tramite i gestionali di settore, con il loro marchio.','Salones, centros de estética, clínicas dentales, clínicas veterinarias, centros deportivos. Distribuido a través del software de gestión del sector, con su marca.')}</p></div>
   <div class="card rv" style="background:linear-gradient(160deg,#F4F0FF,#fff);border-color:#E3DAFF">
     <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">{goagent_wm()}<span style="color:var(--muted)">×</span><img class="boss-logo" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers" style="width:68px;height:68px;border-radius:14px"></div>
-    <h3 style="margin-top:20px">{t('GoAgent: l\'agente AI del gestionale BOSS','GoAgent: el agente IA del software BOSS')}</h3>
-    <p>{t('Il prodotto Odyra alimenta GoAgent, che BOSS offre ai saloni della rete GoWeb. In produzione da giugno 2026, con 262 chiamate gestite in 15 giorni nel salone pilota.','El producto de Odyra alimenta GoAgent, que BOSS ofrece a los salones de la red GoWeb. En producción desde junio de 2026, con 262 llamadas gestionadas en 15 días en el salón piloto.')}</p>
+    <h3 style="margin-top:20px">{t('GoAgent è il prodotto BOSS, costruito da Odyra','GoAgent es el producto de BOSS, construido por Odyra')}</h3>
+    <p>{t('Questa tecnologia alimenta GoAgent, che BOSS offre col proprio marchio ai saloni della rete GoWeb. In produzione da giugno 2026, con 262 chiamate gestite in 15 giorni nel salone pilota.','Esta tecnología alimenta GoAgent, que BOSS ofrece con su marca a los salones de la red GoWeb. En producción desde junio de 2026, con 262 llamadas gestionadas en 15 días en el salón piloto.')}</p>
     <p style="margin-top:14px"><a class="btn btn-o btn-sm" href="{url('casi')}#boss">{t('Leggi il caso studio','Lee el caso de éxito')}</a></p>
   </div>
 </div></section>
@@ -393,7 +410,7 @@ def page_comm():
     body = f'''
 <section class="page-hero" style="--hero-c:rgba(124,92,252,.22)"><div class="wrap">
   <div>
-    <span class="pill-logo"><i style="background:var(--c-comm)"></i>{t('Prodotto · Agente commerciale AI','Producto · Agente comercial IA')}</span>
+    <span class="pill-logo"><i style="background:var(--c-comm)"></i>{t('Soluzione AI · Agente commerciale','Solución IA · Agente comercial')}</span>
     <h1>{t('Chi arriva primo vende.<br><span class="grad">Odyra arriva primo.</span>','Quien llega primero vende.<br><span class="grad">Odyra llega primero.</span>')}</h1>
     <p class="lead">{t('L\'agente commerciale di Odyra richiama ogni nuovo lead in meno di un minuto, lo qualifica al telefono in italiano e fissa l\'appuntamento con il team vendite.','El agente comercial de Odyra llama a cada nuevo lead en menos de un minuto, lo califica por teléfono y fija la cita con el equipo de ventas.')}</p>
     <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:30px"><a class="btn btn-p" href="{url('contatti')}?interesse=commerciale">{t('Richiedi una demo','Solicita una demo')}</a><a class="btn btn-o" href="{url('casi')}#global-trading">{t('Il caso Global Trading','El caso Global Trading')}</a></div>
