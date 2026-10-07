@@ -337,7 +337,7 @@ def dash_gallery():
     out = ''
     for n, cap in shots:
         if os.path.exists(os.path.join(ROOT, f'assets/goagent/{n}.png')):
-            out += f'<figure><img src="/assets/goagent/{n}.png" alt="{e(cap)}" loading="lazy"><figcaption>{cap}</figcaption></figure>'
+            out += f'<figure><img src="/assets/goagent/{n}.png" alt="{e(cap)}"><figcaption>{cap}</figcaption></figure>'
     return f'<div class="gallery">{out}</div><p class="vid-cap">{t("Schermate della dashboard GoAgent con dati di prova.","Capturas del panel GoAgent con datos de prueba.")}</p>' if out else ''
 
 def page_goagent():

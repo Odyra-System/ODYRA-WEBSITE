@@ -315,3 +315,5 @@ html:has(body.t-goagent){background:#2B1F73}
 .gallery figcaption{margin-top:10px;font-size:.9rem;color:var(--muted)}
 .ga-foot{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 @media (max-width:1020px){.ga-grid,.gallery{grid-template-columns:1fr}}
+.gallery figure:last-child:nth-child(odd){grid-column:1/-1;max-width:calc(50% - 14px);justify-self:center}
+@media (max-width:1020px){.gallery figure:last-child:nth-child(odd){max-width:none}}
