@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://odyrasystemautomation.it/sitemap.xml
