@@ -16,30 +16,29 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="/styles.css?v=6">
+<link rel="stylesheet" href="/styles.css?v=7">
 </head>
 <body>
 <a class="skip" href="#main">Vai al contenuto</a>
 <header class="hdr" id="top"><div class="wrap">
   <a class="brand" href="/" aria-label="Odyra System"><img src="/assets/logos/odyra-system.png" alt="Odyra System" width="163" height="44"></a>
   <nav class="nav" id="nav" aria-label="Principale">
-      <a class="nav-link" href="/per-i-gestionali.html">Per i gestionali</a>
-      <a class="nav-link" href="/goagent.html">GoAgent</a>
-      <a class="nav-link" href="/hako.html">HAKO</a>
-      <a class="nav-link" href="/su-misura.html">Su misura</a>
-      <a class="nav-link" href="/tecnologia.html">Tecnologia</a>
-      <a class="nav-link" href="/il-gruppo.html">Il gruppo</a>
-      <div class="lang" role="group" aria-label="Lingua"><a href="/contatti.html" hreflang="it" aria-current="true">IT</a><a href="/es/contatti.html" hreflang="es">ES</a></div>
-      <a class="btn btn-p btn-sm" href="/contatti.html">Parla con noi</a>
-    </nav>
+    <a class="nav-link" href="/piattaforma.html">Piattaforma</a>
+    <a class="nav-link" href="/settori.html">Settori</a>
+    <a class="nav-link" href="/per-i-gestionali.html">Per i partner</a>
+    <a class="nav-link" href="/su-misura.html">Su misura</a>
+    <a class="nav-link" href="/il-gruppo.html">Il gruppo</a>
+    <div class="lang" role="group" aria-label="Lingua"><a href="/contatti.html" hreflang="it" aria-current=true>IT</a><a href="/es/contatti.html" hreflang="es">ES</a></div>
+    <a class="btn btn-p btn-sm" href="/contatti.html">Parla con noi</a>
+  </nav>
   <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
 </div></header>
 <main id="main">
 <section class="page-head"><div class="wrap"><div><h1>Parliamo del tuo caso.</h1></div><div><p class="lead">Raccontaci come lavori oggi. Ti rispondiamo entro un giorno lavorativo.</p></div></div></section><section class="sec "><div class="wrap"><div class="split split-e"><form class="form" id="form-contatti" novalidate>
     <div class="row"><label>Nome e cognome<input name="nome" required autocomplete="name"></label><label>Azienda<input name="azienda" required autocomplete="organization"></label></div>
     <div class="row"><label>E-mail<input type="email" name="email" required autocomplete="email"></label><label>Telefono<input type="tel" name="telefono" autocomplete="tel"></label></div>
-    <label>Di cosa hai bisogno?<select name="interesse" required><option value="partner">Partnership per gestionali</option><option value="goagent">GoAgent</option><option value="hako">HAKO</option><option value="custom">Progetto su misura</option><option value="altro">Altro</option></select></label>
-    <label>Messaggio<textarea name="messaggio" placeholder="Che gestionale sviluppate? Quanti clienti avete?"></textarea></label>
+    <label>Di cosa hai bisogno?<select name="interesse" required><option value="partner">Partnership per software di gestione</option><option value="goagent">GoAgent</option><option value="hako">HAKO</option><option value="custom">Progetto su misura</option><option value="altro">Altro</option></select></label>
+    <label>Messaggio<textarea name="messaggio" placeholder="Che software di gestione sviluppate? Quanti clienti avete?"></textarea></label>
     <input class="hp" name="company_site" tabindex="-1" autocomplete="off" aria-hidden="true">
     <label class="chk"><input type="checkbox" name="privacy" value="si" required><span>Ho letto l'<a class="link" href="/privacy.html">informativa privacy</a> e acconsento al trattamento dei dati per essere ricontattato.</span></label>
     <div><button class="btn btn-p" type="submit">Invia la richiesta</button></div>
@@ -49,18 +48,15 @@
 <footer class="ftr"><div class="wrap">
   <div class="top">
     <div><img class="flogo" src="/assets/logos/odyra-system.png" alt="Odyra System">
-      <p>Agenti AI di settore, in white-label per i gestionali. Software proprietari. Milano.</p>
+      <p>Agenti AI di settore, in white-label per i software di gestione. Software proprietari. Milano.</p>
       <div class="partners"><img src="/assets/logos/whatsapp.svg" alt="WhatsApp"><img src="/assets/logos/meta.svg" alt="Meta"><img src="/assets/logos/vonage.svg" alt="Vonage"></div></div>
-    <div><h4>Prodotti</h4><ul>
-      <li><a href="/goagent.html">GoAgent</a></li><li><a href="/hako.html">HAKO</a></li><li><a href="/su-misura.html">Su misura</a></li></ul></div>
-    <div><h4>Odyra</h4><ul>
-      <li><a href="/per-i-gestionali.html">Per i gestionali</a></li><li><a href="/tecnologia.html">Tecnologia</a></li><li><a href="/il-gruppo.html">Il gruppo</a></li></ul></div>
-    <div><h4>Contatti</h4><ul>
-      <li><a href="mailto:team@odyrasystemautomation.it">team@odyrasystemautomation.it</a></li><li>Verypos S.r.l.<br>Viale Papiniano 8, 20123 Milano</li></ul></div>
+    <div><h4>Odyra</h4><ul><li><a href="/piattaforma.html">Piattaforma</a></li><li><a href="/settori.html">Settori</a></li><li><a href="/per-i-gestionali.html">Per i partner</a></li><li><a href="/su-misura.html">Su misura</a></li><li><a href="/il-gruppo.html">Il gruppo</a></li></ul></div>
+    <div><h4>Costruito con Odyra</h4><ul><li><a href="/goagent.html">GoAgent</a></li><li><a href="https://hakocondomini.com" rel="noopener">HAKO ↗</a></li></ul></div>
+    <div><h4>Contatti</h4><ul><li><a href="mailto:team@odyrasystemautomation.it">team@odyrasystemautomation.it</a></li><li>Verypos S.r.l.<br>Viale Papiniano 8, 20123 Milano</li></ul></div>
   </div>
   <div class="bot"><span>© 2026 Odyra System · Verypos S.r.l. · P.IVA 11630390968 · REA MI-2615892</span>
   <span><a href="/privacy.html">Privacy</a> · WhatsApp e Meta sono marchi dei rispettivi proprietari.</span></div>
 </div></footer>
-<script src="/script.js?v=6" defer></script>
+<script src="/script.js?v=7" defer></script>
 </body>
 </html>

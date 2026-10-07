@@ -8,7 +8,7 @@ Testi affiancati con `t('italiano','español')`. Indirizzi dei siti prodotto in 
 
 ## Video (segnaposto già pronti)
 Metti i file in `assets/video/`: il segnaposto viene sostituito da solo.
-- `odyra-presentazione.mp4` (home), `partner-program.mp4` (pagina gestionali), `goagent.mp4`, `hako.mp4`
+- `odyra-presentazione.mp4` (home), `partner-program.mp4` (pagina gestionali), `goagent.mp4`, ` (non più usato)
 - opzionale: `NOME.jpg` (anteprima)
 - sottotitoli selezionabili dal lettore: `NOME.it.vtt`, `NOME.es.vtt`, `NOME.en.vtt`, `NOME.de.vtt`, `NOME.fr.vtt`. Nella pagina spagnola il sottotitolo spagnolo parte attivo.
 
