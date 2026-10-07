@@ -1,51 +1,52 @@
-// Intestazione: bordo e ombra appena si scorre; menu mobile.
-const hdr = document.getElementById('top')
-const onScroll = () => hdr.classList.toggle('scrolled', window.scrollY > 8)
-onScroll(); window.addEventListener('scroll', onScroll, { passive: true })
-
-const burger = document.getElementById('burger')
+// Intestazione e menu mobile.
 const nav = document.getElementById('nav')
+const burger = document.getElementById('burger')
 burger?.addEventListener('click', () => {
   const open = nav.classList.toggle('open')
   burger.setAttribute('aria-expanded', String(open))
   document.body.style.overflow = open ? 'hidden' : ''
 })
 nav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
-  nav.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''
+  nav.classList.remove('open'); burger?.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''
 }))
 document.querySelectorAll('.dd > button').forEach((b) => b.addEventListener('click', () => {
-  const dd = b.parentElement, o = dd.classList.toggle('open'); b.setAttribute('aria-expanded', String(o))
+  const o = b.parentElement.classList.toggle('open'); b.setAttribute('aria-expanded', String(o))
 }))
 
-// Comparsa al scroll.
-const io = new IntersectionObserver((es) => es.forEach((e) => {
-  if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target) }
-}), { threshold: 0.12 })
-document.querySelectorAll('.rv').forEach((el) => io.observe(el))
-
-// Contatori dei numeri chiave.
-const cio = new IntersectionObserver((es) => es.forEach((e) => {
-  if (!e.isIntersecting) return
-  const el = e.target, to = +el.dataset.count, dur = 1400, t0 = performance.now()
-  const f = (t) => {
-    const p = Math.min(1, (t - t0) / dur), v = Math.round(to * (1 - Math.pow(1 - p, 3)))
-    el.textContent = v.toLocaleString(document.documentElement.lang === 'es' ? 'es-ES' : 'it-IT')
-    if (p < 1) requestAnimationFrame(f)
+// Demo in apertura: lo stesso agente, dentro un gestionale con due marchi diversi.
+const app = document.getElementById('demo')
+if (app) {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const slot = app.querySelector('.slot')
+  const lines = [...app.querySelectorAll('.l')]
+  const fresh = app.querySelector('.new')
+  const wa = app.querySelector('.wa-chip')
+  const SKINS = {
+    boss: () => `<img src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><b>GoAgent</b>`,
+    partner: () => `<div class="slot-empty">${app.dataset.slotEmpty}</div>`,
   }
-  requestAnimationFrame(f); cio.unobserve(el)
-}), { threshold: 0.6 })
-document.querySelectorAll('[data-count]').forEach((el) => cio.observe(el))
-
-// Simulazione della conversazione WhatsApp (pagina prodotto).
-document.querySelectorAll('.wa').forEach((wa) => {
-  const bs = [...wa.querySelectorAll('.b')]
-  let i = 0
-  const run = () => {
-    if (i < bs.length) { bs[i++].classList.add('on'); setTimeout(run, 1500) }
-    else setTimeout(() => { bs.forEach((b) => b.classList.remove('on')); i = 0; setTimeout(run, 800) }, 6000)
+  let timers = []
+  const clear = () => { timers.forEach(clearTimeout); timers = [] }
+  const reset = () => { lines.forEach((l) => l.classList.remove('on')); fresh.classList.remove('on'); wa.classList.remove('on'); app.classList.remove('call-on') }
+  const showAll = () => { lines.forEach((l) => l.classList.add('on')); fresh.classList.add('on'); wa.classList.add('on') }
+  const play = () => {
+    clear(); reset()
+    if (reduce) { showAll(); return }
+    app.classList.add('call-on')
+    const at = (ms, fn) => timers.push(setTimeout(fn, ms))
+    lines.forEach((l, i) => at(700 + i * 1500, () => l.classList.add('on')))
+    at(700 + lines.length * 1500, () => fresh.classList.add('on'))
+    at(900 + lines.length * 1500, () => wa.classList.add('on'))
+    at(900 + lines.length * 1500 + 6000, play)
   }
-  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { run(); o.disconnect() } }, { threshold: 0.4 }).observe(wa)
-})
+  const setSkin = (s) => {
+    app.dataset.skin = s; slot.innerHTML = SKINS[s]()
+    document.querySelectorAll('.demo-tabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.skin === s)))
+    play()
+  }
+  document.querySelectorAll('.demo-tabs button').forEach((b) => b.addEventListener('click', () => setSkin(b.dataset.skin)))
+  setSkin('boss')
+}
 
 // Video e registrazioni reali: compaiono solo se i file esistono in assets/video e assets/audio.
 document.querySelectorAll('.media[data-video]').forEach((box) => {
@@ -83,7 +84,7 @@ if (form) {
   if (q && form.interesse) form.interesse.value = q
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
-    if (form.company_site.value) return // campo trappola per lo spam
+    if (form.company_site.value) return
     if (!form.checkValidity()) { form.reportValidity(); return }
     const d = Object.fromEntries(new FormData(form)); delete d.company_site
     const es = document.documentElement.lang === 'es'
@@ -96,7 +97,7 @@ if (form) {
     try {
       const r = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...d, lingua: document.documentElement.lang, pagina: location.href }) })
       if (!r.ok) throw new Error(r.status)
-      form.reset(); msg.className = 'form-msg ok'; msg.textContent = es ? 'Gracias. Te respondemos en 24 horas laborables.' : 'Grazie. Ti rispondiamo entro un giorno lavorativo.'
+      form.reset(); msg.className = 'form-msg ok'; msg.textContent = es ? 'Gracias. Te respondemos en un día laborable.' : 'Grazie. Ti rispondiamo entro un giorno lavorativo.'
     } catch {
       msg.className = 'form-msg err'; msg.textContent = es ? `No se pudo enviar. Escríbenos a ${FORM_EMAIL}.` : `Invio non riuscito. Scrivici a ${FORM_EMAIL}.`
     }
