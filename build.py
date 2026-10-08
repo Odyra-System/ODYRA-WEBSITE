@@ -160,10 +160,8 @@ def hero_art():
     return f'<div class="hero-art" aria-hidden="true"><svg viewBox="0 0 640 760" preserveAspectRatio="xMaxYMid slice">{out}</svg></div>'
 
 def verts():
-    items = [(t('Beauty', 'Beauty'), t('In produzione', 'En producción'), True), (t('Dentale', 'Dental'), t('Prossimo', 'Próximo'), False),
-             (t('Autofficine', 'Talleres'), t('Prossimo', 'Próximo'), False), (t('Ospitalità', 'Hostelería'), t('Prossimo', 'Próximo'), False),
-             (t('Veterinari', 'Veterinarios'), t('Prossimo', 'Próximo'), False)]
-    return '<ul class="verts">' + ''.join(f'<li class="{"on" if on else ""}"><b>{n}</b><span>{s}</span></li>' for n, s, on in items) + '</ul>'
+    names = [t('Beauty', 'Beauty'), t('Dentale', 'Dental'), t('Autofficine', 'Talleres'), t('Ospitalità', 'Hostelería'), t('Veterinari', 'Veterinarios'), t('Altri settori', 'Otros sectores')]
+    return '<ul class="verts">' + ''.join(f'<li class="on"><b>{n}</b></li>' for n in names) + '</ul>'
 
 def platform_diagram():
     sectors = [t('Beauty', 'Beauty'), t('Dentale', 'Dental'), t('Autofficine', 'Talleres'), t('Ospitalità', 'Hostelería'), t('Veterinari', 'Veterinarios'), '…']
@@ -175,7 +173,7 @@ def platform_diagram():
   <div class="pl-core"><div class="pl-title"><img src="/assets/logos/odyra-mark.png" alt=""><b>{t('Piattaforma Odyra','Plataforma Odyra')}</b></div><ul>{ls}</ul></div>
   <div class="pl-line"><i></i></div>
   <div class="pl-box"><small>{t('Software di gestione, col loro marchio','Software de gestión, con su marca')}</small>
-    <div class="pl-slots"><span class="pl-logo"><img src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"></span><span class="pl-slot">{t('Il tuo logo','Tu logo')}</span><span class="pl-slot">{t('Il tuo logo','Tu logo')}</span></div></div>
+    <div class="pl-slots"><span class="pl-logo"><img src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"></span><span class="pl-brand">{t('Il marchio del software','La marca del software')}</span></div></div>
   <div class="pl-line"><i></i></div>
   <div class="pl-end">{t('I clienti del software di gestione','Los clientes del software de gestión')}</div>
 </div>'''
@@ -237,7 +235,7 @@ def page_home():
 </div></section>
 
 <section class="sec"><div class="wrap">
-  {sec_h(t('Settori di competenza.','Sectores de competencia.'), t('Un settore alla volta. Oggi il beauty è in produzione; gli altri seguono sulla stessa piattaforma.','Un sector a la vez. Hoy beauty está en producción; los demás siguen en la misma plataforma.'))}
+  {sec_h(t('Settori di competenza.','Sectores de competencia.'), t('Studiamo a fondo ogni settore prima di costruire l\'agente: come si lavora, cosa chiedono i clienti, quali regole contano.','Estudiamos a fondo cada sector antes de construir el agente: cómo se trabaja, qué piden los clientes, qué reglas cuentan.'))}
   {verts()}
   <p style="margin-top:36px"><a class="link" href="{url('settori')}">{t('Tutti i settori','Todos los sectores')}</a></p>
 </div></section>
@@ -245,7 +243,7 @@ def page_home():
 <section class="sec sec-alt"><div class="wrap">
   {sec_h(t('Costruito con la nostra piattaforma.','Construido con nuestra plataforma.'))}
   <div class="tiles">
-    <a class="tilecard" href="{url('goagent')}"><img class="tl" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><h3>GoAgent</h3><p>{t('L\'agente AI di BOSS per i saloni GoWeb. Il nostro primo settore: beauty.','El agente IA de BOSS para los salones GoWeb. Nuestro primer sector: beauty.')}</p><span class="more">{t('Scopri GoAgent','Descubre GoAgent')}</span></a>
+    <a class="tilecard" href="{url('goagent')}"><img class="tl" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><h3>GoAgent</h3><p>{t('L\'agente AI di BOSS per i saloni GoWeb. Il nostro punto di riferimento nel beauty.','El agente IA de BOSS para los salones GoWeb. Nuestro referente en beauty.')}</p><span class="more">{t('Scopri GoAgent','Descubre GoAgent')}</span></a>
     <a class="tilecard" href="{LINK_HAKO}" rel="noopener"><img class="tl w" src="/assets/logos/hako-white.png" alt="HAKO"><h3>HAKO</h3><p>{t('Software proprietario di Odyra per le portinerie dei condomini. Ha il suo sito.','Software propio de Odyra para las conserjerías de las comunidades. Tiene su propio sitio.')}</p><span class="more">hakocondomini.com ↗</span></a>
     <a class="tilecard" href="{url('custom')}"><span class="tile tl"><img src="/assets/logos/sportit.png" alt="Sportit.com"></span><h3>{t('Progetti su misura','Proyectos a medida')}</h3><p>{t('Agenti e automazioni per aziende con grandi volumi, come Gruppo Colzani.','Agentes y automatizaciones para empresas con grandes volúmenes, como Gruppo Colzani.')}</p><span class="more">{t('Scopri i progetti','Descubre los proyectos')}</span></a>
   </div>
@@ -259,7 +257,7 @@ def page_home():
 
 {cta()}'''
     return layout('home', t('Odyra System — Agenti AI di settore, in white-label per i software di gestione', 'Odyra System — Agentes IA sectoriales, en white-label para software de gestión'),
-        t('Odyra costruisce agenti AI di settore, li collega ai software di gestione e li offre ai clienti col marchio del software. Primo settore: beauty.', 'Odyra construye agentes IA sectoriales, los conecta a los software de gestión y los ofrece a los clientes con la marca del software. Primer sector: beauty.'), body)
+        t('Odyra costruisce agenti AI di settore, li collega ai software di gestione e li offre ai clienti col marchio del software. ', 'Odyra construye agentes IA sectoriales, los conecta a los software de gestión y los ofrece a los clientes con la marca del software. '), body)
 
 # ───────── PIATTAFORMA ─────────
 def page_piattaforma():
@@ -286,21 +284,20 @@ def page_piattaforma():
 # ───────── SETTORI ─────────
 def page_settori():
     body = head_(t('Settori di competenza.','Sectores de competencia.'),
-        t('Prima di costruire un agente impariamo il settore a fondo. Oggi il beauty è in produzione; gli altri seguono sulla stessa piattaforma.','Antes de construir un agente aprendemos el sector a fondo. Hoy beauty está en producción; los demás siguen en la misma plataforma.'))
+        t('Prima di costruire un agente impariamo il settore a fondo: ogni regola, ogni abitudine, ogni caso limite.','Antes de construir un agente aprendemos el sector a fondo: cada regla, cada costumbre, cada caso límite.'))
     body += sec(f'{sec_h(t("Come entriamo in un settore.","Cómo entramos en un sector."))}' + steps([
         (t('Ascoltiamo','Escuchamos'), t('Come lavora chi fa quel lavoro, cosa chiedono i clienti, dove si perdono chiamate e tempo.','Cómo trabaja quien hace ese trabajo, qué piden los clientes, dónde se pierden llamadas y tiempo.')),
         (t('Codifichiamo le regole','Codificamos las reglas'), t('Ogni regola del settore diventa codice: l\'agente la rispetta sempre.','Cada regla del sector se convierte en código: el agente la respeta siempre.')),
         (t('Ci colleghiamo','Nos conectamos'), t('Ai software di gestione che quel settore usa già.','A los software de gestión que ese sector ya usa.')),
         (t('Gestiamo e misuriamo','Gestionamos y medimos'), t('Qualità, consumi e risultati, per migliorare ogni settimana.','Calidad, consumos y resultados, para mejorar cada semana.')),
     ]))
-    body += sec(f'''{sec_h(t('Beauty. In produzione.','Beauty. En producción.'), t('Il primo settore in cui siamo arrivati e dove siamo primi: parrucchieri e centri estetici.','El primer sector al que llegamos y donde somos los primeros: peluquerías y centros de estética.'))}
+    body += sec(f'''{sec_h(t('Beauty.','Beauty.'), t('Il settore in cui siamo primi: parrucchieri e centri estetici.','El sector en el que somos los primeros: peluquerías y centros de estética.'))}
       <div class="split"><div><img class="boss-logo" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><p class="lead">{t('Con BOSS e il suo software GoWeb, l\'agente è oggi disponibile per la rete di oltre 1.500 saloni, col nome GoAgent.','Con BOSS y su software GoWeb, el agente está hoy disponible para la red de más de 1.500 salones, con el nombre GoAgent.')}</p>
       <div class="btns"><a class="btn btn-p" href="{url('goagent')}">{t('Scopri GoAgent','Descubre GoAgent')}</a></div></div>
       <div>{beauty_rules(8)}</div></div>''', 'sec-alt')
-    body += sec(f'''{sec_h(t('I prossimi settori.','Los próximos sectores.'), t('Dentale, autofficine, ospitalità, veterinari e altri: stessa piattaforma, regole diverse.','Dental, talleres, hostelería, veterinarios y otros: misma plataforma, reglas distintas.'))}{verts()}
-      <p style="margin-top:36px">{t('Oggi gli agenti parlano italiano. Altre lingue e software di gestione di altri paesi europei sono nel piano.','Hoy los agentes hablan italiano. Otros idiomas y software de gestión de otros países europeos están en el plan.')}</p>''')
-    body += cta(t('Hai un software di gestione in un altro settore?','¿Tienes un software de gestión en otro sector?'), t('Raccontacelo: vediamo insieme da dove cominciare.','Cuéntanoslo: vemos juntos por dónde empezar.'), 'partner')
-    return layout('settori', t('Settori di competenza — Odyra System', 'Sectores de competencia — Odyra System'), t('Un settore alla volta: beauty in produzione con BOSS e GoAgent, dentale, autofficine, ospitalità e veterinari a seguire.', 'Un sector a la vez: beauty en producción con BOSS y GoAgent, dental, talleres, hostelería y veterinarios a continuación.'), body)
+    body += sec(f'''{sec_h(t('Una piattaforma, tanti settori.','Una plataforma, muchos sectores.'), t('Stessa piattaforma, regole diverse per ogni settore.','Misma plataforma, reglas distintas para cada sector.'))}{verts()}''')
+    body += cta(t('Hai un software di gestione?','¿Tienes un software de gestión?'), t('Raccontacelo: vediamo insieme come portare l\'agente ai tuoi clienti.','Cuéntanoslo: vemos juntos cómo llevar el agente a tus clientes.'), 'partner')
+    return layout('settori', t('Settori di competenza — Odyra System', 'Sectores de competencia — Odyra System'), t('Settori di competenza: beauty con BOSS e GoAgent, dentale, autofficine, ospitalità, veterinari e altri.', 'Sectores de competencia: beauty con BOSS y GoAgent, dental, talleres, hostelería, veterinarios y otros.'), body)
 
 # ───────── PARTNER ─────────
 def page_partner():
@@ -323,7 +320,7 @@ def page_partner():
     body += sec(f'''{sec_h(t('Un caso reale.','Un caso real.'))}<div class="split"><div><img class="boss-logo" src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"></div>
       <div><p class="lead">{t('BOSS sviluppa GoWeb, tra i software più diffusi per parrucchieri e centri estetici in Italia, con oltre 1.500 saloni. Con Odyra ha lanciato GoAgent col proprio marchio.','BOSS desarrolla GoWeb, uno de los software más extendidos entre peluquerías y centros de estética en Italia, con más de 1.500 salones. Con Odyra lanzó GoAgent con su marca.')}</p>
       <div class="btns"><a class="btn btn-o" href="{url('goagent')}">{t('La storia di GoAgent','La historia de GoAgent')}</a></div></div></div>''')
-    body += sec(f'''{sec_h(t('Il primo settore è il beauty. Gli altri seguono.','El primer sector es beauty. Los demás siguen.'))}{verts()}''', 'sec-alt')
+    body += sec(f'''{sec_h(t('Settori di competenza.','Sectores de competencia.'))}{verts()}''', 'sec-alt')
     body += cta(t('Porta l\'AI nel tuo software di gestione.','Lleva la IA a tu software de gestión.'), t('Parliamo di integrazione, formula e tempi.','Hablemos de integración, fórmula y plazos.'), 'partner', t('Diventa partner','Hazte socio'))
     return layout('partner', t('Per i partner — AI di settore in white-label · Odyra System', 'Para socios — IA sectorial en white-label · Odyra System'), t('Il tuo software di gestione offre un agente AI di settore ai suoi clienti, col tuo marchio. Odyra porta prodotto, tecnologia e gestione.', 'Tu software de gestión ofrece un agente IA sectorial a sus clientes, con tu marca. Odyra aporta producto, tecnología y gestión.'), body)
 
@@ -415,7 +412,7 @@ def page_gruppo():
     body = head_(t('Un metodo: un settore alla volta.','Un método: un sector a la vez.'),
         t('Odyra è un gruppo tecnologico milanese. Impariamo un settore a fondo e costruiamo il software con l\'AI che lo fa. Lo portiamo ai clienti in due modi.','Odyra es un grupo tecnológico milanés. Aprendemos un sector a fondo y construimos el software con IA que lo hace. Lo llevamos a los clientes de dos maneras.'))
     body += sec(rows([
-        (t('Con i software di gestione','Con los software de gestión'), t('Agenti di settore in white-label dentro il software che i clienti usano già. Primo settore: beauty, con GoAgent di BOSS.','Agentes sectoriales en white-label dentro del software que los clientes ya usan. Primer sector: beauty, con GoAgent de BOSS.'), url('partner')),
+        (t('Con i software di gestione','Con los software de gestión'), t('Agenti di settore in white-label dentro il software che i clienti usano già. Beauty, con GoAgent di BOSS.','Agentes sectoriales en white-label dentro del software que los clientes ya usan. Beauty, con GoAgent de BOSS.'), url('partner')),
         (t('In proprio','Por cuenta propia'), t('Software proprietari venduti direttamente. HAKO, per le portinerie dei condomini, e altri in arrivo.','Software propio vendido directamente. HAKO, para las conserjerías de las comunidades, y otros en camino.'), LINK_HAKO),
         (t('Su misura','A medida'), t('Agenti e automazioni per aziende con grandi volumi.','Agentes y automatizaciones para empresas con grandes volúmenes.'), url('custom')),
     ]))

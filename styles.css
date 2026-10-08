@@ -317,3 +317,10 @@ html:has(body.t-goagent){background:#2B1F73}
 @media (max-width:1020px){.ga-grid,.gallery{grid-template-columns:1fr}}
 .gallery figure:last-child:nth-child(odd){grid-column:1/-1;max-width:calc(50% - 14px);justify-self:center}
 @media (max-width:1020px){.gallery figure:last-child:nth-child(odd){max-width:none}}
+
+.pl-slots{grid-template-columns:72px 1fr}
+.pl-brand{display:grid;place-items:center;height:58px;border:1px solid var(--line-2);border-radius:10px;font-size:.88rem;color:#E4EEFB;background:rgba(4,19,46,.55)}
+.verts{grid-template-columns:repeat(6,1fr)}
+.verts li{padding-right:8px}
+.verts li.on::before{animation:none}
+@media (max-width:1020px){.verts{grid-template-columns:1fr 1fr}}
