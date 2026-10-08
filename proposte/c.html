@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Odyra System — Proposta C · Settori</title><meta name="robots" content="noindex">
+<link rel="icon" href="/assets/favicon-v2.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--ink:#04132E;--tx:#3A4A66;--mu:#6D7C96;--ln:#DCE5F1;--mist:#F3F7FC;--cy:#0AA6E8;--bl:#1B6CFF}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#fff;color:var(--tx);font:400 1.08rem/1.7 Inter,system-ui,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;color:var(--ink);font-weight:700;letter-spacing:-.035em;line-height:1}
+.wrap{width:min(1180px,100% - 48px);margin-inline:auto}
+.hd{background:var(--ink)}.hd .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.hd img{height:42px}.hd nav{display:flex;gap:24px;align-items:center;font-size:.94rem;color:#D3E2F5}.hd nav a:hover{color:#6FD3FF}
+.btn{display:inline-flex;padding:14px 26px;border-radius:999px;font-weight:600;font-size:.97rem;border:1.5px solid transparent;transition:all .15s}
+.btn-p{background:var(--bl);color:#fff}.btn-p:hover{background:#1456CC}
+.btn-o{border-color:var(--ink);color:var(--ink)}.btn-o:hover{background:var(--ink);color:#fff}
+.hd .btn-p{background:#6FD3FF;color:#031126;padding:10px 20px}
+.hero{padding:clamp(64px,9vw,132px) 0 56px}
+.hero h1{font-size:clamp(2.6rem,7.2vw,6.6rem);max-width:14ch}
+.hero h1 em{font-style:normal;color:var(--bl)}
+.hero p{margin-top:30px;max-width:46ch;font-size:clamp(1.1rem,1.6vw,1.4rem);color:var(--tx)}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+/* selettore di settori */
+.pick{background:var(--mist);padding:clamp(56px,8vw,104px) 0}
+.pick .lab{font-weight:600;color:var(--mu);margin-bottom:26px}
+.sx{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,72px);align-items:start}
+.sl{list-style:none}
+.sl button{all:unset;cursor:pointer;display:block;width:100%;font:700 clamp(2.4rem,6vw,5.2rem)/1.04 'Space Grotesk';letter-spacing:-.04em;color:#B8C6DA;padding:6px 0;transition:color .2s,transform .2s}
+.sl button:hover{color:#6E8099}.sl button[aria-selected=true]{color:var(--ink);transform:translateX(10px)}
+.sl button:focus-visible{outline:3px solid var(--bl);outline-offset:4px;border-radius:8px}
+.card{background:#fff;border:1px solid var(--ln);border-radius:20px;padding:clamp(24px,3vw,40px);box-shadow:0 30px 70px -40px rgba(4,19,46,.35);position:sticky;top:24px}
+.card h3{font-size:1.5rem;margin-bottom:6px}.card small{display:block;color:var(--mu);margin-bottom:18px}
+.card ul{list-style:none}.card li{padding:13px 0 13px 22px;border-top:1px solid var(--ln);position:relative}
+.card li::before{content:"";position:absolute;left:0;top:23px;width:8px;height:8px;border-radius:50%;background:var(--cy)}
+.card li b{color:var(--ink);font-weight:600}
+.card .go{display:inline-block;margin-top:20px;font-weight:600;color:var(--bl);border-bottom:2px solid currentColor}
+/* come funziona */
+.how{padding:clamp(64px,9vw,120px) 0}
+.how h2{font-size:clamp(2rem,4.6vw,4rem);max-width:16ch;margin-bottom:56px}
+.st4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;list-style:none;counter-reset:s;border-top:2px solid var(--ink)}
+.st4 li{counter-increment:s;padding:26px 26px 0 0}
+.st4 li::before{content:"0" counter(s);display:block;font:700 clamp(2.4rem,4vw,3.6rem) 'Space Grotesk';letter-spacing:-.04em;color:var(--cy);margin-bottom:18px}
+.st4 h3{font-size:1.3rem;letter-spacing:-.02em;margin-bottom:8px}
+/* costruito con */
+.made{background:var(--ink);padding:clamp(64px,9vw,112px) 0}
+.made h2{color:#fff;font-size:clamp(2rem,4.6vw,4rem);margin-bottom:44px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tl{border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:30px;display:flex;flex-direction:column;gap:12px;min-height:250px;color:#B9C8E4;transition:border-color .2s,transform .2s}
+.tl:hover{border-color:#6FD3FF;transform:translateY(-4px)}
+.tl img{height:54px;width:auto;align-self:flex-start;border-radius:10px}.tl img.w{height:40px;border-radius:0}
+.tl .stile{display:inline-flex;background:#0A0F1A;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:0 16px;height:54px;align-items:center;align-self:flex-start}.tl .stile img{height:26px;border-radius:0}
+.tl h3{color:#fff;font-size:1.4rem;letter-spacing:-.02em}.tl .go{margin-top:auto;color:#6FD3FF;font-weight:600}
+.band{padding:clamp(64px,8vw,104px) 0}.band .wrap{display:flex;justify-content:space-between;gap:30px;align-items:end;flex-wrap:wrap}.band h2{font-size:clamp(2rem,4.6vw,4rem);max-width:14ch}
+.ft{background:#020B1C;color:#8EA2C4;padding:28px 0;font-size:.88rem}.ft .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media(max-width:900px){.sx{grid-template-columns:1fr}.card{position:static}.st4,.tiles{grid-template-columns:1fr}.st4 li{padding-bottom:22px}.hd nav a:not(.btn){display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<header class="hd"><div class="wrap"><a href="/proposte/"><img src="/assets/logos/odyra-system.png" alt="Odyra System"></a><nav><a href="#settori">Settori</a><a href="#come">Come funziona</a><a href="#prodotti">Costruito con Odyra</a><a class="btn btn-p" href="/contatti.html">Parla con noi</a></nav></div></header>
+
+<section class="hero"><div class="wrap">
+  <h1>Ogni settore ha il suo agente <em>AI.</em></h1>
+  <p>Odyra li costruisce e li porta dentro i software di gestione, col marchio del software.</p>
+  <div class="row"><a class="btn btn-p" href="/per-i-gestionali.html">Diventa partner</a><a class="btn btn-o" href="#settori">Scegli un settore</a></div>
+</div></section>
+
+<section class="pick" id="settori"><div class="wrap">
+  <p class="lab">Settori di competenza</p>
+  <div class="sx">
+    <ul class="sl" id="sl" role="tablist" aria-label="Settori"></ul>
+    <div class="card" id="card" role="tabpanel" aria-live="polite"></div>
+  </div>
+</div></section>
+
+<section class="how" id="come"><div class="wrap">
+  <h2>Come funziona con un software di gestione.</h2>
+  <ol class="st4"><li><h3>Ci colleghiamo</h3><p>Alle API del software: clienti, servizi, operatori, disponibilità.</p></li><li><h3>Attiviamo i clienti</h3><p>Staff e listino si sincronizzano da soli; uno specialista configura numero, WhatsApp e voce.</p></li><li><h3>L'agente lavora</h3><p>Risponde in voce e su WhatsApp e prenota nel software, col suo marchio.</p></li><li><h3>Gestiamo tutto</h3><p>Qualità, errori, consumi, passaggio a una persona. Il software incassa un canone ricorrente.</p></li></ol>
+</div></section>
+
+<section class="made" id="prodotti"><div class="wrap"><h2>Costruito con Odyra.</h2>
+  <div class="tiles">
+    <a class="tl" href="/goagent.html"><img src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><h3>GoAgent</h3><p>L'agente AI di BOSS per i saloni GoWeb.</p><span class="go">Scopri →</span></a>
+    <a class="tl" href="https://hakocondomini.com"><img class="w" src="/assets/logos/hako-white.png" alt="HAKO"><h3>HAKO</h3><p>Il software di Odyra per le portinerie dei condomini.</p><span class="go">hakocondomini.com ↗</span></a>
+    <a class="tl" href="/su-misura.html"><span class="stile"><img src="/assets/logos/sportit.png" alt="Sportit.com"></span><h3>Su misura</h3><p>Agenti e automazioni per aziende con grandi volumi.</p><span class="go">Scopri →</span></a>
+  </div></div></section>
+
+<section class="band"><div class="wrap"><h2>Parliamo del tuo software.</h2><a class="btn btn-p" href="/contatti.html">Richiedi una demo</a></div></section>
+<footer class="ft"><div class="wrap"><span>© 2026 Odyra System · Verypos S.r.l. · Milano</span><span>Proposta C · Settori</span></div></footer>
+<script>
+const S=[
+ {n:'Beauty',d:'Parrucchieri e centri estetici',l:[['Servizi in sequenza','colore, taglio, piega nell\'ordine giusto'],['Pacchetti','un servizio ne porta altri, con operatore fisso'],['Scelta dell\'operatore','con staff riservato, se il salone vuole'],['Disdette','regola delle 24 ore'],['Ritardi','il salone viene avvisato']],go:'/goagent.html',gl:'Scopri GoAgent →'},
+ {n:'Dentale',d:'Studi e centri odontoiatrici',l:[['Prime visite e urgenze','tempi e priorità diversi'],['Durata per trattamento','e per professionista'],['Più poltrone','e agende in parallelo'],['Promemoria e disdette','per ridurre i buchi']]},
+ {n:'Autofficine',d:'Officine e centri assistenza',l:[['Veicolo e targa','prima di ogni prenotazione'],['Tempi di lavorazione','per tipo di intervento'],['Ritiro e riconsegna','con avvisi al cliente'],['Preventivi','e richieste di informazioni']]},
+ {n:'Ospitalità',d:'Ristoranti e strutture ricettive',l:[['Tavoli e camere','disponibilità in tempo reale'],['Gruppi e preferenze','esigenze alimentari incluse'],['Orari di servizio','turni e chiusure'],['Modifiche e cancellazioni','senza passare dal telefono']]},
+ {n:'Veterinari',d:'Ambulatori e cliniche',l:[['Animale e specie','dati del pet insieme al proprietario'],['Urgenze','da distinguere dalle visite'],['Durata per visita','e per professionista'],['Richiami','vaccini e controlli']]},
+ {n:'E altri',d:'Ogni settore che vive di appuntamenti e richieste',l:[['Un settore alla volta','lo studiamo a fondo prima di costruire'],['Le regole contano','e vanno nel codice'],['Un software di gestione','dove i clienti lavorano già']]}];
+const sl=document.getElementById('sl'),card=document.getElementById('card');
+S.forEach((x,i)=>sl.insertAdjacentHTML('beforeend',`<li><button role="tab" aria-selected="false" data-i="${i}">${x.n}</button></li>`));
+function sel(i){const x=S[i];sl.querySelectorAll('button').forEach((b,k)=>b.setAttribute('aria-selected',k==i));
+ card.innerHTML=`<h3>${x.n}</h3><small>${x.d}</small><p style="font-weight:600;color:var(--ink);margin-bottom:10px">Cosa conta in questo settore</p><ul>${x.l.map(r=>`<li><b>${r[0]}</b> ${r[1]}</li>`).join('')}</ul>${x.go?`<a class="go" href="${x.go}">${x.gl}</a>`:''}`}
+sl.addEventListener('click',e=>{const b=e.target.closest('button');if(b)sel(+b.dataset.i)});
+sl.addEventListener('mouseover',e=>{const b=e.target.closest('button');if(b&&matchMedia('(hover:hover)').matches)sel(+b.dataset.i)});
+sel(0)
+</script></body></html>

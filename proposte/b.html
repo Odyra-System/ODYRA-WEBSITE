@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Odyra System — Proposta B · Piattaforma</title><meta name="robots" content="noindex">
+<link rel="icon" href="/assets/favicon-v2.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#04132E;--bg2:#061C40;--cy:#6FD3FF;--tx:#A9BEDC;--ln:rgba(120,190,240,.18);--ln2:rgba(120,190,240,.38)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{color:var(--tx);font:400 1.05rem/1.65 'IBM Plex Sans',system-ui,sans-serif;overflow-x:hidden;
+ background-image:linear-gradient(rgba(111,211,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(111,211,255,.05) 1px,transparent 1px);background-size:56px 56px;background-color:var(--bg)}
+a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
+h1,h2,h3{font-family:Oxanium,sans-serif;color:#fff;font-weight:600;letter-spacing:-.015em}
+.wrap{width:min(1180px,100% - 48px);margin-inline:auto}
+.hd{position:sticky;top:0;z-index:30;background:rgba(4,19,46,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--ln)}
+.hd .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.hd img{height:42px}.hd nav{display:flex;gap:24px;align-items:center;font-size:.94rem;color:#D3E2F5}.hd nav a:hover{color:var(--cy)}
+.btn{display:inline-flex;padding:12px 22px;border-radius:8px;font-weight:600;font-size:.95rem;border:1.5px solid transparent}
+.btn-p{background:linear-gradient(135deg,#59CBFF,#2E8BFF);color:#031126}.btn-o{border-color:rgba(255,255,255,.4);color:#fff}
+.hero{padding:clamp(56px,8vw,104px) 0 40px}
+.hero h1{font-size:clamp(2rem,4.3vw,3.7rem);line-height:1.08;max-width:20ch}
+.hero p{margin-top:22px;font-size:clamp(1.05rem,1.4vw,1.25rem);max-width:56ch;color:#C3D3EA}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+/* esploratore degli strati */
+.xp{display:grid;grid-template-columns:340px 1fr;gap:28px;margin:48px 0 0;align-items:start}
+.tabs{display:grid;gap:10px;position:sticky;top:96px}
+.tab{all:unset;cursor:pointer;display:block;padding:16px 18px;border:1px solid var(--ln);border-radius:12px;background:rgba(255,255,255,.02);transition:border-color .2s,background .2s}
+.tab b{display:block;font:600 1.1rem Oxanium;color:#fff}.tab span{font-size:.88rem;color:var(--tx)}
+.tab:hover{border-color:var(--ln2)}
+.tab[aria-selected=true]{border-color:var(--cy);background:rgba(111,211,255,.08);box-shadow:0 0 28px rgba(111,211,255,.12)}
+.tab:focus-visible{outline:2px solid var(--cy);outline-offset:3px}
+.stage{border:1px solid var(--ln2);border-radius:16px;background:rgba(4,19,46,.7);overflow:hidden}
+.bands{display:grid;gap:0}
+.band{display:flex;align-items:center;gap:16px;padding:16px 22px;border-bottom:1px dashed var(--ln);color:#7A91B4;transition:color .25s,background .25s}
+.band:last-child{border-bottom:0}
+.band i{width:12px;height:12px;border-radius:50%;border:2px solid var(--ln2);flex:none;transition:all .25s}
+.band.on{color:#fff;background:linear-gradient(90deg,rgba(111,211,255,.14),transparent)}
+.band.on i{background:var(--cy);border-color:var(--cy);box-shadow:0 0 16px var(--cy)}
+.band em{font-style:normal;font:600 1.02rem Oxanium}
+.panel{padding:28px 26px;border-top:1px solid var(--ln2);background:rgba(6,28,64,.7);min-height:300px}
+.panel h2{font-size:1.7rem;margin-bottom:10px}
+.panel p{max-width:62ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chips span{padding:6px 13px;border:1px solid var(--ln2);border-radius:999px;font-size:.85rem;color:#D3E2F5}
+.ul{list-style:none;margin-top:18px;columns:2;column-gap:32px}
+.ul li{break-inside:avoid;padding:10px 0 10px 18px;border-bottom:1px solid var(--ln);position:relative;font-size:.95rem}
+.ul li::before{content:"";position:absolute;left:0;top:19px;width:6px;height:6px;border-radius:50%;background:var(--cy)}
+.ul b{color:#fff;font-weight:600}
+.logos{display:flex;gap:26px;align-items:center;margin-top:22px}.logos img{height:34px;width:auto}
+.sec{padding:clamp(64px,8vw,104px) 0;border-top:1px solid var(--ln)}
+.sec h2{font-size:clamp(1.7rem,3vw,2.5rem);margin-bottom:34px}
+.life{display:grid;grid-template-columns:repeat(3,1fr);position:relative}
+.life::before{content:"";position:absolute;left:0;right:0;top:17px;height:2px;background:linear-gradient(90deg,var(--cy),#123B73)}
+.life li{list-style:none;padding:56px 28px 0 0;position:relative;counter-increment:s}
+.life li::before{content:counter(s);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--cy);color:var(--cy);display:grid;place-items:center;font:700 .95rem Oxanium;box-shadow:0 0 16px rgba(111,211,255,.35)}
+.life{counter-reset:s}.life h3{margin-bottom:8px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tl{border:1px solid var(--ln);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,.025);min-height:230px;transition:border-color .2s}
+.tl:hover{border-color:var(--cy)}.tl img{height:52px;width:auto;align-self:flex-start;border-radius:10px}.tl img.w{height:38px;border-radius:0}
+.tl .st{display:inline-flex;background:#0A0F1A;border:1px solid var(--ln);border-radius:8px;padding:0 16px;height:52px;align-items:center;align-self:flex-start}.tl .st img{height:26px;border-radius:0}
+.tl h3{font-size:1.3rem}.tl .go{margin-top:auto;color:var(--cy);font-weight:600}
+.cta{background:#020B1C;padding:80px 0;border-top:1px solid var(--ln)}.cta .wrap{display:flex;justify-content:space-between;gap:30px;align-items:end;flex-wrap:wrap}.cta h2{font-size:clamp(1.9rem,3.6vw,3rem);max-width:16ch}
+.ft{padding:28px 0;font-size:.88rem;color:#7A91B4;background:#020B1C;border-top:1px solid var(--ln)}.ft .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media(max-width:900px){.xp{grid-template-columns:1fr}.tabs{position:static;grid-template-columns:1fr 1fr}.hd nav a:not(.btn){display:none}.life,.tiles{grid-template-columns:1fr}.life::before{display:none}.life li{padding:0 0 26px 52px}.ul{columns:1}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<header class="hd"><div class="wrap"><a href="/proposte/"><img src="/assets/logos/odyra-system.png" alt="Odyra System"></a><nav><a href="#sistema">Piattaforma</a><a href="#nasce">Come nasce un cliente</a><a href="#prodotti">Costruito con Odyra</a><a class="btn btn-p" href="/contatti.html">Parla con noi</a></nav></div></header>
+
+<section class="hero"><div class="wrap">
+  <h1>La piattaforma che porta gli agenti AI di settore dentro i software di gestione.</h1>
+  <p>Ogni settore ha le sue regole. Odyra le codifica, si collega al software che i clienti usano già e gestisce tutto, col marchio del software.</p>
+  <div class="row"><a class="btn btn-p" href="/per-i-gestionali.html">Diventa partner</a><a class="btn btn-o" href="#sistema">Esplora la piattaforma</a></div>
+
+  <div class="xp" id="sistema">
+    <div class="tabs" role="tablist" aria-label="Strati della piattaforma" id="tabs"></div>
+    <div class="stage">
+      <div class="bands" id="bands"></div>
+      <div class="panel" id="panel" role="tabpanel" aria-live="polite"></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" id="nasce"><div class="wrap"><h2>Come nasce un cliente.</h2>
+  <ol class="life"><li><h3>Si crea il cliente</h3><p>Un solo passaggio crea l'azienda con i suoi limiti e le sue impostazioni.</p></li><li><h3>Staff e listino arrivano da soli</h3><p>Si sincronizzano dal software di gestione e aggiornano la conoscenza dell'agente.</p></li><li><h3>Lo specialista attiva i canali</h3><p>Numero, WhatsApp e voce: una procedura di circa dieci minuti.</p></li></ol>
+</div></section>
+
+<section class="sec" id="prodotti"><div class="wrap"><h2>Costruito con Odyra.</h2>
+  <div class="tiles">
+    <a class="tl" href="/goagent.html"><img src="/assets/logos/boss-my-numbers.png" alt="Boss My Numbers"><h3>GoAgent</h3><p>L'agente AI di BOSS per i saloni GoWeb.</p><span class="go">Scopri →</span></a>
+    <a class="tl" href="https://hakocondomini.com"><img class="w" src="/assets/logos/hako-white.png" alt="HAKO"><h3>HAKO</h3><p>Il software di Odyra per le portinerie dei condomini.</p><span class="go">hakocondomini.com ↗</span></a>
+    <a class="tl" href="/su-misura.html"><span class="st"><img src="/assets/logos/sportit.png" alt="Sportit.com"></span><h3>Su misura</h3><p>Agenti e automazioni per aziende con grandi volumi.</p><span class="go">Scopri →</span></a>
+  </div></div></section>
+
+<section class="cta"><div class="wrap"><h2>Parliamo del tuo software.</h2><a class="btn btn-p" href="/contatti.html">Richiedi una demo</a></div></section>
+<footer class="ft"><div class="wrap"><span>© 2026 Odyra System · Verypos S.r.l. · Milano</span><span>Proposta B · Piattaforma</span></div></footer>
+<script>
+const L=[
+ {n:'Regole di settore',s:'Come lavora quel settore',h:'Regole di settore',p:'Il cuore dell\'agente: come lavora chi fa quel mestiere, scritto nel codice e non solo in un prompt. Cambia da settore a settore; il resto della piattaforma no.',list:[['Ordine tecnico','dei servizi, forzato dal sistema'],['Pacchetti','con operatore e ordine fissi'],['Politica delle 24 ore','sulle disdette'],['Scelta dell\'operatore','e staff riservato'],['Fasce orarie','"mattina", "dopo le 17"'],['Spostamenti','prima il nuovo, poi si cancella il vecchio']]},
+ {n:'Connettori',s:'Dentro il software di gestione',h:'Connettori',p:'Un connettore dedicato per ogni software di gestione. Legge clienti, servizi, operatori e disponibilità; scrive e cancella appuntamenti. Per aggiungere un nuovo software si scrive il connettore: la logica di conversazione resta la stessa.',chips:['Cerca cliente','Disponibilità','Crea appuntamento','Cancella appuntamento','Staff','Listino']},
+ {n:'Canali',s:'Voce e WhatsApp',h:'Canali',p:'Lo stesso agente risponde in voce e su WhatsApp, 24 ore su 24. Odyra è Tech Provider Meta tramite Vonage: gestiamo numeri, template e conversazioni; la titolarità dell\'account resta al cliente.',logos:true},
+ {n:'Gestione operativa',s:'Per ogni cliente',h:'Gestione operativa',p:'Un agente per ogni cliente, con dati e configurazione isolati. Il software di gestione non gestisce niente di tutto questo.',chips:['Controllo qualità','Monitoraggio errori','Limiti e avvisi di consumo','Riassunti per il titolare','Passaggio a una persona']},
+ {n:'Conformità',s:'AI Act e GDPR',h:'Conformità',p:'L\'agente dice sempre di essere un\'AI, i dati sono separati per ogni azienda e il trattamento è conforme al GDPR, progettato nel perimetro dell\'AI Act. Supporto alla documentazione per i partner in settori regolati.',chips:['Trasparenza','Dati separati','GDPR','AI Act']}];
+const tabs=document.getElementById('tabs'),bands=document.getElementById('bands'),panel=document.getElementById('panel');
+L.forEach((x,i)=>{
+ tabs.insertAdjacentHTML('beforeend',`<button class="tab" role="tab" aria-selected="false" data-i="${i}"><b>${x.n}</b><span>${x.s}</span></button>`);
+ bands.insertAdjacentHTML('beforeend',`<div class="band" data-i="${i}"><i></i><em>${x.n}</em></div>`)});
+function sel(i){const x=L[i];
+ tabs.querySelectorAll('.tab').forEach((t,k)=>t.setAttribute('aria-selected',k==i));
+ bands.querySelectorAll('.band').forEach((b,k)=>b.classList.toggle('on',k==i));
+ let h=`<h2>${x.h}</h2><p>${x.p}</p>`;
+ if(x.list)h+='<ul class="ul">'+x.list.map(r=>`<li><b>${r[0]}</b> ${r[1]}</li>`).join('')+'</ul>';
+ if(x.chips)h+='<div class="chips">'+x.chips.map(c=>`<span>${c}</span>`).join('')+'</div>';
+ if(x.logos)h+='<div class="logos"><img src="/assets/logos/whatsapp.svg" alt="WhatsApp" style="height:42px"><img src="/assets/logos/meta.svg" alt="Meta" style="height:26px"><img src="/assets/logos/vonage.svg" alt="Vonage" style="height:26px"></div>';
+ panel.innerHTML=h}
+tabs.addEventListener('click',e=>{const b=e.target.closest('.tab');if(b)sel(+b.dataset.i)});
+bands.addEventListener('click',e=>{const b=e.target.closest('.band');if(b)sel(+b.dataset.i)});
+sel(0)
+</script></body></html>
