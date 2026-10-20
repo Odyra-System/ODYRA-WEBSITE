@@ -170,18 +170,6 @@ window.addEventListener('load', () => {
   if (!window.gsap) return
   gsap.registerPlugin(ScrollTrigger)
 
-  // Agenti (creati prima dei casi, che stanno più in basso): su schermi larghi la sezione si ferma e le card scorrono verso destra con lo scroll.
-  gsap.matchMedia().add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
-    const sec = $('.agents'), track = $('.agents-track')
-    sec.classList.add('pinned-x')
-    $('.agents-viewport').scrollLeft = 0
-    const dist = () => track.scrollWidth - window.innerWidth + 32
-    const tween = gsap.to(track, { x: () => -dist(), ease: 'none',
-      scrollTrigger: { trigger: sec, pin: true, start: 'top top', end: () => '+=' + dist(), scrub: 0.8, invalidateOnRefresh: true } })
-    $$('.agent', track).forEach((a) => gsap.from(a, { opacity: 0.25, scale: 0.92, rotate: 2, ease: 'none',
-      scrollTrigger: { trigger: a, containerAnimation: tween, start: 'left 100%', end: 'left 70%', scrub: true } }))
-    return () => { sec.classList.remove('pinned-x'); gsap.set(track, { x: 0 }) }
-  })
   // Casi di successo: quando un caso è al centro, la sezione prende il colore di quel cliente.
   const cases = $('.cases')
   const active = new Set()
@@ -196,3 +184,48 @@ window.addEventListener('load', () => {
 
   ScrollTrigger.refresh()
 })
+
+// Catalogo degli agenti: frecce, filtri, trascinamento col mouse, avanzamento.
+const vp = $('.agents-viewport')
+if (vp) {
+  const all = $$('.agent', vp)
+  const visible = () => all.filter((a) => !a.hidden)
+  const now = $('#ax-now'), tot = $('#ax-tot'), bar = $('#ax-bar'), prev = $('#ax-prev'), next = $('#ax-next')
+  const step = () => (visible()[1]?.offsetLeft ?? 0) - (visible()[0]?.offsetLeft ?? 0) || 340
+  const update = () => {
+    const v = visible(), max = vp.scrollWidth - vp.clientWidth
+    const left = vp.getBoundingClientRect().left
+    let first = v.findIndex((a) => a.getBoundingClientRect().right > left + 40)
+    if (first < 0) first = 0
+    const shown = v.filter((a) => { const r = a.getBoundingClientRect(); return r.left < innerWidth - 40 && r.right > 40 }).length || 1
+    now.textContent = Math.min(first + 1, v.length)
+    tot.textContent = v.length
+    bar.style.width = Math.min(100, (shown / v.length) * 100) + '%'
+    bar.style.transform = `translateX(${max > 0 ? (vp.scrollLeft / max) * (100 / Math.min(1, shown / v.length) - 100) : 0}%)`
+    prev.disabled = vp.scrollLeft < 8
+    next.disabled = vp.scrollLeft > max - 8
+    v.forEach((a) => { const r = a.getBoundingClientRect(); a.classList.toggle('out', r.right > innerWidth + 20 || r.left < -20) })
+  }
+  prev.addEventListener('click', () => vp.scrollBy({ left: -step() }))
+  next.addEventListener('click', () => vp.scrollBy({ left: step() }))
+  vp.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); vp.scrollBy({ left: step() }) }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); vp.scrollBy({ left: -step() }) }
+  })
+  vp.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true })
+  window.addEventListener('resize', update)
+  $$('.filters button').forEach((btn) => btn.addEventListener('click', () => {
+    $$('.filters button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+    const f = btn.dataset.f
+    all.forEach((a) => { a.hidden = f !== 'all' && a.dataset.cat !== f })
+    vp.scrollTo({ left: 0, behavior: 'instant' })
+    if (window.gsap && !reduce) gsap.from(visible().map((a) => a.querySelector('.screen')), { opacity: 0, y: 24, duration: 0.6, ease: 'expo.out', stagger: 0.05 })
+    update()
+  }))
+  // Trascinamento col mouse (su touch scorre già col dito).
+  let down = false, sx = 0, sl = 0, moved = 0
+  vp.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; down = true; moved = 0; sx = e.clientX; sl = vp.scrollLeft })
+  window.addEventListener('pointermove', (e) => { if (!down) return; const dx = e.clientX - sx; moved = Math.abs(dx); if (moved > 4) vp.classList.add('dragging'); vp.scrollLeft = sl - dx })
+  window.addEventListener('pointerup', () => { if (!down) return; down = false; vp.classList.remove('dragging') })
+  update()
+}
