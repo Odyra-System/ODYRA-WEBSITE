@@ -165,3 +165,34 @@ window.addEventListener('load', () => {
   ScrollTrigger.create({ trigger: '.demo-in', start: 'top 70%', once: true, onEnter: () => call.play(0) })
   $('.replay')?.addEventListener('click', () => call.play(0))
 })
+
+window.addEventListener('load', () => {
+  if (!window.gsap) return
+  gsap.registerPlugin(ScrollTrigger)
+
+  // Agenti (creati prima dei casi, che stanno più in basso): su schermi larghi la sezione si ferma e le card scorrono verso destra con lo scroll.
+  gsap.matchMedia().add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+    const sec = $('.agents'), track = $('.agents-track')
+    sec.classList.add('pinned-x')
+    $('.agents-viewport').scrollLeft = 0
+    const dist = () => track.scrollWidth - window.innerWidth + 32
+    const tween = gsap.to(track, { x: () => -dist(), ease: 'none',
+      scrollTrigger: { trigger: sec, pin: true, start: 'top top', end: () => '+=' + dist(), scrub: 0.8, invalidateOnRefresh: true } })
+    $$('.agent', track).forEach((a) => gsap.from(a, { opacity: 0.25, scale: 0.92, rotate: 2, ease: 'none',
+      scrollTrigger: { trigger: a, containerAnimation: tween, start: 'left 100%', end: 'left 70%', scrub: true } }))
+    return () => { sec.classList.remove('pinned-x'); gsap.set(track, { x: 0 }) }
+  })
+  // Casi di successo: quando un caso è al centro, la sezione prende il colore di quel cliente.
+  const cases = $('.cases')
+  const active = new Set()
+  const paint = () => {
+    const last = [...active].pop()
+    cases.classList.toggle('tinted', !!last)
+    cases.style.setProperty('--tint', last ? last.dataset.tint : '')
+    if (!last) cases.style.removeProperty('--tint')
+  }
+  $$('.cases .case').forEach((c) => ScrollTrigger.create({ trigger: c, start: 'top 55%', end: 'bottom 45%',
+    onToggle: (s) => { s.isActive ? active.add(c) : active.delete(c); paint() } }))
+
+  ScrollTrigger.refresh()
+})
