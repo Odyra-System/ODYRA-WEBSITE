@@ -1,6 +1,12 @@
+# 1) Genera il sito con build.py (solo libreria standard).
+FROM python:3.12-alpine AS build
+WORKDIR /src
+COPY build.py ./
+COPY static ./static
+RUN python3 build.py
+
+# 2) Lo serve con nginx. PORT arriva dall'ambiente (Railway).
 FROM nginx:1.27-alpine
+ENV PORT=8080
 COPY nginx.conf /etc/nginx/templates/default.conf.template
-COPY *.html styles.css script.js manifest.webmanifest robots.txt sitemap.xml /usr/share/nginx/html/
-COPY es /usr/share/nginx/html/es
-COPY proposte /usr/share/nginx/html/proposte
-COPY assets /usr/share/nginx/html/assets
+COPY --from=build /src/dist /usr/share/nginx/html
