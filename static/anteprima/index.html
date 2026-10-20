@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>document.documentElement.classList.add('js')</script>
+<title>Anteprima nuova home | Odyra System</title>
+<meta name="description" content="Anteprima del nuovo design della home di Odyra System: agenti AI di settore, dentro i software di gestione.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0F3D2E">
+<link rel="icon" href="/assets/icons/favicon.ico" sizes="any">
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/anteprima/anteprima.css?v=1">
+<script src="/assets/vendor/gsap.min.js" defer></script>
+<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/vendor/SplitText.min.js" defer></script>
+<script src="/assets/vendor/ScrambleTextPlugin.min.js" defer></script>
+<script src="/anteprima/anteprima.js?v=1" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+<div class="ribbon" aria-hidden="true"><i></i></div>
+
+<header class="spine">
+  <a class="spine-brand" href="/"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40"></a>
+  <nav class="spine-nav" id="nav" aria-label="Principale">
+    <a href="/piattaforma/">Piattaforma</a>
+    <a href="/settori/">Settori</a>
+    <a href="/partner/">Per i software</a>
+    <a href="/goagent/">GoAgent</a>
+    <a href="/chi-siamo/">Chi siamo</a>
+    <a class="b b-foil" href="/contatti/">Richiedi una demo</a>
+  </nav>
+  <button class="spine-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+</header>
+
+<main id="main">
+
+<!-- Copertina: tela verde, titolo impresso, indice a linguette per mestiere -->
+<section class="cover cloth">
+  <div class="cover-in">
+    <div class="cover-copy">
+      <h1 class="stamp" id="cover-title">Ogni mestiere ha il suo codice.</h1>
+      <p class="cover-lead">Odyra lo scrive nel software. I nostri agenti AI rispondono al telefono e su WhatsApp e prenotano dentro il gestionale, seguendo le regole del mestiere. I software di gestione li offrono ai loro clienti con il proprio marchio.</p>
+      <p class="actions">
+        <a class="b b-foil" href="/contatti/?interesse=partner">Richiedi una demo</a>
+        <a class="b b-line" href="/partner/">Diventa partner</a>
+      </p>
+    </div>
+
+    <div class="volume" aria-live="polite">
+      <p class="volume-title" id="vol-title">Codice del salone</p>
+      <div class="volume-art">
+        <p class="art-num" id="vol-num">Art. 3</p>
+        <div>
+          <p class="art-head" id="vol-head">Ordine tecnico</p>
+          <p class="art-text" id="vol-text">Colore, taglio, piega. Schiaritura, tonalizzante, piega. L’ordine lo impone il sistema, non la memoria di chi risponde.</p>
+        </div>
+      </div>
+      <p class="volume-note" id="vol-note">In produzione con GoAgent, per oltre 1.500 saloni.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Scegli il mestiere" data-js-only>
+      <button role="tab" aria-selected="true" data-sector="salone">Salone</button>
+      <button role="tab" aria-selected="false" data-sector="dentale">Studio dentistico</button>
+      <button role="tab" aria-selected="false" data-sector="officina">Officina</button>
+      <button role="tab" aria-selected="false" data-sector="hotel">Hotel</button>
+      <button role="tab" aria-selected="false" data-sector="veterinario">Clinica veterinaria</button>
+    </div>
+  </div>
+</section>
+
+<!-- Firma: dalla regola al codice alla risposta -->
+<section class="press paper" id="come-funziona">
+  <div class="press-pin">
+    <header class="press-h">
+      <h2>Dalla regola alla risposta.</h2>
+      <p>Ogni regola del mestiere diventa codice. L’agente la applica a ogni conversazione, senza dimenticarla.</p>
+    </header>
+    <div class="press-cols" aria-hidden="true">
+      <span>La regola</span><span>Il codice</span><span>La risposta</span>
+    </div>
+    <ol class="rules">
+      <li class="rule">
+        <div class="r-art">
+          <p class="art-num">Art. 3</p>
+          <h3>Ordine tecnico</h3>
+          <p>Quando la cliente chiede più servizi, l’ordine è colore, taglio, piega, in un unico slot senza buchi.</p>
+        </div>
+        <pre class="r-code"><code>regola ordine_tecnico {
+  sequenza = [colore, taglio, piega]
+  slot     = unico, senza_buchi
+  dici     = prezzo_totale, durata_totale
+}</code></pre>
+        <div class="r-reply">
+          <p class="bubble bubble-in">Sabato mattina riuscite a farmi colore e taglio?</p>
+          <p class="bubble bubble-out">Sabato alle 9:30 c’è posto con Marta: colore, taglio e piega, 2 ore e 15 in tutto, 92 €. Ti va bene?</p>
+        </div>
+      </li>
+      <li class="rule">
+        <div class="r-art">
+          <p class="art-num">Art. 7</p>
+          <h3>Disdetta nelle 24 ore</h3>
+          <p>Nelle 24 ore prima dell’appuntamento la disdetta non la gestisce l’agente: passa al salone.</p>
+        </div>
+        <pre class="r-code"><code>regola disdetta {
+  se ore_mancanti &lt; 24 {
+    passa_a(salone)
+  }
+}</code></pre>
+        <div class="r-reply">
+          <p class="bubble bubble-in">Devo annullare l’appuntamento di domani mattina.</p>
+          <p class="bubble bubble-out">Manca meno di un giorno, quindi ti passo al salone: ti rispondono a breve qui su WhatsApp.</p>
+        </div>
+      </li>
+      <li class="rule">
+        <div class="r-art">
+          <p class="art-num">Art. 12</p>
+          <h3>Prenotato vuol dire prenotato</h3>
+          <p>L’agente scrive “prenotato” solo dopo che il gestionale ha confermato l’appuntamento in agenda.</p>
+        </div>
+        <pre class="r-code"><code>regola conferma {
+  esito = gestionale.crea(appuntamento)
+  se esito.confermato {
+    rispondi("prenotato")
+  }
+}</code></pre>
+        <div class="r-reply">
+          <p class="bubble bubble-in">Perfetto, grazie!</p>
+          <p class="bubble bubble-out">Fatto, sei prenotata sabato alle 9:30 con Marta. Ti mando la conferma qui su WhatsApp.</p>
+        </div>
+      </li>
+    </ol>
+    <div class="press-foot">
+      <ol class="press-steps" aria-hidden="true"><li>Art. 3</li><li>Art. 7</li><li>Art. 12</li></ol>
+      <p class="press-cap">Esempi dal codice del salone. Gli articoli veri sono molti di più.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Marchio del partner, rinominabile dal visitatore -->
+<section class="brand cloth" id="marchio">
+  <div class="brand-in">
+    <div class="brand-copy">
+      <h2 class="stamp">Col tuo marchio.</h2>
+      <p>L’agente arriva ai tuoi clienti con il nome e il logo del tuo software: messaggi, dashboard, conferme. Odyra resta dietro le quinte e gestisce tecnologia, qualità e assistenza.</p>
+      <label class="brand-field" for="brand-name">Prova: come si chiama il tuo software?
+        <input id="brand-name" type="text" maxlength="24" placeholder="Il tuo gestionale" autocomplete="off" spellcheck="false">
+      </label>
+      <p class="actions"><a class="b b-foil" href="/partner/">Come funziona per i partner</a></p>
+    </div>
+    <div class="brand-demo" aria-label="Anteprima dell’agente col marchio del partner">
+      <div class="phone">
+        <p class="phone-top"><span class="phone-avatar" aria-hidden="true">A</span><span><b data-brand>Il tuo gestionale</b><small>Assistente AI del salone</small></span></p>
+        <div class="phone-chat">
+          <p class="bubble bubble-in">Ciao, domani avete posto per una piega?</p>
+          <p class="bubble bubble-out">Ciao Giulia, sono l’assistente AI di <b data-brand>Il tuo gestionale</b>. Domani alle 17:00 c’è posto con Sara. La prenoto?</p>
+          <p class="bubble bubble-in">Sì grazie</p>
+          <p class="confirm"><b>Appuntamento confermato</b><span>Domani, 17:00, Piega con Sara</span><small>Inviato da <span data-brand>Il tuo gestionale</span></small></p>
+        </div>
+      </div>
+      <div class="panel">
+        <p class="panel-top"><b data-brand>Il tuo gestionale</b> <span>Assistente AI</span></p>
+        <dl class="panel-rows">
+          <div><dt>Chiamate gestite oggi</dt><dd>14</dd></div>
+          <div><dt>Appuntamenti fissati</dt><dd>9</dd></div>
+          <div><dt>Passate al salone</dt><dd>2</dd></div>
+        </dl>
+        <p class="panel-note">Dati di esempio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Video di presentazione -->
+<section class="film paper">
+  <div class="wrap">
+    <h2>Odyra in due minuti.</h2>
+    <figure class="slot slot-video">
+      <div class="slot-box" role="img" aria-label="Spazio per il video di presentazione di Odyra">
+        <svg class="slot-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 15l15 9-15 9z" fill="currentColor"/></svg>
+        <p><b>Video da caricare</b>Presentazione di Odyra, 16:9, circa due minuti, con sottotitoli.</p>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- In produzione -->
+<section class="case paper paper-2">
+  <div class="wrap case-in">
+    <div class="case-copy">
+      <h2>In produzione, non in prova.</h2>
+      <p class="case-big">GoAgent risponde per gli oltre <b>1.500 saloni</b> che usano GoWeb di BOSS. È in produzione da giugno 2026 ed è stato presentato alla convention BOSS di ottobre, davanti a più di 300 persone.</p>
+      <p class="actions"><a class="b b-ink" href="/goagent/">La storia di GoAgent</a></p>
+    </div>
+    <figure class="case-shot">
+      <img src="/assets/img/goagent-panoramica.webp" width="1200" height="750" loading="lazy" decoding="async" alt="Dashboard di GoAgent: chiamate, appuntamenti fissati dall’AI e ore risparmiate, con dati di prova">
+      <figcaption>La dashboard del titolare, con dati di prova.</figcaption>
+    </figure>
+    <figure class="slot slot-photo case-photo">
+      <div class="slot-box" role="img" aria-label="Spazio per una foto della convention BOSS">
+        <svg class="slot-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="12" width="40" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="26" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 12l3-5h10l3 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <p><b>Foto da caricare</b>Convention BOSS, ottobre 2026. Formato 4:3.</p>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- Piattaforma in cinque libri -->
+<section class="books cloth">
+  <div class="wrap">
+    <h2 class="stamp">La piattaforma, in cinque libri.</h2>
+    <p class="books-lead">Oltre 18 mesi di sviluppo. Il primo libro cambia per ogni mestiere; gli altri quattro restano gli stessi.</p>
+    <div class="shelf">
+      <article class="book open">
+        <button class="book-spine" type="button" aria-expanded="true"><span class="book-n">Libro I</span><span class="book-t">Regole di settore</span></button>
+        <div class="book-page"><p>Come lavora il mestiere, scritto nel codice: ordine dei servizi, pacchetti, disdette, scelta dell’operatore, passaggio a una persona.</p></div>
+      </article>
+      <article class="book">
+        <button class="book-spine" type="button" aria-expanded="false"><span class="book-n">Libro II</span><span class="book-t">Connettori</span></button>
+        <div class="book-page"><p>Un connettore dedicato per ogni software di gestione: legge clienti, servizi, operatori e disponibilità, scrive e cancella appuntamenti.</p></div>
+      </article>
+      <article class="book">
+        <button class="book-spine" type="button" aria-expanded="false"><span class="book-n">Libro III</span><span class="book-t">Voce e WhatsApp</span></button>
+        <div class="book-page"><p>Lo stesso agente al telefono, con voce in tempo reale, e su WhatsApp Business. Odyra è Tech Provider Meta tramite Vonage.</p></div>
+      </article>
+      <article class="book">
+        <button class="book-spine" type="button" aria-expanded="false"><span class="book-n">Libro IV</span><span class="book-t">Gestione operativa</span></button>
+        <div class="book-page"><p>Un agente per ogni cliente, con dati isolati. Controllo di qualità, errori con diagnosi, consumi, riassunti per il titolare.</p></div>
+      </article>
+      <article class="book">
+        <button class="book-spine" type="button" aria-expanded="false"><span class="book-n">Libro V</span><span class="book-t">Conformità</span></button>
+        <div class="book-page"><p>L’agente dice sempre di essere un’AI. Dati separati per azienda, GDPR, progettato nel perimetro dell’AI Act.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Indice dei mestieri -->
+<section class="index paper">
+  <div class="wrap index-in">
+    <div>
+      <h2>Indice dei mestieri.</h2>
+      <p class="index-lead">Stessa piattaforma, un codice diverso per ogni mestiere.</p>
+      <ol class="toc">
+        <li><a href="/goagent/"><span>Saloni e centri estetici</span><i aria-hidden="true"></i><em>In produzione</em></a></li>
+        <li><a href="/settori/"><span>Studi dentistici</span><i aria-hidden="true"></i><em>Settore di competenza</em></a></li>
+        <li><a href="/settori/"><span>Officine</span><i aria-hidden="true"></i><em>Settore di competenza</em></a></li>
+        <li><a href="/settori/"><span>Hotel e ristorazione</span><i aria-hidden="true"></i><em>Settore di competenza</em></a></li>
+        <li><a href="/settori/"><span>Cliniche veterinarie</span><i aria-hidden="true"></i><em>Settore di competenza</em></a></li>
+        <li><a href="/contatti/?interesse=partner"><span>Il tuo mestiere</span><i aria-hidden="true"></i><em>Parliamone</em></a></li>
+      </ol>
+    </div>
+    <figure class="slot slot-photo slot-tall">
+      <div class="slot-box" role="img" aria-label="Spazio per una foto di un salone">
+        <svg class="slot-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="12" width="40" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="26" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 12l3-5h10l3 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <p><b>Foto da caricare</b>Un salone al lavoro, con il telefono che squilla. Formato 4:5.</p>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- Chi scrive il codice -->
+<section class="team paper paper-2">
+  <div class="wrap team-in">
+    <figure class="slot slot-photo slot-wide">
+      <div class="slot-box" role="img" aria-label="Spazio per una foto del team Odyra">
+        <svg class="slot-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="12" width="40" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="26" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 12l3-5h10l3 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <p><b>Foto da caricare</b>Il team Odyra a Milano. Formato 16:9.</p>
+      </div>
+    </figure>
+    <div class="team-copy">
+      <h2>Chi scrive il codice.</h2>
+      <p>Odyra System è un gruppo tecnologico di Milano. Impariamo un mestiere a fondo, poi costruiamo il software con l’AI che lo fa. Un mestiere alla volta.</p>
+      <p class="actions"><a class="b b-ink" href="/chi-siamo/">Chi siamo</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- Domande -->
+<section class="qa paper">
+  <div class="wrap">
+    <h2>Domande, risposte brevi.</h2>
+    <div class="qa-list">
+      <details><summary>Cosa deve fare un software di gestione per diventare partner?</summary><p>Dare accesso alle API essenziali: ricerca cliente, disponibilità, creazione e cancellazione degli appuntamenti. Il connettore lo scrive Odyra, senza toccare il cuore del software.</p></details>
+      <details><summary>Come guadagna il partner?</summary><p>Con un canone ricorrente da ogni cliente che attiva l’agente, con revenue condivisa con Odyra.</p></details>
+      <details><summary>L’agente dice di essere un’intelligenza artificiale?</summary><p>Sì, sempre, al telefono e su WhatsApp, come richiede l’AI Act.</p></details>
+      <details><summary>Quanto ci vuole per attivare un nuovo cliente?</summary><p>Con il gestionale già collegato, staff e listino si sincronizzano da soli e i canali si attivano in circa dieci minuti.</p></details>
+    </div>
+    <p class="more"><a href="/domande/">Tutte le domande</a></p>
+  </div>
+</section>
+
+<!-- Chiusura -->
+<section class="close cloth">
+  <div class="wrap close-in">
+    <h2 class="stamp">Scriviamo il codice del tuo software.</h2>
+    <p>Ti mostriamo l’agente al lavoro, con tempi di integrazione e formula commerciale.</p>
+    <p class="actions"><a class="b b-foil" href="/contatti/?interesse=partner">Richiedi una demo</a><a class="b b-line" href="mailto:team@odyrasystemautomation.it">team@odyrasystemautomation.it</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="colophon cloth">
+  <div class="wrap colophon-in">
+    <img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40" loading="lazy">
+    <p>Odyra System, Verypos S.r.l. Viale Papiniano 8, 20123 Milano. Partita IVA 11630390968, REA MI-2615892.</p>
+    <p><a href="/privacy/">Privacy</a> <a href="/llms.txt">llms.txt</a> <a href="/es/">Español</a></p>
+  </div>
+</footer>
+</body>
+</html>
