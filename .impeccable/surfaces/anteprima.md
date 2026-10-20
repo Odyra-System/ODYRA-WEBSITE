@@ -5,18 +5,18 @@ primary_target: "anteprima"
 related_targets: []
 ---
 
-Scope: home page redesign preview at /anteprima/ (Italian), Persuade mode. Audience: software houses selling gestionali; action: request a demo / become partner. Proof: GoAgent in production with BOSS/GoWeb. Constraints: all copy in served HTML, media are labelled placeholders until the user uploads photos and video, no invented claims.
+Scope: home page redesign preview at /anteprima/ (Italian), Persuade mode. Audience: decision makers at software houses, large private companies, franchising networks, agencies and system integrators. Action: request a demo. Proof: BOSS / GoAgent (the GoWeb Agent built only for BOSS) and Gruppo Colzani, both named. Constraints: logo colours (deep navy, cyan); all copy in served HTML; media are labelled placeholders; no invented claims. Replaces the rejected "codex" direction (too far from the logo, too salon-centred).
 
 ## Direction contract
 
-THESIS: Every trade has its code; Odyra writes it into software. The home is a bound codex of the trade, refusing the dark AI-SaaS hero with glowing orb, split copy-plus-mockup and three feature cards.
+THESIS: Your brand in front, Odyra in the watermark. Odyra is the engine inside the client's brand, present and verifiable like a watermark in security paper. Refuses the dark AI-SaaS hero with glowing orb, the logo wall and three feature cards.
 
-OWN-WORLD: Cloth binding in deep codex green carrying whole sections, gold foil stamping for titles and rules, thin cool page paper for reading spreads, ink near-black green. Archivo variable with its width axis: condensed for article numerals, expanded for stamped titles. Thumb-index tabs, ribbon bookmark, marginal notes, articles and commi as the component language. Mono only inside literal code.
+OWN-WORLD: Security printing in the logo's colours: deep navy intaglio ground, cyan guilloche line-work drawn generatively, a cyan security thread, serial numbering, cool pale paper for reading sections. Archivo with its width axis, expanded for display like engraved banknote lettering. Mono only for serials and literal code.
 
-STORY: The visitor sees that each trade's rules become code, that the agent answers with those rules inside the management software, that it ships under the partner's own brand, that it already runs for 1,500+ salons, and asks for a demo.
+STORY: The visitor sees their own brand on the note and Odyra revealed under the light, recognises their own buyer group, sees what leaves the factory, trusts two named clients in production, and asks for a demo.
 
-FIRST VIEWPORT: Full-bleed green cloth. Gold-stamped headline left, two thirds width, at display scale. Right edge: thumb-index tabs per trade that retitle the volume and its first article. Primary action "Richiedi una demo" and secondary "Diventa partner" under the lead. Nav set as the spine strip at top.
+FIRST VIEWPORT: Navy ground. Headline left at display scale with lead and demo action. Right: a security note at hero scale with guilloche, security thread and serial, the client's brand printed large and editable, the Odyra watermark revealed by a light that follows the pointer.
 
-FORM: Codex of the trade, grounded candidate 5 of 7. seed:81ac34928a52144f. Signature interaction: pinned scrubbed passage where an article of the trade turns into code and then into the agent's WhatsApp reply; supporting: live white-label rename where the visitor types their software's name and the agent rebrands.
+FORM: Security paper and watermark, grounded candidate 5 of 7. seed:81ac34928a52144f. Signature interaction: the backlight lens revealing the Odyra watermark inside the visitor's own brand.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
