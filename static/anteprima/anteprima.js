@@ -105,3 +105,63 @@ window.addEventListener('load', () => {
 
   document.fonts?.ready.then(() => ScrollTrigger.refresh())
 })
+
+// Il marchio scritto sulla banconota firma anche la demo.
+const brandTargets = $$('[data-brand]')
+const syncBrand = () => { const v = brand.value.trim().slice(0, 18) || 'Il tuo marchio'; brandTargets.forEach((el) => { el.textContent = v }) }
+brand?.addEventListener('input', syncBrand)
+
+// Onda della voce: si muove quando parla l'agente, quasi ferma quando ascolta.
+const wave = $('.wave')
+const voice = { level: 0.15 }
+function drawWave(t) {
+  if (!wave) return
+  const dpr = Math.min(window.devicePixelRatio || 1, 2), w = wave.clientWidth, h = wave.clientHeight
+  if (wave.width !== Math.round(w * dpr)) { wave.width = Math.round(w * dpr); wave.height = Math.round(h * dpr) }
+  const c = wave.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h)
+  const bars = Math.floor(w / 6)
+  for (let i = 0; i < bars; i++) {
+    const n = Math.sin(i * 0.37 + t * 0.006) * 0.5 + Math.sin(i * 0.11 - t * 0.004) * 0.35 + Math.sin(i * 1.7 + t * 0.013) * 0.15
+    const bh = Math.max(2, Math.abs(n) * h * voice.level * (0.6 + 0.4 * Math.sin((i / bars) * Math.PI)))
+    c.fillStyle = `rgba(92, 203, 240, ${0.35 + 0.65 * voice.level})`
+    c.fillRect(i * 6, (h - bh) / 2, 3, bh)
+  }
+}
+drawWave(0)
+
+window.addEventListener('load', () => {
+  if (!window.gsap || reduce) return
+
+  // La banconota si inclina col puntatore, come un foglio tenuto in mano.
+  if (note && matchMedia('(hover: hover)').matches) {
+    const rx = gsap.quickTo(note, 'rotationX', { duration: 0.6, ease: 'power3.out' })
+    const ry = gsap.quickTo(note, 'rotationY', { duration: 0.6, ease: 'power3.out' })
+    note.addEventListener('pointermove', (e) => { const r = note.getBoundingClientRect(); ry(((e.clientX - r.left) / r.width - 0.5) * 14); rx(-((e.clientY - r.top) / r.height - 0.5) * 10) })
+    note.addEventListener('pointerleave', () => { rx(0); ry(0) })
+  }
+
+  // Le cifre salgono quando entrano.
+  $$('.count').forEach((el) => {
+    const to = +el.dataset.to, o = { v: 0 }
+    gsap.to(o, { v: to, duration: 1.6, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+      onUpdate: () => { el.textContent = Math.round(o.v).toLocaleString('it-IT') } })
+  })
+  gsap.from('.partners li', { opacity: 0, y: 18, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.partners', start: 'top 85%', once: true } })
+
+  // La chiamata: le battute arrivano una alla volta, poi l'appuntamento entra in agenda e parte la conferma.
+  const lines = $$('.transcript li')
+  gsap.ticker.add((time) => drawWave(time * 1000))
+  const call = gsap.timeline({ paused: true })
+  call.set(lines, { opacity: 0, y: 12 }).set('.slot-new .booked', { opacity: 0, scale: 0.9 }).set('.wa-toast', { opacity: 0, y: 14 })
+  lines.forEach((li) => {
+    const ai = li.classList.contains('t-ai')
+    call.to(li, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out' })
+      .to(voice, { level: ai ? 1 : 0.35, duration: 0.3 }, '<')
+      .to({}, { duration: ai ? 1.6 : 1.1 })
+  })
+  call.to(voice, { level: 0.12, duration: 0.5 })
+    .to('.slot-new .booked', { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.6)' }, '-=0.2')
+    .to('.wa-toast', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, '+=0.4')
+  ScrollTrigger.create({ trigger: '.demo-in', start: 'top 70%', once: true, onEnter: () => call.play(0) })
+  $('.replay')?.addEventListener('click', () => call.play(0))
+})
