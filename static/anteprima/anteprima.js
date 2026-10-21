@@ -80,6 +80,7 @@ window.addEventListener('load', () => {
   gsap.registerPlugin(ScrollTrigger, SplitText)
 
   // Apertura: il titolo si compone riga per riga, la banconota si posa, poi la luce la attraversa una volta.
+  if (note) {
   const split = SplitText.create('#hero-title', { type: 'lines', mask: 'lines' })
   const light = { x: -0.15, y: 0.55 }
   const sweep = () => { const r = note.getBoundingClientRect(); setLight(light.x * r.width, light.y * r.height) }
@@ -91,14 +92,22 @@ window.addEventListener('load', () => {
     .add(() => note.style.setProperty('--lit', 1), '-=0.2')
     .to(light, { x: 1.15, y: 0.45, duration: 2.2, ease: 'power2.inOut', onUpdate: sweep }, '<')
     .add(() => note.style.setProperty('--lit', 0))
+  } else {
+    // Pagine interne: il titolo si compone riga per riga.
+    const h1 = $('.phead h1')
+    if (h1) {
+      const s = SplitText.create(h1, { type: 'lines', mask: 'lines' })
+      gsap.timeline({ defaults: { ease: 'expo.out' } }).from(s.lines, { yPercent: 105, duration: 1, stagger: 0.1 }).from('.phead .hero-lead, .phead .actions, .phead .jump', { opacity: 0, y: 14, duration: 0.8, stagger: 0.08 }, '-=0.6')
+    }
+  }
 
   // Il fondo guilloché respira piano mentre l'apertura è visibile.
-  let running = true
-  ScrollTrigger.create({ trigger: '.hero', start: 'top bottom', end: 'bottom top', onToggle: (s) => { running = s.isActive } })
+  let running = !!$('.hero-guilloche')
+  if ($('.hero, .phead')) ScrollTrigger.create({ trigger: '.hero, .phead', start: 'top bottom', end: 'bottom top', onToggle: (s) => { running = s.isActive } })
   gsap.ticker.add(() => { if (running) { phase += 0.004; guilloche(art[0][0], art[0][1](phase)) } })
 
   // Il filo di sicurezza si srotola lungo i passaggi della fabbrica.
-  gsap.fromTo('.line-thread i', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.line', start: 'top 70%', end: 'bottom 60%', scrub: 0.5 } })
+  if ($('.line')) gsap.fromTo('.line-thread i', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.line', start: 'top 70%', end: 'bottom 60%', scrub: 0.5 } })
   $$('.line li').forEach((li) => {
     ScrollTrigger.create({ trigger: li, start: 'top 68%', onEnter: () => li.classList.add('on'), onLeaveBack: () => li.classList.remove('on') })
   })
@@ -146,7 +155,7 @@ window.addEventListener('load', () => {
     gsap.to(o, { v: to, duration: 1.6, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true },
       onUpdate: () => { el.textContent = Math.round(o.v).toLocaleString('it-IT') } })
   })
-  gsap.from('.partners li', { opacity: 0, y: 18, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.partners', start: 'top 85%', once: true } })
+  if ($('.partners')) gsap.from('.partners li', { opacity: 0, y: 18, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.partners', start: 'top 85%', once: true } })
 
   // La chiamata: le battute arrivano una alla volta, poi l'appuntamento entra in agenda e parte la conferma.
   const lines = $$('.transcript li')
@@ -162,7 +171,7 @@ window.addEventListener('load', () => {
   call.to(voice, { level: 0.12, duration: 0.5 })
     .to('.slot-new .booked', { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.6)' }, '-=0.2')
     .to('.wa-toast', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, '+=0.4')
-  ScrollTrigger.create({ trigger: '.demo-in', start: 'top 70%', once: true, onEnter: () => call.play(0) })
+  if ($('.demo-in')) ScrollTrigger.create({ trigger: '.demo-in', start: 'top 70%', once: true, onEnter: () => call.play(0) })
   $('.replay')?.addEventListener('click', () => call.play(0))
 })
 
@@ -228,4 +237,31 @@ if (vp) {
   window.addEventListener('pointermove', (e) => { if (!down) return; const dx = e.clientX - sx; moved = Math.abs(dx); if (moved > 4) vp.classList.add('dragging'); vp.scrollLeft = sl - dx })
   window.addEventListener('pointerup', () => { if (!down) return; down = false; vp.classList.remove('dragging') })
   update()
+}
+
+// Modulo contatti: finché FORM_ENDPOINT è vuoto apre la posta con la richiesta già scritta.
+const FORM_ENDPOINT = ''
+const form = $('#form-contatti')
+if (form) {
+  const msg = $('#form-msg')
+  const q = new URLSearchParams(location.search).get('interesse')
+  const pre = q && form.querySelector(`input[name=interesse][value="${CSS.escape(q)}"]`)
+  if (pre) pre.checked = true
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    msg.classList.remove('err')
+    if (!form.checkValidity()) { form.reportValidity(); return }
+    const data = Object.fromEntries(new FormData(form))
+    if (!FORM_ENDPOINT) {
+      const body = Object.entries(data).filter(([k]) => k !== 'privacy').map(([k, v]) => `${k}: ${v}`).join('\n')
+      location.href = `mailto:team@odyrasystemautomation.it?subject=${encodeURIComponent('Richiesta dal sito: ' + data.interesse)}&body=${encodeURIComponent(body)}`
+      msg.textContent = form.dataset.mail
+      return
+    }
+    try {
+      const r = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      if (!r.ok) throw new Error(String(r.status))
+      form.reset(); msg.textContent = form.dataset.ok
+    } catch { msg.classList.add('err'); msg.textContent = form.dataset.err }
+  })
 }
