@@ -284,46 +284,53 @@ if (form) {
   })
 }
 
-// La rete: un rilascio parte dall'agente e viaggia lungo le tracce fino a ogni sede.
-const net = $('#net')
-if (net) {
-  const svg = $('.net-lines', net), core = $('.net-core', net), nodes = $$('.node', net)
-  let ver = 4, paths = []
-  const NS = 'http://www.w3.org/2000/svg'
+// Da una sede a mille: il cursore accende le sedi, le voci "resta uguale" non cambiano.
+const range = $('#sedi')
+if (range) {
+  const STEPS = [1, 5, 10, 25, 50, 100, 250, 500, 1000, 1500]
+  const cv = $('#grow-grid'), out = $('#sedi-out b'), steady = $('.steady')
+  const COLS = 50, ROWS = 30
+  let shown = 1500, target = 1500, flashT
   const draw = () => {
-    svg.innerHTML = ''; paths = []
-    if (getComputedStyle(svg).display === 'none') return
-    const nb = net.getBoundingClientRect(), cb = core.getBoundingClientRect()
-    nodes.forEach((n, i) => {
-      const r = n.getBoundingClientRect(), left = r.left < cb.left
-      const x1 = (left ? cb.left : cb.right) - nb.left, y1 = cb.top - nb.top + cb.height * (0.25 + 0.5 * ((i % 6) / 5))
-      const x2 = (left ? r.right : r.left) - nb.left, y2 = r.top - nb.top + r.height / 2
-      const mx = x1 + (x2 - x1) * 0.45, rr = Math.min(10, Math.abs(y2 - y1) / 2), sy = Math.sign(y2 - y1) || 1, sx = Math.sign(x2 - x1)
-      const d = Math.abs(y2 - y1) < 2 ? `M${x1},${y1} H${x2}` : `M${x1},${y1} H${mx - sx * rr} Q${mx},${y1} ${mx},${y1 + sy * rr} V${y2 - sy * rr} Q${mx},${y2} ${mx + sx * rr},${y2} H${x2}`
-      const t = document.createElementNS(NS, 'path'); t.setAttribute('d', d); t.setAttribute('class', 'trace'); svg.appendChild(t)
-      const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); p.setAttribute('class', 'pulse'); svg.appendChild(p)
-      const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x2); c.setAttribute('cy', y2); c.setAttribute('r', 3.5); c.setAttribute('class', 'dot'); svg.appendChild(c)
-      paths.push(p)
-    })
+    const dpr = Math.min(devicePixelRatio || 1, 2), w = cv.clientWidth, h = cv.clientHeight
+    if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr) }
+    const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h)
+    const cw = w / COLS, ch = h / ROWS, s = Math.min(cw, ch) * 0.62
+    const n = Math.round(shown)
+    for (let i = 0; i < COLS * ROWS; i++) {
+      const x = (i % COLS) * cw + (cw - s) / 2, y = Math.floor(i / COLS) * ch + (ch - s) / 2
+      const on = i < n, fresh = on && i > n - 25 && shown < target
+      c.fillStyle = fresh ? '#C8F1FD' : on ? 'rgba(92, 203, 240, .9)' : 'rgba(168, 230, 249, .1)'
+      c.beginPath(); c.roundRect ? c.roundRect(x, y, s, s, s * 0.25) : c.rect(x, y, s, s); c.fill()
+    }
   }
-  const release = () => {
-    ver++
-    const v = '2.' + ver
-    core.classList.remove('pulse-core'); void core.offsetWidth; core.classList.add('pulse-core')
-    $('#core-ver').textContent = 'versione ' + v
-    nodes.forEach((n, i) => {
-      const hit = () => { n.querySelector('.ver i').textContent = v; n.classList.add('hit'); setTimeout(() => n.classList.remove('hit'), 900) }
-      const p = paths[i]
-      if (!p || !window.gsap || reduce) { setTimeout(hit, reduce ? 0 : 120 + i * 60); return }
-      const len = p.getTotalLength()
-      gsap.fromTo(p, { strokeDasharray: `46 ${len}`, strokeDashoffset: 46, opacity: 1 }, { strokeDashoffset: -len, duration: 1.1, delay: 0.1 + (i % 6) * 0.05, ease: 'power2.in', onComplete: () => { gsap.set(p, { opacity: 0 }); hit() } })
-    })
+  const tick = () => {
+    shown += (target - shown) * 0.12
+    if (Math.abs(target - shown) < 0.5) shown = target
+    out.textContent = Math.round(shown).toLocaleString('it-IT')
+    draw()
+    if (shown !== target) requestAnimationFrame(tick)
   }
+  const set = (i) => {
+    target = STEPS[i]
+    range.value = i
+    range.style.setProperty('--fill', (i / (STEPS.length - 1)) * 100 + '%')
+    range.setAttribute('aria-valuetext', target.toLocaleString('it-IT') + (target === 1 ? ' sede' : ' sedi'))
+    $('#sedi-out').lastChild.textContent = target === 1 ? ' sede' : ' sedi'
+    steady.classList.add('flash'); clearTimeout(flashT); flashT = setTimeout(() => steady.classList.remove('flash'), 450)
+    if (reduce) { shown = target; out.textContent = target.toLocaleString('it-IT'); draw() } else requestAnimationFrame(tick)
+  }
+  range.addEventListener('input', () => set(+range.value))
+  new ResizeObserver(draw).observe(cv)
   draw()
-  new ResizeObserver(draw).observe(net)
-  document.fonts?.ready.then(draw)
-  $('#release')?.addEventListener('click', release)
-  new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { o.disconnect(); setTimeout(release, 400) } }, { threshold: 0.4 }).observe(net)
+  // La prima volta il cursore va da 1 a 1.500 da solo, per mostrare il gioco.
+  new IntersectionObserver((e, o) => {
+    if (!e[0].isIntersecting) return
+    o.disconnect()
+    if (reduce) return
+    shown = 1; set(0)
+    STEPS.forEach((_, i) => setTimeout(() => set(i), 500 + i * 320))
+  }, { threshold: 0.45 }).observe(cv)
 }
 
 // Luce che segue il puntatore sulle sezioni scure.
