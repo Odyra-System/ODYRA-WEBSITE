@@ -674,3 +674,5 @@ html:not(.js) [data-js-only] { display: none; }
 @media (max-width: 520px) { .journey-steps { grid-template-columns: 1fr; } }
 .sol-head { top: 8.6rem; }
 .sol, .cat { scroll-margin-top: 7.5rem; }
+.case-link { margin-top: 1.2rem; font-weight: 650; }
+.case-link a { color: inherit; text-decoration-color: var(--cyan); text-decoration-thickness: 2px; }
