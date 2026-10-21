@@ -25,6 +25,8 @@ In one sentence (confirmed): Odyra is a factory of white-label AI agents; the cl
 
 ## Positioning
 
+Guiding idea (confirmed October 2026): "un solo cervello, mille sedi, il vostro nome sopra". Odyra designs and runs AI agent systems at scale for companies that must run the same intelligence across hundreds or thousands of locations, customers or stores. Three faces of one concept: (1) a system, not a chatbot: isolated databases, security, dashboards, RAG and CAG, monitoring agents, squads of collaborating agents; (2) one agent, one codebase, everywhere: per-tenant variables, tools and deterministic code, one update reaches every location; (3) built in the field with the client, every edge case becomes code. Do not compete with self-serve SMB tools (Spoki, Keplero) or Vapi-wrapper agencies; sit beside indigo.ai at enterprise level, differing as the engineering and operations partner that delivers finished, white-label systems rather than a no-code platform. Show the concept, never list it.
+
 Sector rules written in code, not only in a prompt, plus a dedicated connector that reads and writes inside the management software. Delivered white-label and operated by Odyra (quality, errors, consumption, handoff to a person). Proven in production with BOSS: GoAgent ("GoWeb Agent") is the white-label agent built only for BOSS and its GoWeb salons (1,500+ salons, since June 2026). GoAgent is a client case, BOSS's product, never presented as an Odyra product or as the site's centre.
 
 ## Operating Context

@@ -179,6 +179,12 @@ window.addEventListener('load', () => {
   if (!window.gsap) return
   gsap.registerPlugin(ScrollTrigger)
 
+  // Sotto la superficie: scendendo sotto la linea dell'acqua gli strati si accendono uno dopo l'altro.
+  if (!reduce && $('.strata')) {
+    $$('.strata li').forEach((li) => gsap.from(li, { opacity: 0.12, x: 30, ease: 'none', scrollTrigger: { trigger: li, start: 'top 92%', end: 'top 62%', scrub: 0.6 } }))
+    gsap.from('.surface-msg', { opacity: 0, y: 20, stagger: 0.15, duration: 0.8, ease: 'expo.out', scrollTrigger: { trigger: '.surface', start: 'top 80%', once: true } })
+  }
+
   // Casi di successo: quando un caso è al centro, la sezione prende il colore di quel cliente.
   const cases = $('.cases')
   const active = new Set()
@@ -264,4 +270,52 @@ if (form) {
       form.reset(); msg.textContent = form.dataset.ok
     } catch { msg.classList.add('err'); msg.textContent = form.dataset.err }
   })
+}
+
+// Un agente, 1.500 sedi: un rilascio parte dal centro e aggiorna tutte le sedi.
+const sc = $('#scale-canvas')
+if (sc) {
+  const N = 1500, nEl = $('#deploy-n')
+  const pts = Array.from({ length: N }, (_, i) => ({ r: Math.sqrt((i + 0.5) / N), a: i * 2.399963, lit: 1, t: -1 }))
+  let wave = 2, start = 0, running = false, W = 0, H = 0
+  const size = () => { const dpr = Math.min(devicePixelRatio || 1, 2); W = sc.clientWidth; H = sc.clientHeight; sc.width = Math.round(W * dpr); sc.height = Math.round(H * dpr); sc.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0) }
+  const draw = (now) => {
+    const c = sc.getContext('2d'), cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.47, sx = (W / H) * 0.92
+    c.clearRect(0, 0, W, H)
+    c.strokeStyle = 'rgba(92, 203, 240, .07)'; c.lineWidth = 0.6
+    c.beginPath()
+    for (let i = 0; i < N; i += 30) { const p = pts[i]; c.moveTo(cx, cy); c.lineTo(cx + Math.cos(p.a) * p.r * R * sx, cy + Math.sin(p.a) * p.r * R) }
+    c.stroke()
+    let lit = 0
+    for (const p of pts) {
+      const on = p.r <= wave
+      if (on && p.t < 0) p.t = now
+      if (on) lit++
+      const age = p.t < 0 ? 1 : Math.min(1, (now - p.t) / 500)
+      const pop = on ? 1 + (1 - age) * 1.6 : 1
+      c.fillStyle = on ? `rgba(${Math.round(92 + 120 * (1 - age))}, ${Math.round(203 + 40 * (1 - age))}, 240, ${0.55 + 0.45 * (1 - age)})` : 'rgba(120, 150, 190, .28)'
+      c.beginPath(); c.arc(cx + Math.cos(p.a) * p.r * R * sx, cy + Math.sin(p.a) * p.r * R, 1.6 * pop, 0, Math.PI * 2); c.fill()
+    }
+    if (running && wave <= 1.02) { c.strokeStyle = 'rgba(168, 230, 249, .35)'; c.lineWidth = 1.5; c.beginPath(); c.ellipse(cx, cy, wave * R * sx, wave * R, 0, 0, Math.PI * 2); c.stroke() }
+    const g = c.createRadialGradient(cx, cy, 0, cx, cy, 34); g.addColorStop(0, 'rgba(168, 230, 249, .9)'); g.addColorStop(1, 'rgba(92, 203, 240, 0)')
+    c.fillStyle = g; c.beginPath(); c.arc(cx, cy, 34, 0, Math.PI * 2); c.fill()
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(cx, cy, 6, 0, Math.PI * 2); c.fill()
+    nEl.textContent = lit.toLocaleString('it-IT')
+    return lit
+  }
+  const loop = (now) => {
+    wave = Math.min(1.05, ((now - start) / 2200) ** 0.8 * 1.05)
+    const lit = draw(now)
+    if (wave < 1.05 || lit < N || pts.some((p) => now - p.t < 500)) requestAnimationFrame(loop)
+    else running = false
+  }
+  const deploy = () => {
+    if (reduce) { wave = 2; pts.forEach((p) => { p.t = -1 }); draw(performance.now()); return }
+    pts.forEach((p) => { p.t = -1 }); wave = 0; start = performance.now(); running = true; requestAnimationFrame(loop)
+  }
+  size(); draw(performance.now())
+  new ResizeObserver(() => { size(); draw(performance.now()) }).observe(sc)
+  $('#deploy')?.addEventListener('click', deploy)
+  // La prima volta parte da sola quando la sezione entra in vista.
+  new IntersectionObserver((ents, o) => { if (ents[0].isIntersecting) { o.disconnect(); deploy() } }, { threshold: 0.45 }).observe(sc)
 }
