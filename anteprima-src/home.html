@@ -32,19 +32,24 @@
   </div>
 </section>
 
-<!-- Un solo cervello, mille sedi -->
-<section class="scale ink" id="scala">
-  <div class="wrap scale-in">
-    <div class="scale-copy">
-      <h2 class="display-2">Un agente. 1.500 sedi. Un solo codice.</h2>
-      <p class="sec-lead">Ogni sede ha i suoi orari, i suoi servizi, le sue persone. Ma l’agente è uno: quando lo miglioriamo, migliora ovunque nello stesso istante. Nessuna copia da mantenere, nessuna sede rimasta indietro.</p>
-      <p class="actions"><button class="b b-cyan" type="button" id="deploy" data-js-only>Pubblica un aggiornamento</button></p>
-      <p class="scale-count" aria-live="polite"><b id="deploy-n">1.500</b> sedi aggiornate</p>
+<!-- Un solo agente, in ogni sede -->
+<section class="scale ink spot" id="scala">
+  <div class="wrap">
+    <div class="scale-head">
+      <h2 class="display-2">Un solo agente, in ogni sede.</h2>
+      <p class="sec-lead">Dieci negozi o millecinquecento clienti di un gestionale: l’agente è uno solo. Ogni sede ha la sua configurazione, con orari, listino, persone e regole locali. Ogni miglioramento arriva a tutte nello stesso momento.</p>
     </div>
-    <figure class="scale-fig">
-      <canvas class="scale-canvas" id="scale-canvas" role="img" aria-label="Un nodo centrale collegato a 1.500 sedi, aggiornate tutte insieme"></canvas>
-      <figcaption>Rappresentazione di un aggiornamento: un rilascio, tutte le sedi.</figcaption>
-    </figure>
+    <div class="net" id="net">
+      <svg class="net-lines" aria-hidden="true"></svg>
+      <div class="net-core">
+        <span class="core-mark" aria-hidden="true"></span>
+        <b>Agente Odyra</b>
+        <small>Un codice, <span id="core-ver">versione 2.4</span></small>
+        <button class="b b-cyan" type="button" id="release" data-js-only>Rilascia un miglioramento</button>
+      </div>
+      <ul class="net-nodes"><li class="node" style="--n:0"><b>Salone, Milano</b><span>Orari 9–19, 6 operatori</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:1"><b>Officina, Torino</b><span>Tagliandi e revisioni</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:2"><b>Hotel, Madrid</b><span>Check-in 24 ore, in spagnolo</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:3"><b>Negozio 0127, Roma</b><span>Resi entro 30 giorni</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:4"><b>Studio dentistico, Bologna</b><span>Prime visite il martedì</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:5"><b>Store, Valencia</b><span>Catalogo d’autunno</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:6"><b>Clinica veterinaria, Firenze</b><span>Urgenze sempre attive</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:7"><b>Filiale 12, Napoli</b><span>Appuntamenti di consulenza</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:8"><b>Palestra, Verona</b><span>Corsi e abbonamenti</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:9"><b>Agenzia viaggi, Siviglia</b><span>Preventivi entro sera</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:10"><b>Centro estetico, Bari</b><span>Pacchetti e promozioni</span><em class="ver">v<i>2.4</i></em></li><li class="node" style="--n:11"><b>Concessionaria, Padova</b><span>Prove su strada</span><em class="ver">v<i>2.4</i></em></li></ul>
+    </div>
+    <p class="net-more">E tutte le altre sedi, con lo stesso codice. Nessuna copia da aggiornare a mano, nessuna sede rimasta indietro.</p>
   </div>
 </section>
 
@@ -100,34 +105,16 @@
 </section>
 
 <!-- Sotto la superficie: l'ecosistema che non si vede -->
-<section class="depth" id="ecosistema">
-  <div class="depth-sky paper">
-    <div class="wrap sky-in">
-      <div class="depth-copy">
-        <h2>Sotto la superficie.</h2>
-        <p class="sec-lead">Il cliente vede una chiamata o un messaggio. Sotto, c’è un sistema intero, progettato e gestito da noi.</p>
-      </div>
-      <div class="surface">
-        <p class="surface-msg"><b>Chiamata in corso</b><span>Assistente AI di <span data-brand>Il tuo marchio</span></span></p>
-        <p class="surface-msg surface-wa"><b>WhatsApp</b><span>Prenotazione confermata</span></p>
-      </div>
+<section class="depth ink spot" id="ecosistema">
+  <div class="wrap depth-in">
+    <div class="depth-copy">
+      <h2 class="display-2">Vedete un agente. Noi costruiamo un sistema.</h2>
+      <p class="sec-lead">Sopra c’è solo il vostro marchio. Sotto, ogni strato è progettato, collegato e sorvegliato da noi.</p>
+      <ol class="layer-labels"><li style="--k:0"><b>Il vostro marchio</b><span>Voce, WhatsApp, web: quello che vede il cliente</span></li><li style="--k:1"><b>Agente unico</b><span>Un codice, configurato per ogni sede</span></li><li style="--k:2"><b>Regole deterministiche</b><span>Le decisioni che non possono sbagliare</span></li><li style="--k:3"><b>Conoscenza</b><span>RAG e CAG su documenti e listini</span></li><li style="--k:4"><b>Squadra di agenti</b><span>Agenti specializzati che collaborano</span></li><li style="--k:5"><b>Controllo continuo</b><span>Operatori virtuali che monitorano e diagnosticano</span></li><li style="--k:6"><b>Dati isolati e sicurezza</b><span>Un database per cliente, accessi controllati</span></li></ol>
     </div>
+    <div class="stack-wrap" aria-hidden="true"><div class="stack"><div class="plate plate-0" style="--i:6"><span>Il vostro marchio</span></div><div class="plate plate-1" style="--i:5"><span>Agente unico</span></div><div class="plate plate-2" style="--i:4"><span>Regole deterministiche</span></div><div class="plate plate-3" style="--i:3"><span>Conoscenza</span></div><div class="plate plate-4" style="--i:2"><span>Squadra di agenti</span></div><div class="plate plate-5" style="--i:1"><span>Controllo continuo</span></div><div class="plate plate-6" style="--i:0"><span>Dati isolati e sicurezza</span></div></div></div>
   </div>
-  <div class="depth-sea ink">
-    <div class="wrap">
-      <p class="waterline">Quello che vede il cliente sta sopra. Il sistema sta sotto.</p>
-      <ol class="strata">
-        <li><b>Un agente unico</b><span>Un codice, variabili e strumenti per ogni sede</span></li>
-        <li><b>Regole deterministiche</b><span>Le decisioni che non possono sbagliare</span></li>
-        <li><b>Conoscenza</b><span>RAG e CAG sui vostri documenti e listini</span></li>
-        <li><b>Una squadra di agenti</b><span>Agenti specializzati che collaborano</span></li>
-        <li><b>Operatori virtuali di controllo</b><span>Monitorano, segnalano, diagnosticano</span></li>
-        <li><b>Dati isolati e sicurezza</b><span>Un database per cliente, accessi controllati</span></li>
-        <li><b>Dashboard e gestione</b><span>Qualità, consumi, numeri per chi decide</span></li>
-      </ol>
-      <p class="field-line">Costruito sul campo, accanto ai clienti: un agente su oltre 1.500 saloni, con ogni caso d’uso incontrato già scritto nel codice.</p>
-    </div>
-  </div>
+  <div class="wrap"><p class="field-line">Costruito sul campo, accanto ai clienti: ogni caso d’uso incontrato diventa codice, e vale da subito per tutte le sedi.</p></div>
 </section>
 
 <!-- L'agente al lavoro, col marchio scritto nell'apertura -->

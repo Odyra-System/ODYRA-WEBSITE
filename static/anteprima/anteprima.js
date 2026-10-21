@@ -179,10 +179,22 @@ window.addEventListener('load', () => {
   if (!window.gsap) return
   gsap.registerPlugin(ScrollTrigger)
 
-  // Sotto la superficie: scendendo sotto la linea dell'acqua gli strati si accendono uno dopo l'altro.
-  if (!reduce && $('.strata')) {
-    $$('.strata li').forEach((li) => gsap.from(li, { opacity: 0.12, x: 30, ease: 'none', scrollTrigger: { trigger: li, start: 'top 92%', end: 'top 62%', scrub: 0.6 } }))
-    gsap.from('.surface-msg', { opacity: 0, y: 20, stagger: 0.15, duration: 0.8, ease: 'expo.out', scrollTrigger: { trigger: '.surface', start: 'top 80%', once: true } })
+  // La pila: su schermi larghi la sezione si ferma, gli strati si separano e si accendono uno alla volta.
+  const depth = $('.depth')
+  if (depth && $('.stack')) {
+    const plates = $$('.plate'), labels = $$('.layer-labels li')
+    const mark = (k) => { plates.forEach((p, i) => p.classList.toggle('on', i === k)); labels.forEach((l, i) => l.classList.toggle('on', i === k)) }
+    gsap.matchMedia().add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
+      depth.classList.add('live')
+      const st = { gap: 0.9 }
+      const stack = $('.stack')
+      const tl = gsap.timeline({ scrollTrigger: { trigger: depth, pin: true, start: 'top top', end: '+=1800', scrub: 0.8,
+        onUpdate: (s) => mark(s.progress < 0.28 ? -1 : Math.min(plates.length - 1, Math.floor((s.progress - 0.28) / 0.72 * plates.length))) } })
+      tl.fromTo(st, { gap: 0.9 }, { gap: 4.4, duration: 1, ease: 'power2.inOut', onUpdate: () => stack.style.setProperty('--gap', st.gap + 'rem') })
+        .fromTo('.stack', { rotateZ: 0, y: 30 }, { rotateZ: 6, y: 0, duration: 1, ease: 'power1.inOut' }, 0)
+        .to({}, { duration: 2.6 })
+      return () => { depth.classList.remove('live'); stack.style.removeProperty('--gap'); mark(-1) }
+    })
   }
 
   // Casi di successo: quando un caso è al centro, la sezione prende il colore di quel cliente.
@@ -272,50 +284,66 @@ if (form) {
   })
 }
 
-// Un agente, 1.500 sedi: un rilascio parte dal centro e aggiorna tutte le sedi.
-const sc = $('#scale-canvas')
-if (sc) {
-  const N = 1500, nEl = $('#deploy-n')
-  const pts = Array.from({ length: N }, (_, i) => ({ r: Math.sqrt((i + 0.5) / N), a: i * 2.399963, lit: 1, t: -1 }))
-  let wave = 2, start = 0, running = false, W = 0, H = 0
-  const size = () => { const dpr = Math.min(devicePixelRatio || 1, 2); W = sc.clientWidth; H = sc.clientHeight; sc.width = Math.round(W * dpr); sc.height = Math.round(H * dpr); sc.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0) }
-  const draw = (now) => {
-    const c = sc.getContext('2d'), cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.47, sx = (W / H) * 0.92
-    c.clearRect(0, 0, W, H)
-    c.strokeStyle = 'rgba(92, 203, 240, .07)'; c.lineWidth = 0.6
-    c.beginPath()
-    for (let i = 0; i < N; i += 30) { const p = pts[i]; c.moveTo(cx, cy); c.lineTo(cx + Math.cos(p.a) * p.r * R * sx, cy + Math.sin(p.a) * p.r * R) }
-    c.stroke()
-    let lit = 0
-    for (const p of pts) {
-      const on = p.r <= wave
-      if (on && p.t < 0) p.t = now
-      if (on) lit++
-      const age = p.t < 0 ? 1 : Math.min(1, (now - p.t) / 500)
-      const pop = on ? 1 + (1 - age) * 1.6 : 1
-      c.fillStyle = on ? `rgba(${Math.round(92 + 120 * (1 - age))}, ${Math.round(203 + 40 * (1 - age))}, 240, ${0.55 + 0.45 * (1 - age)})` : 'rgba(120, 150, 190, .28)'
-      c.beginPath(); c.arc(cx + Math.cos(p.a) * p.r * R * sx, cy + Math.sin(p.a) * p.r * R, 1.6 * pop, 0, Math.PI * 2); c.fill()
-    }
-    if (running && wave <= 1.02) { c.strokeStyle = 'rgba(168, 230, 249, .35)'; c.lineWidth = 1.5; c.beginPath(); c.ellipse(cx, cy, wave * R * sx, wave * R, 0, 0, Math.PI * 2); c.stroke() }
-    const g = c.createRadialGradient(cx, cy, 0, cx, cy, 34); g.addColorStop(0, 'rgba(168, 230, 249, .9)'); g.addColorStop(1, 'rgba(92, 203, 240, 0)')
-    c.fillStyle = g; c.beginPath(); c.arc(cx, cy, 34, 0, Math.PI * 2); c.fill()
-    c.fillStyle = '#fff'; c.beginPath(); c.arc(cx, cy, 6, 0, Math.PI * 2); c.fill()
-    nEl.textContent = lit.toLocaleString('it-IT')
-    return lit
+// La rete: un rilascio parte dall'agente e viaggia lungo le tracce fino a ogni sede.
+const net = $('#net')
+if (net) {
+  const svg = $('.net-lines', net), core = $('.net-core', net), nodes = $$('.node', net)
+  let ver = 4, paths = []
+  const NS = 'http://www.w3.org/2000/svg'
+  const draw = () => {
+    svg.innerHTML = ''; paths = []
+    if (getComputedStyle(svg).display === 'none') return
+    const nb = net.getBoundingClientRect(), cb = core.getBoundingClientRect()
+    nodes.forEach((n, i) => {
+      const r = n.getBoundingClientRect(), left = r.left < cb.left
+      const x1 = (left ? cb.left : cb.right) - nb.left, y1 = cb.top - nb.top + cb.height * (0.25 + 0.5 * ((i % 6) / 5))
+      const x2 = (left ? r.right : r.left) - nb.left, y2 = r.top - nb.top + r.height / 2
+      const mx = x1 + (x2 - x1) * 0.45, rr = Math.min(10, Math.abs(y2 - y1) / 2), sy = Math.sign(y2 - y1) || 1, sx = Math.sign(x2 - x1)
+      const d = Math.abs(y2 - y1) < 2 ? `M${x1},${y1} H${x2}` : `M${x1},${y1} H${mx - sx * rr} Q${mx},${y1} ${mx},${y1 + sy * rr} V${y2 - sy * rr} Q${mx},${y2} ${mx + sx * rr},${y2} H${x2}`
+      const t = document.createElementNS(NS, 'path'); t.setAttribute('d', d); t.setAttribute('class', 'trace'); svg.appendChild(t)
+      const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); p.setAttribute('class', 'pulse'); svg.appendChild(p)
+      const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x2); c.setAttribute('cy', y2); c.setAttribute('r', 3.5); c.setAttribute('class', 'dot'); svg.appendChild(c)
+      paths.push(p)
+    })
   }
-  const loop = (now) => {
-    wave = Math.min(1.05, ((now - start) / 2200) ** 0.8 * 1.05)
-    const lit = draw(now)
-    if (wave < 1.05 || lit < N || pts.some((p) => now - p.t < 500)) requestAnimationFrame(loop)
-    else running = false
+  const release = () => {
+    ver++
+    const v = '2.' + ver
+    core.classList.remove('pulse-core'); void core.offsetWidth; core.classList.add('pulse-core')
+    $('#core-ver').textContent = 'versione ' + v
+    nodes.forEach((n, i) => {
+      const hit = () => { n.querySelector('.ver i').textContent = v; n.classList.add('hit'); setTimeout(() => n.classList.remove('hit'), 900) }
+      const p = paths[i]
+      if (!p || !window.gsap || reduce) { setTimeout(hit, reduce ? 0 : 120 + i * 60); return }
+      const len = p.getTotalLength()
+      gsap.fromTo(p, { strokeDasharray: `46 ${len}`, strokeDashoffset: 46, opacity: 1 }, { strokeDashoffset: -len, duration: 1.1, delay: 0.1 + (i % 6) * 0.05, ease: 'power2.in', onComplete: () => { gsap.set(p, { opacity: 0 }); hit() } })
+    })
   }
-  const deploy = () => {
-    if (reduce) { wave = 2; pts.forEach((p) => { p.t = -1 }); draw(performance.now()); return }
-    pts.forEach((p) => { p.t = -1 }); wave = 0; start = performance.now(); running = true; requestAnimationFrame(loop)
-  }
-  size(); draw(performance.now())
-  new ResizeObserver(() => { size(); draw(performance.now()) }).observe(sc)
-  $('#deploy')?.addEventListener('click', deploy)
-  // La prima volta parte da sola quando la sezione entra in vista.
-  new IntersectionObserver((ents, o) => { if (ents[0].isIntersecting) { o.disconnect(); deploy() } }, { threshold: 0.45 }).observe(sc)
+  draw()
+  new ResizeObserver(draw).observe(net)
+  document.fonts?.ready.then(draw)
+  $('#release')?.addEventListener('click', release)
+  new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { o.disconnect(); setTimeout(release, 400) } }, { threshold: 0.4 }).observe(net)
 }
+
+// Luce che segue il puntatore sulle sezioni scure.
+$$('.spot').forEach((s) => {
+  s.addEventListener('pointermove', (e) => { const r = s.getBoundingClientRect(); s.style.setProperty('--mx', e.clientX - r.left + 'px'); s.style.setProperty('--my', e.clientY - r.top + 'px'); s.style.setProperty('--spot', 1) })
+  s.addEventListener('pointerleave', () => s.style.setProperty('--spot', 0))
+})
+
+window.addEventListener('load', () => {
+  if (!window.gsap || reduce) return
+  // Titoli delle sezioni: salgono dalla riga quando entrano.
+  $$('main section:not(.hero):not(.phead) h2').forEach((h) => {
+    const s = SplitText.create(h, { type: 'lines', mask: 'lines', linesClass: 'rise-line' })
+    gsap.from(s.lines, { yPercent: 100, duration: 1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: h, start: 'top 88%', once: true } })
+  })
+  // Bottoni principali magnetici.
+  if (matchMedia('(hover: hover)').matches) $$('.b-cyan').forEach((b) => {
+    const x = gsap.quickTo(b, 'x', { duration: 0.4, ease: 'power3.out' }), y = gsap.quickTo(b, 'y', { duration: 0.4, ease: 'power3.out' })
+    b.addEventListener('pointermove', (e) => { const r = b.getBoundingClientRect(); x((e.clientX - r.left - r.width / 2) * 0.25); y((e.clientY - r.top - r.height / 2) * 0.3) })
+    b.addEventListener('pointerleave', () => { x(0); y(0) })
+  })
+  ScrollTrigger.refresh()
+})
