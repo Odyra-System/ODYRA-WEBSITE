@@ -354,3 +354,30 @@ window.addEventListener('load', () => {
   })
   ScrollTrigger.refresh()
 })
+
+// Sotto-menu: nelle pagine con i salti rapidi, compare in alto e segna la sezione in cui ti trovi.
+const jump = $('.phead .jump')
+if (jump) {
+  const bar = document.createElement('nav'); bar.className = 'subnav'; bar.setAttribute('aria-label', 'In questa pagina')
+  bar.innerHTML = '<ul>' + jump.innerHTML + '</ul>'; document.body.appendChild(bar)
+  const links = $$('a', bar), targets = links.map((a) => $(a.getAttribute('href'))).filter(Boolean)
+  new IntersectionObserver((e) => bar.classList.toggle('show', !e[0].isIntersecting), { rootMargin: '-80px 0px 0px 0px' }).observe($('.phead'))
+  const io = new IntersectionObserver((ents) => ents.forEach((en) => { if (en.isIntersecting) links.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)) }), { rootMargin: '-45% 0px -50% 0px' })
+  targets.forEach((t) => io.observe(t))
+}
+
+// Schermate degli agenti e card dei formati: si inclinano leggermente seguendo il puntatore.
+if (!reduce && matchMedia('(hover: hover)').matches) $$('.agent .screen, .format').forEach((el) => {
+  el.classList.add('tilt')
+  el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5; el.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-4px)` })
+  el.addEventListener('pointerleave', () => { el.style.transform = '' })
+})
+
+window.addEventListener('load', () => {
+  if (!window.gsap || reduce) return
+  // Academy: la linea del percorso si disegna e accende le settimane.
+  if ($('.journey-line')) {
+    gsap.fromTo('.journey-line i', { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '.journey-track', start: 'top 75%', end: 'bottom 55%', scrub: 0.5,
+      onUpdate: (s) => $$('.journey-steps li').forEach((li, i) => li.classList.toggle('on', s.progress >= i / 3 - 0.02)) } })
+  }
+})

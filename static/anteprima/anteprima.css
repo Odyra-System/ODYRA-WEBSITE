@@ -646,3 +646,31 @@ html:not(.js) [data-js-only] { display: none; }
 .js .depth.live .layer-labels li.on span { max-height: 3rem; opacity: 1; }
 .grow-ticks { position: relative; display: block; height: 1.2rem; margin: 0 .85rem 1.2rem; }
 .grow-ticks li { position: absolute; left: calc(var(--p) / 9 * 100%); transform: translateX(-50%); white-space: nowrap; }
+
+/* ── Sotto-menu che segue lo scroll nelle pagine interne ── */
+.subnav { position: fixed; top: 4.2rem; left: 0; right: 0; z-index: 20; background: rgba(7, 26, 58, .94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--ink-rule); transform: translateY(-110%); transition: transform .35s var(--ease); }
+.subnav.show { transform: none; }
+.subnav ul { display: flex; gap: .4rem; overflow-x: auto; padding: .6rem var(--gut); max-width: var(--wrap); margin: 0 auto; scrollbar-width: none; }
+.subnav a { display: inline-block; white-space: nowrap; text-decoration: none; color: var(--on-ink-soft); font-weight: 600; font-size: .9rem; padding: .4rem .85rem; border-radius: 99px; transition: background-color .2s var(--ease), color .2s var(--ease); }
+.subnav a:hover { color: #fff; }
+.subnav a.on { background: var(--cyan); color: var(--ink); }
+
+/* ── Card che si inclinano col puntatore ── */
+.tilt { transform-style: preserve-3d; will-change: transform; }
+
+/* ── Academy: percorso tipo ── */
+.journey { padding: clamp(4.5rem, 9vw, 7rem) 0; }
+.journey-track { position: relative; margin-top: 3rem; }
+.journey-line { position: absolute; left: 0; right: 0; top: 1.05rem; height: 3px; background: var(--rule); border-radius: 2px; }
+.journey-line i { display: block; height: 100%; background: var(--cyan-deep); transform-origin: left; border-radius: 2px; }
+.journey-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+.journey-steps li { position: relative; padding-top: 3rem; }
+.journey-steps li::before { content: ''; position: absolute; left: 0; top: .25rem; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--paper); border: 3px solid var(--cyan-deep); transition: background-color .4s var(--ease); }
+.journey-steps li.on::before { background: var(--cyan-deep); box-shadow: 0 0 0 6px rgba(15, 110, 153, .15); }
+.j-week { font: 500 .85rem var(--mono); color: var(--cyan-deep); }
+.journey-steps h3 { margin-top: .4rem; font-size: 1.3rem; font-stretch: 112%; }
+.journey-steps li > p:last-child { margin-top: .4rem; color: var(--text-soft); font-size: 1rem; }
+@media (max-width: 860px) { .journey-steps { grid-template-columns: 1fr 1fr; } .journey-line { display: none; } }
+@media (max-width: 520px) { .journey-steps { grid-template-columns: 1fr; } }
+.sol-head { top: 8.6rem; }
+.sol, .cat { scroll-margin-top: 7.5rem; }
