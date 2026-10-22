@@ -969,6 +969,7 @@ def without_placeholders(body):
     body = re.sub(r'<div class="photo-strip[^"]*" aria-label="[^"]*da caricare">.*?</ol></div>', '', body, flags=re.S)
     body = re.sub(r'<figure class="slot[^"]*">\s*<div class="slot-box"[^>]*>.*?</div>\s*</figure>', '', body, flags=re.S)
     body = re.sub(r'<section class="team paper">\s*<div class="wrap">\s*<h2>Il team\.</h2>.*?</section>', '', body, flags=re.S)
+    body = re.sub(r'<li class="partner-slot">.*?</li>', '', body, flags=re.S)
     return body
 
 
@@ -991,8 +992,8 @@ def it_bodies():
                 body = f.read()
             body = body.replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', '/')
             body = without_placeholders(body)
-            if 'da caricare' in body:
-                print(f'Attenzione: in pagine/{src} è rimasto un riquadro "da caricare"')
+            if 'da caricare' in body or 'da riempire' in body:
+                print(f'Attenzione: in pagine/{src} è rimasto un segnaposto da riempire')
         else:
             body = it_body_domande() if slug == 'domande' else it_body_privacy()
         # le briciole di pane sono già nel JSON-LD: fuori dal Markdown

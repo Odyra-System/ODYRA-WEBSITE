@@ -117,7 +117,7 @@ h3 { font-size: 1.3rem; font-weight: 720; font-stretch: 104%; letter-spacing: -.
 /* Per chi: il registro */
 .who { padding: clamp(4.5rem, 9vw, 7.5rem) 0; }
 .ledger { margin-top: 3rem; border-top: 2px solid var(--text); }
-.ledger li { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) minmax(0, 11rem); gap: 1.2rem clamp(1.5rem, 4vw, 3.5rem); align-items: baseline; padding: 1.8rem 0; border-bottom: 1px solid var(--rule); }
+.ledger li { position: relative; display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) minmax(0, 14rem); gap: 1.2rem clamp(1.5rem, 4vw, 3.5rem); align-items: baseline; padding: 1.8rem 0; border-bottom: 1px solid var(--rule); }
 .ledger h3 { font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-stretch: 112%; }
 .ledger li > p:not(.ledger-proof) { color: var(--text-soft); max-width: 40rem; }
 .ledger-proof { justify-self: end; font-weight: 650; font-size: .95rem; color: var(--cyan-deep); text-align: right; }
@@ -188,7 +188,6 @@ h3 { font-size: 1.3rem; font-weight: 720; font-stretch: 104%; letter-spacing: -.
 /* Team */
 .team { padding: clamp(4rem, 9vw, 7rem) 0; }
 .team-in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
-.team-in:has(> :only-child) { grid-template-columns: minmax(0, 46rem); }
 .team-copy > p { margin-top: 1.3rem; font-size: 1.15rem; color: var(--text-soft); max-width: 30rem; }
 @media (max-width: 900px) { .team-in { grid-template-columns: 1fr; } }
 
@@ -259,36 +258,6 @@ html:not(.js) [data-js-only] { display: none; }
 .note { transform-style: preserve-3d; will-change: transform; }
 
 /* Demo: chiamata e agenda */
-.demo { padding: clamp(4.5rem, 9vw, 7.5rem) 0; }
-.demo-in { margin-top: 3rem; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
-.call { background: var(--ink); color: var(--on-ink); border-radius: 1.2rem; padding: clamp(1.3rem, 3vw, 2rem); box-shadow: 0 40px 80px -40px rgba(7, 26, 58, .7); }
-.call-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-.call-who { display: grid; line-height: 1.3; }
-.call-who b { color: #fff; font-size: 1.25rem; font-stretch: 116%; }
-.call-who small { color: var(--on-ink-soft); font-size: .92rem; }
-.call-time { font: 500 1rem var(--mono); color: var(--cyan); display: flex; align-items: center; gap: .5rem; }
-.call-time::before { content: ''; width: .55rem; height: .55rem; border-radius: 50%; background: #3DDC84; box-shadow: 0 0 0 4px rgba(61, 220, 132, .18); }
-.wave { display: block; width: 100%; height: 4.5rem; margin: 1.3rem 0 1rem; }
-.transcript { display: grid; gap: .8rem; }
-.transcript li { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: .8rem; font-size: 1.02rem; line-height: 1.5; padding-top: .8rem; border-top: 1px solid var(--ink-rule); }
-.transcript b { font-size: .85rem; font-weight: 700; font-stretch: 110%; padding-top: .15rem; }
-.t-ai b { color: var(--cyan); }
-.t-cl b { color: var(--on-ink-soft); }
-.t-cl { color: var(--on-ink-soft); }
-.agenda { background: #fff; border-radius: 1rem; padding: 1.4rem; box-shadow: 0 30px 60px -36px rgba(7, 26, 58, .5); }
-.agenda-top { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: .9rem; border-bottom: 2px solid var(--text); font-stretch: 108%; }
-.agenda-top span { color: var(--text-soft); font-size: .95rem; }
-.agenda-rows li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: .8rem; padding: .7rem 0; border-bottom: 1px solid var(--rule); align-items: center; }
-.agenda-rows time { font: 500 .9rem var(--mono); color: var(--text-soft); }
-.agenda-rows span { border-radius: .45rem; padding: .55rem .75rem; font-size: .95rem; }
-.free { color: #7B889C; border: 1px dashed var(--rule); }
-.busy { background: var(--paper-2); color: var(--text-soft); }
-.booked { display: grid; background: #DDF3FC; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--cyan-deep); }
-.booked b { font-weight: 700; }
-.wa-toast { display: grid; margin-top: 1.1rem; padding: .85rem 1rem; border-radius: .7rem; background: #DCF8C6; color: #15301E; font-size: .9rem; line-height: 1.4; }
-.demo-foot { margin-top: 1.8rem; display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center; color: var(--text-soft); font-size: .95rem; }
-.replay { border: 0; cursor: pointer; font-family: var(--sans); font-size: 1rem; }
-@media (max-width: 900px) { .demo-in { grid-template-columns: 1fr; } }
 
 /* Mercati serviti */
 .markets { display: flex; gap: .5rem; }
@@ -685,3 +654,36 @@ html:not(.js) [data-js-only] { display: none; }
 
 /* Indirizzi e-mail lunghi: vanno a capo invece di allargare la pagina su telefono. */
 a[href^="mailto:"] { overflow-wrap: anywhere; }
+
+/* ───────── Rifiniture ───────── */
+
+/* Banconota: i canali restano leggibili anche quando la filigrana passa sotto. */
+.note-channels { color: var(--on-ink); text-shadow: 0 1px 2px rgba(4, 16, 42, .95), 0 2px 12px rgba(4, 16, 42, .8); }
+
+/* Partner: senza il riquadro in attesa le quattro voci riempiono la fila. */
+@media (min-width: 1001px) { .partners:not(:has(.partner-slot)) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* Registro "quattro modi": al passaggio la riga si accende e una linea ciano la sottolinea. */
+.ledger li::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--cyan-deep); transform: scaleX(0); transform-origin: left; transition: transform .7s var(--ease); }
+.ledger h3, .ledger-proof { transition: color .3s var(--ease), transform .5s var(--ease); }
+@media (hover: hover) {
+  .ledger li:hover::after { transform: scaleX(1); }
+  .ledger li:hover h3 { color: var(--cyan-deep); }
+  .ledger li:hover .ledger-proof { transform: translateX(-.35rem); }
+}
+
+/* Chi c'è dietro, senza foto: una fascia sola, testo a sinistra e azione a destra. */
+.team-in:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+.team-in:has(> :only-child) .team-copy { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(2rem, 6vw, 5rem); align-items: end; }
+.team-in:has(> :only-child) .team-copy > * { grid-column: 1; }
+.team-in:has(> :only-child) .team-copy > .actions { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+@media (max-width: 700px) {
+  .team-in:has(> :only-child) .team-copy { grid-template-columns: minmax(0, 1fr); }
+  .team-in:has(> :only-child) .team-copy > .actions { grid-column: 1; grid-row: auto; margin-top: 1.6rem; }
+}
+
+/* Sigilli: l'anello si disegna come un timbro quando la voce entra nello schermo. */
+@property --seal { syntax: '<angle>'; inherits: false; initial-value: 360deg; }
+.js .seals div::before { --seal: 0deg; -webkit-mask: conic-gradient(#000 var(--seal), transparent 0); mask: conic-gradient(#000 var(--seal), transparent 0); transition: --seal 1.2s var(--ease); }
+.js .seals div.on::before { --seal: 360deg; }
+@media (prefers-reduced-motion: reduce) { .js .seals div::before { --seal: 360deg; transition: none; } }
