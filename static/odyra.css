@@ -1,4 +1,4 @@
-/* Odyra, anteprima: filigrana. Carta di sicurezza nei colori del logo: blu notte, ciano, guilloché. */
+/* Odyra: filigrana. Carta di sicurezza nei colori del logo: blu notte, ciano, guilloché. */
 @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap;
   src: url('/assets/fonts/archivo-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
@@ -188,10 +188,16 @@ h3 { font-size: 1.3rem; font-weight: 720; font-stretch: 104%; letter-spacing: -.
 /* Team */
 .team { padding: clamp(4rem, 9vw, 7rem) 0; }
 .team-in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.team-in:has(> :only-child) { grid-template-columns: minmax(0, 46rem); }
 .team-copy > p { margin-top: 1.3rem; font-size: 1.15rem; color: var(--text-soft); max-width: 30rem; }
 @media (max-width: 900px) { .team-in { grid-template-columns: 1fr; } }
 
 /* Domande */
+.prose { padding-top: clamp(3.5rem, 8vw, 6rem); padding-bottom: clamp(3.5rem, 8vw, 6rem); max-width: 48rem; }
+.prose h2 { margin-top: 2.2rem; font-size: 1.35rem; }
+.prose h2:first-child { margin-top: 0; }
+.prose p { margin-top: .7rem; color: var(--text-soft); }
+.qa .sec-lead { margin-top: 2rem; }
 .qa { padding: clamp(4rem, 9vw, 7rem) 0; }
 .qa-list { margin-top: 2.4rem; max-width: 52rem; border-top: 2px solid var(--text); }
 .qa details { border-bottom: 1px solid var(--rule); }
@@ -676,3 +682,6 @@ html:not(.js) [data-js-only] { display: none; }
 .sol, .cat { scroll-margin-top: 7.5rem; }
 .case-link { margin-top: 1.2rem; font-weight: 650; }
 .case-link a { color: inherit; text-decoration-color: var(--cyan); text-decoration-thickness: 2px; }
+
+/* Indirizzi e-mail lunghi: vanno a capo invece di allargare la pagina su telefono. */
+a[href^="mailto:"] { overflow-wrap: anywhere; }

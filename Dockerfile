@@ -2,6 +2,7 @@
 FROM python:3.12-alpine AS build
 WORKDIR /src
 COPY build.py ./
+COPY pagine ./pagine
 COPY static ./static
 RUN python3 build.py
 

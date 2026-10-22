@@ -1,14 +1,19 @@
 # Odyra System: sito
 
-Sito statico bilingue (italiano in radice, spagnolo in `/es/`), pensato per essere letto bene da persone, motori di ricerca e assistenti AI.
+Sito statico (italiano in radice, spagnolo in `/es/`), pensato per essere letto bene da persone, motori di ricerca e assistenti AI.
 
     python3 build.py      # genera dist/ (solo libreria standard)
 
 Il Dockerfile genera `dist/` e lo serve con nginx: non serve fare commit di `dist/`.
 
 ## Struttura
-- `build.py`: tutti i testi e le pagine. Testi affiancati con `t('italiano', 'español')`. In cima: dominio, e-mail, dati societari, `UPDATED` (data dell'ultimo aggiornamento), link a HAKO e BOSS.
-- `static/`: CSS, JS, carattere (Schibsted Grotesk, ospitato qui, licenza OFL), loghi, immagini.
+- `pagine/`: le pagine italiane (design "filigrana"), solo il contenuto di `<main>`. `agents.json` è il catalogo degli agenti.
+- `build.py`: genera tutto. In cima: dominio, e-mail, dati societari, `UPDATED` (data dell'ultimo aggiornamento). La sezione "sito italiano" aggiunge testata, piede, `<head>`, JSON-LD e Markdown alle pagine di `pagine/`; elenco, titoli e descrizioni in `IT_PAGES`. Domande frequenti e privacy sono generate qui (`faq_all()`, `it_body_privacy()`).
+- Spagnolo (`/es/`): ancora la struttura precedente, testi in `build.py` affiancati con `t('italiano', 'español')`. Da rifare nel design nuovo.
+- `static/`: `odyra.css` e `odyra.js` (sito italiano), `styles.css` e `script.js` (spagnolo), caratteri ospitati qui (licenza OFL), loghi, immagini, GSAP.
+
+## Foto e video
+Nelle pagine ci sono riquadri "da caricare" (video di presentazione, foto dei progetti, foto del team). `build.py` li nasconde finché sono vuoti: per pubblicare una foto o un video sostituisci il riquadro con il contenuto vero e rigenera.
 - `nginx.conf`: indirizzi puliti, redirect 301 dai vecchi `.html`, Markdown su richiesta.
 
 ## Cosa esce per i crawler AI
