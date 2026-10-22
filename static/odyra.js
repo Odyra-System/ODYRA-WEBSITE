@@ -390,15 +390,59 @@ audButtons.forEach((btn) => btn.addEventListener('click', () => {
   })
 }))
 
-// Video: la copertina disegnata copre il player; al clic parte il video con i comandi.
+// Video: la copertina disegnata copre il player; al clic parte il video. I comandi stanno
+// sotto l'immagine, così non coprono mai i sottotitoli già impressi nel video.
+const VTXT = {
+  it: { play: 'Riproduci', pause: 'Pausa', mute: 'Disattiva audio', unmute: 'Attiva audio', full: 'Schermo intero', seek: 'Posizione nel video' },
+  es: { play: 'Reproducir', pause: 'Pausa', mute: 'Silenciar', unmute: 'Activar sonido', full: 'Pantalla completa', seek: 'Posición en el vídeo' },
+}[LANG]
+const ICON = {
+  play: '<path d="M8 5.5v13l11-6.5z"/>',
+  pause: '<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>',
+  sound: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15 9a4.2 4.2 0 0 1 0 6M17.5 6.5a7.7 7.7 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  muted: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  full: '<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+}
+const svg = (k) => `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${ICON[k]}</svg>`
+const clock = (s) => { s = Math.max(0, Math.floor(s || 0)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` }
 $$('.reel').forEach((reel) => {
-  const video = $('video', reel), play = $('.reel-play', reel)
-  if (!video || !play) return
+  const video = $('video', reel), cover = $('.reel-play', reel)
+  if (!video || !cover) return
   video.controls = false
-  play.addEventListener('click', () => {
+  const total = $('.reel-dur', reel)?.textContent || '0:00'
+  const bar = document.createElement('div')
+  bar.className = 'reel-bar'
+  bar.innerHTML = `<button type="button" class="rb-play" aria-label="${VTXT.play}">${svg('play')}</button>
+    <input class="rb-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="${VTXT.seek}">
+    <span class="rb-time"><span class="rb-now">0:00</span> / ${total}</span>
+    <button type="button" class="rb-mute" aria-label="${VTXT.mute}">${svg('sound')}</button>
+    <button type="button" class="rb-full" aria-label="${VTXT.full}">${svg('full')}</button>`
+  video.after(bar)
+  const bPlay = $('.rb-play', bar), seek = $('.rb-seek', bar), now = $('.rb-now', bar), bMute = $('.rb-mute', bar), bFull = $('.rb-full', bar)
+  const start = () => { reel.classList.add('playing'); video.play().catch(() => {}) }
+  const toggle = () => (video.paused ? start() : video.pause())
+  cover.addEventListener('click', start)
+  video.addEventListener('click', toggle)
+  bPlay.addEventListener('click', toggle)
+  video.addEventListener('play', () => { bPlay.innerHTML = svg('pause'); bPlay.setAttribute('aria-label', VTXT.pause); reel.classList.add('playing') })
+  video.addEventListener('pause', () => { bPlay.innerHTML = svg('play'); bPlay.setAttribute('aria-label', VTXT.play) })
+  video.addEventListener('timeupdate', () => {
+    now.textContent = clock(video.currentTime)
+    if (video.duration) { seek.value = String(Math.round((video.currentTime / video.duration) * 1000)); seek.style.setProperty('--p', seek.value / 10 + '%') }
+  })
+  seek.addEventListener('input', () => {
     reel.classList.add('playing')
-    video.controls = true
-    video.play().catch(() => {})
-    video.focus()
+    if (video.duration) video.currentTime = (seek.value / 1000) * video.duration
+    seek.style.setProperty('--p', seek.value / 10 + '%')
+  })
+  bMute.addEventListener('click', () => {
+    video.muted = !video.muted
+    bMute.innerHTML = svg(video.muted ? 'muted' : 'sound')
+    bMute.setAttribute('aria-label', video.muted ? VTXT.unmute : VTXT.mute)
+  })
+  bFull.addEventListener('click', () => {
+    if (document.fullscreenElement) return document.exitFullscreen()
+    if (reel.requestFullscreen) reel.requestFullscreen().catch(() => {})
+    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen()
   })
 })
