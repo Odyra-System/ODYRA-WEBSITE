@@ -318,7 +318,7 @@ def bodies(lang):
         if src:
             with open(os.path.join(src_dir, src), encoding='utf-8') as f:
                 body = f.read()
-            body = body.replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', base(lang))
+            body = body.replace('{{AGENTS_N}}', str(len(cards))).replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', base(lang))
             body = without_placeholders(body)
             if re.search(r'slot-mini|slot-box|partner-slot', body):
                 print(f'Attenzione: in {os.path.relpath(src_dir, ROOT)}/{src} è rimasto un segnaposto da riempire')
