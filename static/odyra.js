@@ -2,6 +2,13 @@
 const $ = (s, r = document) => r.querySelector(s)
 const $$ = (s, r = document) => [...r.querySelectorAll(s)]
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+// Lingua della pagina: i pochi testi scritti da qui seguono l'HTML.
+const LANG = document.documentElement.lang === 'es' ? 'es' : 'it'
+const LOCALE = LANG === 'es' ? 'es-ES' : 'it-IT'
+const TXT = {
+  it: { sede: ' sede', sedi: ' sedi', subject: 'Richiesta dal sito: ' },
+  es: { sede: ' sede', sedi: ' sedes', subject: 'Solicitud desde la web: ' },
+}[LANG]
 
 // Menu su schermi piccoli.
 const nav = $('#nav')
@@ -62,7 +69,7 @@ new ResizeObserver(drawAll).observe(document.body)
 
 // Il marchio sulla banconota: lo scrive chi visita.
 const brand = $('#brand')
-brand?.addEventListener('focus', () => { if (brand.value === 'Il tuo marchio') brand.select() })
+brand?.addEventListener('focus', () => { if (brand.value === brand.defaultValue) brand.select() })
 
 // La luce dietro la carta: segue il puntatore e rivela la filigrana Odyra.
 const note = $('#note')
@@ -132,7 +139,7 @@ window.addEventListener('load', () => {
   $$('.count').forEach((el) => {
     const to = +el.dataset.to, o = { v: 0 }
     gsap.to(o, { v: to, duration: 1.6, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-      onUpdate: () => { el.textContent = Math.round(o.v).toLocaleString('it-IT') } })
+      onUpdate: () => { el.textContent = Math.round(o.v).toLocaleString(LOCALE) } })
   })
   if ($('.partners')) gsap.from('.partners li', { opacity: 0, y: 18, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.partners', start: 'top 85%', once: true } })
 })
@@ -234,7 +241,7 @@ if (form) {
     const data = Object.fromEntries(new FormData(form))
     if (!FORM_ENDPOINT) {
       const body = Object.entries(data).filter(([k]) => k !== 'privacy').map(([k, v]) => `${k}: ${v}`).join('\n')
-      location.href = `mailto:team@odyrasystemautomation.it?subject=${encodeURIComponent('Richiesta dal sito: ' + data.interesse)}&body=${encodeURIComponent(body)}`
+      location.href = `mailto:team@odyrasystemautomation.it?subject=${encodeURIComponent(TXT.subject + data.interesse)}&body=${encodeURIComponent(body)}`
       msg.textContent = form.dataset.mail
       return
     }
@@ -269,7 +276,7 @@ if (range) {
   const tick = () => {
     shown += (target - shown) * 0.12
     if (Math.abs(target - shown) < 0.5) shown = target
-    out.textContent = Math.round(shown).toLocaleString('it-IT')
+    out.textContent = Math.round(shown).toLocaleString(LOCALE)
     draw()
     if (shown !== target) requestAnimationFrame(tick)
   }
@@ -277,10 +284,10 @@ if (range) {
     target = STEPS[i]
     range.value = i
     range.style.setProperty('--fill', (i / (STEPS.length - 1)) * 100 + '%')
-    range.setAttribute('aria-valuetext', target.toLocaleString('it-IT') + (target === 1 ? ' sede' : ' sedi'))
-    $('#sedi-out').lastChild.textContent = target === 1 ? ' sede' : ' sedi'
+    range.setAttribute('aria-valuetext', target.toLocaleString(LOCALE) + (target === 1 ? TXT.sede : TXT.sedi))
+    $('#sedi-out').lastChild.textContent = target === 1 ? TXT.sede : TXT.sedi
     steady.classList.add('flash'); clearTimeout(flashT); flashT = setTimeout(() => steady.classList.remove('flash'), 450)
-    if (reduce) { shown = target; out.textContent = target.toLocaleString('it-IT'); draw() } else requestAnimationFrame(tick)
+    if (reduce) { shown = target; out.textContent = target.toLocaleString(LOCALE); draw() } else requestAnimationFrame(tick)
   }
   range.addEventListener('input', () => set(+range.value))
   new ResizeObserver(draw).observe(cv)

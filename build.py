@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Genera il sito Odyra System in dist/ (italiano in radice, spagnolo in /es/).
+"""Genera il sito Odyra System in dist/: italiano in radice, spagnolo in /es/, stesso design.
 
 Uso: python3 build.py
 
-Da un'unica fonte escono, per ogni pagina: HTML statico, versione Markdown (/pagina.md),
-dati strutturati JSON-LD. Per tutto il sito: llms.txt, llms-full.txt, sitemap.xml, robots.txt.
-Solo libreria standard di Python.
+Le pagine stanno in pagine/ (italiano) e pagine/es/ (spagnolo), solo il contenuto di <main>.
+Da qui escono, per ogni pagina: HTML statico con testata, piede e <head>, versione Markdown
+(/pagina.md), dati strutturati JSON-LD. Per tutto il sito: llms.txt, llms-full.txt, sitemap.xml,
+robots.txt. Solo libreria standard di Python.
 """
+import hashlib
 import html
 import json
 import os
@@ -17,12 +19,12 @@ from html.parser import HTMLParser
 ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(ROOT, 'static')
 DIST = os.path.join(ROOT, 'dist')
+PAGINE = os.path.join(ROOT, 'pagine')
 
 SITE = 'https://odyrasystemautomation.it'
 EMAIL = 'team@odyrasystemautomation.it'
 UPDATED = '2026-10-22'  # data dell'ultimo aggiornamento dei contenuti (sitemap, JSON-LD)
 LINK_HAKO = 'https://hakocondomini.com'
-LINK_BOSS = 'https://bossitalia.com'
 COMPANY = {
     'legal': 'Verypos S.r.l.',
     'vat': '11630390968',
@@ -44,201 +46,121 @@ def e(s):
 
 
 # ───────── pagine e indirizzi ─────────
-# chiave: (percorso it, percorso es)
-PATHS = {
-    'home': ('', ''),
-    'piattaforma': ('piattaforma', 'plataforma'),
-    'settori': ('settori', 'sectores'),
-    'partner': ('partner', 'socios'),
-    'goagent': ('goagent', 'goagent'),
-    'misura': ('su-misura', 'a-medida'),
-    'chi': ('chi-siamo', 'quienes-somos'),
-    'faq': ('domande', 'preguntas'),
-    'contatti': ('contatti', 'contacto'),
-    'privacy': ('privacy', 'privacidad'),
+# chiave, sorgente in pagine/ e pagine/es/ (None = generata qui), voce di menu
+PAGES = [
+    ('home', 'home.html', False),
+    ('soluzioni', 'soluzioni.html', True),
+    ('agenti', 'agenti.html', True),
+    ('piattaforma', 'piattaforma.html', True),
+    ('academy', 'academy.html', True),
+    ('casi', 'casi.html', True),
+    ('chi', 'chi-siamo.html', True),
+    ('contatti', 'contatti.html', False),
+    ('domande', None, False),
+    ('privacy', None, False),
+]
+NOINDEX = ('privacy',)
+
+# per lingua: indirizzo, etichetta (menu e briciole), titolo, descrizione
+TEXT = {
+    'it': {
+        'home': ('', 'Home', 'Odyra System: agenti AI su scala, col vostro marchio',
+                 'Odyra progetta e gestisce agenti AI white-label per aziende con centinaia o migliaia di sedi, clienti e punti vendita: voce, WhatsApp, prenotazioni, vendite e assistenza.'),
+        'soluzioni': ('soluzioni', 'Soluzioni', 'Soluzioni per software house, aziende, reti e agenzie | Odyra',
+                      'Come Odyra lavora con software house, grandi aziende, franchising e agenzie: agenti AI col loro marchio, gestiti da Odyra.'),
+        'agenti': ('agenti', 'Agenti', 'Agenti AI e servizi | Odyra',
+                   'Il catalogo degli agenti AI e dei servizi Odyra: voce, messaggi, vendite, assistenza, operazioni, qualità e infrastruttura.'),
+        'piattaforma': ('piattaforma', 'Piattaforma', 'La piattaforma | Odyra',
+                        'Come è fatta la piattaforma Odyra: un solo cervello condiviso, regole di settore nel codice, connettori ai sistemi del cliente.'),
+        'academy': ('academy', 'Academy', 'Odyra Academy: consulenza e formazione sull’AI | Odyra',
+                    'Workshop, webinar, percorsi per i team e consulenza sull’intelligenza artificiale per le aziende, da chi mette agenti AI in produzione.'),
+        'casi': ('casi', 'Casi di successo', 'Casi di successo | Odyra',
+                 'BOSS, HAKO e Gruppo Colzani: agenti Odyra al lavoro.'),
+        'chi': ('chi-siamo', 'Chi siamo', 'Chi siamo | Odyra',
+                'Odyra System, gruppo tecnologico di Milano: chi siamo, metodo, missione e visione.'),
+        'contatti': ('contatti', 'Contatti', 'Contatti | Odyra',
+                     'Richiedi una demo di un agente AI Odyra o un workshop dell’Academy.'),
+        'domande': ('domande', 'Domande frequenti', 'Domande frequenti su Odyra System e gli agenti AI',
+                    'Risposte su Odyra System: agenti AI di settore, canali, software supportati, white-label, GDPR, AI Act e WhatsApp Business.'),
+        'privacy': ('privacy', 'Privacy', 'Informativa privacy | Odyra System',
+                    'Informativa sul trattamento dei dati personali del sito Odyra System.'),
+    },
+    'es': {
+        'home': ('', 'Inicio', 'Odyra System: agentes IA a escala, con vuestra marca',
+                 'Odyra diseña y gestiona agentes IA white-label para empresas con cientos o miles de sedes, clientes y puntos de venta: voz, WhatsApp, reservas, ventas y atención al cliente.'),
+        'soluzioni': ('soluciones', 'Soluciones', 'Soluciones para empresas de software, grandes empresas, redes y agencias | Odyra',
+                      'Cómo trabaja Odyra con empresas de software, grandes empresas, franquicias y agencias: agentes IA con su marca, gestionados por Odyra.'),
+        'agenti': ('agentes', 'Agentes', 'Agentes IA y servicios | Odyra',
+                   'El catálogo de agentes IA y servicios de Odyra: voz, mensajes, ventas, atención, operaciones, calidad e infraestructura.'),
+        'piattaforma': ('plataforma', 'Plataforma', 'La plataforma | Odyra',
+                        'Cómo está hecha la plataforma Odyra: un único cerebro compartido, reglas del sector en el código, conectores con los sistemas del cliente.'),
+        'academy': ('academy', 'Academy', 'Odyra Academy: consultoría y formación en IA | Odyra',
+                    'Talleres, webinars, itinerarios para equipos y consultoría sobre inteligencia artificial para empresas, de quien pone agentes IA en producción.'),
+        'casi': ('casos', 'Casos de éxito', 'Casos de éxito | Odyra',
+                 'BOSS, HAKO y Gruppo Colzani: agentes Odyra trabajando.'),
+        'chi': ('quienes-somos', 'Quiénes somos', 'Quiénes somos | Odyra',
+                'Odyra System, grupo tecnológico de Milán: quiénes somos, método, misión y visión.'),
+        'contatti': ('contacto', 'Contacto', 'Contacto | Odyra',
+                     'Solicita una demo de un agente IA de Odyra o un taller de la Academy.'),
+        'domande': ('preguntas', 'Preguntas frecuentes', 'Preguntas frecuentes sobre Odyra System y los agentes IA',
+                    'Respuestas sobre Odyra System: agentes IA sectoriales, canales, software compatible, white-label, RGPD, AI Act y WhatsApp Business.'),
+        'privacy': ('privacidad', 'Privacidad', 'Política de privacidad | Odyra System',
+                    'Política de tratamiento de datos personales del sitio Odyra System.'),
+    },
+}
+
+# testi fissi di testata, piede e pagine generate
+UI = {
+    'it': dict(skip='Vai al contenuto', menu='Menu', nav='Principale', demo='Richiedi una demo', other='ES', other_name='Español',
+               about='La fabbrica di agenti AI white-label. Milano, per l’Italia e la Spagna.',
+               solutions='Soluzioni', resources='Risorse', sw='Software house', big='Grandi aziende', fr='Franchising e reti', ag='Agenzie e integratori',
+               agents='Agenti e servizi', vat='Partita IVA', source='Fonte', updated='Aggiornato il',
+               faq_lead='Agenti AI di settore, canali, software supportati, white-label, dati e AI Act: le risposte in breve.',
+               faq_more='Non trovi la risposta? <a href="{c}">Scrivici</a>: rispondiamo entro un giorno lavorativo.',
+               nf_title='Pagina non trovata', nf_lead='L’indirizzo non esiste o è stato spostato. Riparti dalla <a href="{h}">home</a> o <a href="{c}">scrivici</a>.',
+               privacy_h1='Informativa sulla privacy.', privacy_lead='Come trattiamo i dati raccolti da questo sito.'),
+    'es': dict(skip='Ir al contenido', menu='Menú', nav='Principal', demo='Solicita una demo', other='IT', other_name='Italiano',
+               about='La fábrica de agentes IA white-label. Milán, para Italia y España.',
+               solutions='Soluciones', resources='Recursos', sw='Empresas de software', big='Grandes empresas', fr='Franquicias y redes', ag='Agencias e integradores',
+               agents='Agentes y servicios', vat='NIF-IVA', source='Fuente', updated='Actualizado el',
+               faq_lead='Agentes IA sectoriales, canales, software compatible, white-label, datos y AI Act: las respuestas en breve.',
+               faq_more='¿No encuentras la respuesta? <a href="{c}">Escríbenos</a>: respondemos en un día laborable.',
+               nf_title='Página no encontrada', nf_lead='La dirección no existe o se ha movido. Vuelve al <a href="{h}">inicio</a> o <a href="{c}">escríbenos</a>.',
+               privacy_h1='Política de privacidad.', privacy_lead='Cómo tratamos los datos que recoge este sitio.'),
+}
+
+CATS = {
+    'it': [('voce', 'Voce', 'Agenti che parlano al telefono, in entrata e in uscita, e dal vostro sito.'),
+           ('messaggi', 'Messaggi', 'WhatsApp, promemoria, recensioni, in più lingue.'),
+           ('vendite', 'Vendite', 'Lead, ordini, solleciti: gli agenti che portano e difendono il fatturato.'),
+           ('assistenza', 'Assistenza', 'Clienti e dipendenti con una risposta giusta, a qualsiasi ora.'),
+           ('operazioni', 'Operazioni', 'Il lavoro ripetitivo dietro le quinte: documenti, dati, flussi.'),
+           ('qualita', 'Qualità e dati', 'Gli agenti che controllano gli altri agenti, e i report per chi decide.'),
+           ('infrastruttura', 'Infrastruttura', 'Dove gira l’AI e come si collega ai vostri sistemi.')],
+    'es': [('voce', 'Voz', 'Agentes que hablan por teléfono, en llamadas entrantes y salientes, y desde vuestra web.'),
+           ('messaggi', 'Mensajes', 'WhatsApp, recordatorios, reseñas, en varios idiomas.'),
+           ('vendite', 'Ventas', 'Leads, pedidos, reclamaciones de pago: los agentes que traen y defienden la facturación.'),
+           ('assistenza', 'Atención', 'Clientes y empleados con la respuesta correcta, a cualquier hora.'),
+           ('operazioni', 'Operaciones', 'El trabajo repetitivo entre bastidores: documentos, datos, flujos.'),
+           ('qualita', 'Calidad y datos', 'Los agentes que controlan a los demás agentes, y los informes para quien decide.'),
+           ('infrastruttura', 'Infraestructura', 'Dónde funciona la IA y cómo se conecta con vuestros sistemas.')],
 }
 
 
-# Le pagine spagnole hanno ancora la struttura precedente; in italiano il sito è quello nuovo (pagine/).
-# Equivalente italiano di ogni pagina spagnola, e coppie 1:1 che si dichiarano a vicenda con hreflang.
-IT_FOR = {'home': '/', 'piattaforma': '/piattaforma/', 'settori': '/soluzioni/', 'partner': '/soluzioni/#software-house',
-          'goagent': '/casi/', 'misura': '/soluzioni/#grandi-aziende', 'chi': '/chi-siamo/', 'faq': '/domande/',
-          'contatti': '/contatti/', 'privacy': '/privacy/'}
-PAIRED = ('home', 'piattaforma', 'chi', 'faq', 'contatti', 'privacy')
+def base(lang):
+    return '/' if lang == 'it' else '/es/'
 
 
-def url(key, lang=None):
-    lang = lang or L
-    if lang == 'it':
-        return IT_FOR[key]
-    p = PATHS[key][LANGS.index(lang)]
-    base = '/' if lang == 'it' else '/es/'
-    return base + (p + '/' if p else '')
+def path(key, lang):
+    slug = TEXT[lang][key][0]
+    return base(lang) + (slug + '/' if slug else '')
 
 
-def md_url(key, lang=None):
-    lang = lang or L
-    p = PATHS[key][LANGS.index(lang)]
-    base = '/' if lang == 'it' else '/es/'
-    return base + (p or 'index') + '.md'
+def md_path(key, lang):
+    return base(lang) + (TEXT[lang][key][0] or 'index') + '.md'
 
 
-def nav_items():
-    return [
-        ('piattaforma', t('Piattaforma', 'Plataforma')),
-        ('settori', t('Settori', 'Sectores')),
-        ('partner', t('Per i software', 'Para software')),
-        ('goagent', 'GoAgent'),
-        ('misura', t('Su misura', 'A medida')),
-        ('chi', t('Chi siamo', 'Quiénes somos')),
-    ]
-
-
-# ───────── componenti ─────────
-def btn(href, label, kind='p', extra=''):
-    return f'<a class="btn btn-{kind}" href="{href}"{extra}>{label}</a>'
-
-
-def head_block(h1, lead, buttons=''):
-    return f'''<section class="phead"><div class="wrap">
-  <h1>{h1}</h1>
-  <p class="lead">{lead}</p>
-  {f'<p class="btns">{buttons}</p>' if buttons else ''}
-</div></section>'''
-
-
-def section(h2, inner, intro='', cls='', sid=''):
-    ida = f' id="{sid}"' if sid else ''
-    return f'''<section class="sec {cls}"{ida}><div class="wrap">
-  <header class="sec-h"><h2>{h2}</h2>{f'<p>{intro}</p>' if intro else ''}</header>
-  {inner}
-</div></section>'''
-
-
-def steps(items):
-    return '<ol class="steps">' + ''.join(f'<li><h3>{a}</h3><p>{b}</p></li>' for a, b in items) + '</ol>'
-
-
-def points(items, cls='points'):
-    return f'<ul class="{cls}">' + ''.join(f'<li><h3>{a}</h3><p>{b}</p></li>' for a, b in items) + '</ul>'
-
-
-def facts(items):
-    return '<dl class="facts">' + ''.join(f'<div><dt>{a}</dt><dd>{b}</dd></div>' for a, b in items) + '</dl>'
-
-
-def cta(h2=None, p=None, label=None, interest=''):
-    h2 = h2 or t('Parliamo del tuo software.', 'Hablemos de tu software.')
-    p = p or t('Ti mostriamo l’agente al lavoro, con tempi di integrazione e formula commerciale.',
-               'Te mostramos el agente trabajando, con plazos de integración y fórmula comercial.')
-    q = f'?interesse={interest}' if interest else ''
-    return f'''<section class="cta"><div class="wrap">
-  <div><h2>{h2}</h2><p>{p}</p></div>
-  <p class="btns">{btn(url('contatti') + q, label or t('Richiedi una demo', 'Solicita una demo'), 'w')}</p>
-</div></section>'''
-
-
-def faq_list(items):
-    return '<div class="faq">' + ''.join(
-        f'<details><summary><h3>{q}</h3></summary><div class="ans"><p>{a}</p></div></details>' for q, a in items) + '</div>'
-
-
-def video(name, title, desc):
-    """Inserisce il video solo se il file esiste in static/assets/video/. Niente segnaposto vuoti."""
-    base = os.path.join(STATIC, 'assets', 'video', name)
-    if not os.path.exists(base + '.mp4'):
-        return '', None
-    poster = f' poster="/assets/video/{name}.jpg"' if os.path.exists(base + '.jpg') else ''
-    tracks = ''
-    for lg, label in (('it', 'Italiano'), ('es', 'Español'), ('en', 'English'), ('de', 'Deutsch'), ('fr', 'Français')):
-        if os.path.exists(f'{base}.{lg}.vtt'):
-            d = ' default' if lg == L and lg != 'it' else ''
-            tracks += f'<track kind="subtitles" srclang="{lg}" label="{label}" src="/assets/video/{name}.{lg}.vtt"{d}>'
-    tag = f'<figure class="video"><video controls playsinline preload="metadata"{poster} src="/assets/video/{name}.mp4">{tracks}</video><figcaption>{desc}</figcaption></figure>'
-    ld = {'@type': 'VideoObject', 'name': title, 'description': desc, 'contentUrl': f'{SITE}/assets/video/{name}.mp4',
-          'uploadDate': UPDATED, 'thumbnailUrl': f'{SITE}/assets/video/{name}.jpg' if poster else f'{SITE}/assets/img/og.jpg'}
-    return tag, ld
-
-
-def salon_rules(n=None):
-    r = [
-        (t('Riconosce la cliente dal numero', 'Reconoce a la clienta por el número'),
-         t('e sa cosa ha fatto di recente. Se due clienti usano lo stesso numero, chiede chi sta parlando.',
-           'y sabe qué se hizo últimamente. Si dos clientas usan el mismo número, pregunta quién habla.')),
-        (t('Prenota più servizi in una sola visita', 'Reserva varios servicios en una sola visita'),
-         t('cercando un unico slot, senza buchi tra un servizio e l’altro.',
-           'buscando un único hueco, sin vacíos entre un servicio y otro.')),
-        (t('Rispetta l’ordine tecnico', 'Respeta el orden técnico'),
-         t('colore, taglio, piega; schiaritura, tonalizzante, piega. L’ordine lo impone il sistema.',
-           'color, corte, peinado; decoloración, matiz, peinado. El orden lo impone el sistema.')),
-        (t('Aggiunge la piega finale', 'Añade el peinado final'),
-         t('dopo colore, taglio donna e trattamenti, quando serve. Per l’uomo non la propone.',
-           'tras color, corte de mujer y tratamientos, cuando hace falta. A los hombres no se lo propone.')),
-        (t('Gestisce i pacchetti', 'Gestiona los paquetes'),
-         t('un servizio ne porta con sé altri, con operatore e ordine fissi, e dice sempre prezzo e durata del totale.',
-           'un servicio arrastra otros, con profesional y orden fijos, y dice siempre precio y duración del total.')),
-        (t('Inserisce la consulenza', 'Inserta la consulta'),
-         t('quando il servizio la richiede, in testa alla sequenza.', 'cuando el servicio la exige, al inicio de la secuencia.')),
-        (t('Rispetta la scelta dell’operatore', 'Respeta la elección del profesional'),
-         t('segue la preferenza della cliente; con “staff riservato” il salone sceglie di non far prenotare per nome.',
-           'sigue la preferencia de la clienta; con “equipo reservado” el salón decide no reservar por nombre.')),
-        (t('Capisce le fasce orarie', 'Entiende las franjas horarias'),
-         t('“mattina”, “pomeriggio”, “dopo le 17”, e confronta più giorni nello stesso messaggio.',
-           '“mañana”, “tarde”, “después de las 17”, y compara varios días en el mismo mensaje.')),
-        (t('Prenota solo orari reali', 'Reserva solo horarios reales'),
-         t('e scrive “prenotato” solo dopo la conferma del gestionale.', 'y escribe “reservado” solo tras la confirmación del software de gestión.')),
-        (t('Sposta senza creare doppioni', 'Cambia citas sin duplicados'),
-         t('prima prenota il nuovo appuntamento, poi cancella il vecchio.', 'primero reserva la cita nueva, luego cancela la antigua.')),
-        (t('Applica la regola delle 24 ore', 'Aplica la regla de las 24 horas'),
-         t('nelle 24 ore prima dell’appuntamento la disdetta passa al salone.', 'en las 24 horas previas a la cita, la cancelación pasa al salón.')),
-        (t('Avvisa il salone', 'Avisa al salón'),
-         t('quando la cliente è in ritardo, sta arrivando o è fuori.', 'cuando la clienta llega tarde, está llegando o espera fuera.')),
-        (t('Passa la conversazione a una persona', 'Pasa la conversación a una persona'),
-         t('quando serve, anche durante la chiamata: l’operatore entra nella stessa conversazione.',
-           'cuando hace falta, incluso durante la llamada: la persona entra en la misma conversación.')),
-        (t('Dice sempre di essere un’AI', 'Dice siempre que es una IA'),
-         t('al telefono e su WhatsApp, come richiede l’AI Act.', 'por teléfono y por WhatsApp, como exige el AI Act.')),
-        (t('Segue le regole del salone', 'Sigue las reglas del salón'),
-         t('clientela riservata, prezzi nascosti, chiusure straordinarie e ferie.', 'clientela reservada, precios ocultos, cierres extraordinarios y vacaciones.')),
-    ]
-    r = r[:n] if n else r
-    return '<ul class="rules">' + ''.join(f'<li><b>{a}</b> {b}</li>' for a, b in r) + '</ul>'
-
-
-def transcript():
-    """Conversazione di esempio con le regole annotate a margine: il pezzo che racconta Odyra a colpo d'occhio."""
-    msgs = [
-        ('c', t('Cliente', 'Clienta'), t('Ciao! Sabato mattina riuscite a farmi colore e taglio?', '¡Hola! ¿El sábado por la mañana me podéis hacer color y corte?'), None),
-        ('a', t('Agente', 'Agente'), t('Ciao Giulia, sono l’assistente AI del salone. Sabato alle 9:30 c’è posto con Marta: colore, taglio e piega finale, 2 ore e 15 in tutto, 92 €. Ti va bene?',
-                                       'Hola, Giulia, soy el asistente IA del salón. El sábado a las 9:30 hay hueco con Marta: color, corte y peinado final, 2 horas y 15 en total, 92 €. ¿Te va bien?'),
-         [t('Riconosce la cliente dal numero', 'Reconoce a la clienta por el número'),
-          t('Dice di essere un’AI', 'Dice que es una IA'),
-          t('Ordine tecnico: colore, taglio, piega', 'Orden técnico: color, corte, peinado'),
-          t('Un solo slot, prezzo e durata del totale', 'Un solo hueco, precio y duración del total')]),
-        ('c', t('Cliente', 'Clienta'), t('Perfetto, grazie', 'Perfecto, gracias'), None),
-        ('a', t('Agente', 'Agente'), t('Fatto, sei prenotata sabato alle 9:30 con Marta. Ti mando la conferma qui su WhatsApp.',
-                                       'Hecho, tienes cita el sábado a las 9:30 con Marta. Te mando la confirmación aquí por WhatsApp.'),
-         [t('Scrive nell’agenda del gestionale', 'Escribe en la agenda del software de gestión'),
-          t('Dice “prenotato” solo dopo la conferma', 'Dice “reservado” solo tras la confirmación')]),
-    ]
-    rows = ''
-    for i, (who, label, text, notes) in enumerate(msgs):
-        ns = ''
-        if notes:
-            ns = '<ul class="notes">' + ''.join(f'<li>{n}</li>' for n in notes) + '</ul>'
-        rows += f'<li class="m m-{who}" style="--i:{i}"><p class="bubble"><b class="who">{label}:</b> {text}</p>{ns}</li>'
-    cap = t('Conversazione di esempio su WhatsApp. Accanto a ogni risposta, le regole del salone che l’agente applica.',
-            'Conversación de ejemplo por WhatsApp. Junto a cada respuesta, las reglas del salón que aplica el agente.')
-    return f'''<figure class="trace" id="esempio">
-  <div class="trace-top"><span class="dot" aria-hidden="true"></span>{t('Salone, WhatsApp, giovedì 21:14', 'Salón, WhatsApp, jueves 21:14')}</div>
-  <ol class="chat">{rows}</ol>
-  <figcaption>{cap}</figcaption>
-</figure>'''
-
-
-# ───────── pagine ─────────
-# Ogni pagina restituisce un dizionario: title, desc, crumb, body, ld (lista di nodi JSON-LD aggiuntivi), type.
-
+# ───────── domande frequenti (pagina /domande/ e /es/preguntas/) ─────────
 def faq_home():
     return [
         (t('Cos’è Odyra System?', '¿Qué es Odyra System?'),
@@ -256,132 +178,6 @@ def faq_home():
     ]
 
 
-def page_home():
-    body = f'''
-<section class="hero"><div class="wrap hero-grid">
-  <div class="hero-copy">
-    <h1>{t('Agenti AI di settore, dentro i software di gestione.', 'Agentes IA sectoriales, dentro de los software de gestión.')}</h1>
-    <p class="lead">{t('Odyra System costruisce agenti AI che rispondono al telefono e su WhatsApp, prenotano e gestiscono appuntamenti seguendo le regole di un settore preciso. Li colleghiamo ai software di gestione, che li offrono ai loro clienti con il proprio marchio.',
-                       'Odyra System construye agentes IA que contestan al teléfono y por WhatsApp, reservan y gestionan citas siguiendo las reglas de un sector concreto. Los conectamos a los software de gestión, que los ofrecen a sus clientes con su propia marca.')}</p>
-    <p class="btns">{btn(url('partner'), t('Diventa partner', 'Hazte socio'))}{btn('#esempio', t('Guarda un esempio', 'Mira un ejemplo'), 'o')}</p>
-  </div>
-  {transcript()}
-</div></section>
-
-{section(t('Odyra in breve.', 'Odyra en breve.'), facts([
-    (t('Cosa fa', 'Qué hace'), t('Agenti AI verticali per settore: rispondono, prenotano, spostano e disdicono appuntamenti, e passano la conversazione a una persona quando serve.', 'Agentes IA verticales por sector: contestan, reservan, cambian y cancelan citas, y pasan la conversación a una persona cuando hace falta.')),
-    (t('Per chi', 'Para quién'), t('Software house che sviluppano software di gestione, e aziende con grandi volumi di contatti.', 'Empresas que desarrollan software de gestión, y compañías con grandes volúmenes de contactos.')),
-    (t('Canali', 'Canales'), t('Telefono con voce in tempo reale e WhatsApp Business ufficiale.', 'Teléfono con voz en tiempo real y WhatsApp Business oficial.')),
-    (t('Modello', 'Modelo'), t('White-label: il software di gestione offre l’agente col proprio marchio e incassa un canone ricorrente; Odyra gestisce tecnologia e operatività.', 'White-label: el software de gestión ofrece el agente con su marca y cobra una cuota recurrente; Odyra gestiona tecnología y operación.')),
-    (t('In produzione', 'En producción'), t('Beauty, con GoAgent di BOSS per gli oltre 1.500 saloni GoWeb, da giugno 2026.', 'Beauty, con GoAgent de BOSS para los más de 1.500 salones GoWeb, desde junio de 2026.')),
-    (t('Sede', 'Sede'), t('Milano, Italia. Società: Verypos S.r.l.', 'Milán, Italia. Sociedad: Verypos S.r.l.')),
-]))}
-
-{section(t('Il modello, in quattro passaggi.', 'El modelo, en cuatro pasos.'), steps([
-    (t('Scegliamo un settore', 'Elegimos un sector'), t('E lo studiamo a fondo: come lavora, cosa chiedono i clienti, quali regole contano.', 'Y lo estudiamos a fondo: cómo trabaja, qué piden los clientes, qué reglas cuentan.')),
-    (t('Costruiamo l’agente', 'Construimos el agente'), t('Le regole del settore entrano nel codice, non solo in un prompt.', 'Las reglas del sector entran en el código, no solo en un prompt.')),
-    (t('Ci colleghiamo al gestionale', 'Nos conectamos al software'), t('Alle API dei software di gestione che quel settore usa già.', 'A las API de los software de gestión que ese sector ya usa.')),
-    (t('Il software lo offre ai clienti', 'El software lo ofrece a sus clientes'), t('Con il suo marchio e un canone ricorrente. Odyra gestisce tutto il resto.', 'Con su marca y una cuota recurrente. Odyra gestiona todo lo demás.')),
-]), cls='sec-alt')}
-
-{section(t('Perché non basta un’AI generica.', 'Por qué no basta una IA genérica.'), points([
-    (t('Conosce il mestiere', 'Conoce el oficio'), t('Le regole di chi fa quel lavoro sono scritte nel codice: l’agente non le dimentica e non le sbaglia.', 'Las reglas de quien hace ese trabajo están escritas en el código: el agente no las olvida ni las confunde.')),
-    (t('Lavora dove si lavora già', 'Trabaja donde ya se trabaja'), t('Legge e scrive nel software di gestione. Nessun nuovo strumento da imparare.', 'Lee y escribe en el software de gestión. Ninguna herramienta nueva que aprender.')),
-    (t('È gestito da noi', 'Lo gestionamos nosotros'), t('Qualità delle risposte, errori, consumi e passaggio a una persona li seguiamo noi, cliente per cliente.', 'Calidad de las respuestas, errores, consumos y paso a una persona los seguimos nosotros, cliente por cliente.')),
-]))}
-
-{section(t('Costruito con la piattaforma Odyra.', 'Construido con la plataforma Odyra.'), f"""<ul class="works">
-  <li><h3><a href="{url('goagent')}">GoAgent</a></h3><p>{t('Il servizio AI di BOSS per i saloni che usano GoWeb: risponde, prenota e conferma su WhatsApp. È il nostro riferimento nel beauty.', 'El servicio IA de BOSS para los salones que usan GoWeb: contesta, reserva y confirma por WhatsApp. Es nuestra referencia en beauty.')}</p></li>
-  <li><h3><a href="{LINK_HAKO}" rel="noopener">HAKO</a></h3><p>{t('Software proprietario di Odyra per le portinerie dei condomini, venduto direttamente. Ha un sito suo: hakocondomini.com.', 'Software propio de Odyra para las conserjerías de comunidades de vecinos, vendido directamente. Tiene su propia web: hakocondomini.com.')}</p></li>
-  <li><h3><a href="{url('misura')}">{t('Progetti su misura', 'Proyectos a medida')}</a></h3><p>{t('Agenti commerciali e di customer service per aziende con grandi volumi, come Gruppo Colzani.', 'Agentes comerciales y de atención al cliente para empresas con grandes volúmenes, como Gruppo Colzani.')}</p></li>
-</ul>""", cls='sec-alt')}
-
-{section(t('WhatsApp Business, sui canali ufficiali.', 'WhatsApp Business, por los canales oficiales.'), f'<p class="prose">{t("Odyra è Tech Provider Meta tramite Vonage: attiviamo i numeri WhatsApp Business, gestiamo template e conversazioni. La titolarità dell’account resta sempre al cliente.", "Odyra es Tech Provider de Meta a través de Vonage: activamos los números de WhatsApp Business y gestionamos plantillas y conversaciones. La titularidad de la cuenta sigue siendo siempre del cliente.")}</p>')}
-
-{section(t('Domande frequenti.', 'Preguntas frecuentes.'), faq_list(faq_home()) + f'<p class="more"><a href="{url("faq")}">{t("Tutte le domande", "Todas las preguntas")}</a></p>', cls='sec-alt')}
-
-{cta()}'''
-    return dict(
-        title=t('Odyra System: agenti AI di settore per i software di gestione', 'Odyra System: agentes IA sectoriales para software de gestión'),
-        desc=t('Odyra System costruisce agenti AI di settore che rispondono al telefono e su WhatsApp e prenotano nel gestionale. White-label per i software di gestione. Milano.',
-               'Odyra System construye agentes IA sectoriales que contestan al teléfono y por WhatsApp y reservan en el software de gestión. White-label para software de gestión. Milán.'),
-        crumb='Home', body=body, type='WebPage',
-        ld=[{'@type': 'Service', '@id': f'{SITE}{url("home")}#servizio', 'name': t('Agenti AI di settore in white-label', 'Agentes IA sectoriales en white-label'),
-             'serviceType': t('Agente AI vocale e WhatsApp per la gestione degli appuntamenti', 'Agente IA de voz y WhatsApp para la gestión de citas'),
-             'provider': {'@id': f'{SITE}/#org'}, 'areaServed': ['IT', 'ES'],
-             'audience': {'@type': 'BusinessAudience', 'audienceType': t('Software house di software di gestione', 'Empresas de software de gestión')},
-             'description': t('Agenti AI verticali, con le regole del settore nel codice, collegati ai software di gestione e offerti ai loro clienti con il marchio del software.',
-                              'Agentes IA verticales, con las reglas del sector en el código, conectados a los software de gestión y ofrecidos a sus clientes con la marca del software.')}],
-        faq=faq_home(),
-    )
-
-
-def page_piattaforma():
-    body = head_block(
-        t('Una piattaforma, cinque strati.', 'Una plataforma, cinco capas.'),
-        t('Oltre 18 mesi di sviluppo di un’infrastruttura proprietaria. È la base che ci permette di aprire un nuovo settore o collegare un nuovo software di gestione senza ripartire da zero.',
-          'Más de 18 meses de desarrollo de una infraestructura propia. Es la base que nos permite abrir un sector nuevo o conectar un nuevo software de gestión sin empezar de cero.'),
-        btn(url('contatti') + '?interesse=partner', t('Richiedi una demo', 'Solicita una demo')))
-    layers = [
-        (t('Regole di settore', 'Reglas de sector'), t('Il cuore: come lavora quel settore, scritto nel codice. Ordine dei servizi, pacchetti, politiche di disdetta, scelta dell’operatore, passaggio a una persona. Cambia da settore a settore; il resto della piattaforma no.',
-                                                         'El núcleo: cómo trabaja ese sector, escrito en el código. Orden de los servicios, paquetes, políticas de cancelación, elección del profesional, paso a una persona. Cambia de un sector a otro; el resto de la plataforma no.')),
-        (t('Connettori', 'Conectores'), t('Un connettore dedicato per ogni software di gestione: legge clienti, servizi, operatori e disponibilità, scrive e cancella appuntamenti. Per un nuovo software si scrive il connettore; conversazione e regole restano le stesse.',
-                                          'Un conector dedicado para cada software de gestión: lee clientes, servicios, profesionales y disponibilidad, escribe y cancela citas. Para un software nuevo se escribe el conector; conversación y reglas siguen iguales.')),
-        (t('Canali', 'Canales'), t('Voce in tempo reale e WhatsApp, con lo stesso agente. WhatsApp Business gestito da Odyra: numeri, template e conversazioni, con la titolarità dell’account al cliente.',
-                                   'Voz en tiempo real y WhatsApp, con el mismo agente. WhatsApp Business gestionado por Odyra: números, plantillas y conversaciones, con la titularidad de la cuenta para el cliente.')),
-        (t('Gestione operativa', 'Gestión operativa'), t('Un agente per ogni cliente, con dati e configurazione isolati. Limiti e avvisi di consumo, controllo di qualità automatico, monitoraggio degli errori con diagnosi, riassunti per il titolare, passaggio a una persona.',
-                                                         'Un agente por cliente, con datos y configuración aislados. Límites y avisos de consumo, control de calidad automático, seguimiento de errores con diagnóstico, resúmenes para el titular, paso a una persona.')),
-        (t('Conformità', 'Cumplimiento'), t('L’agente dice sempre di essere un’AI, i dati sono separati per ogni azienda, il trattamento è conforme al GDPR e progettato nel perimetro dell’AI Act. Supportiamo i partner nella documentazione per i settori regolati.',
-                                            'El agente dice siempre que es una IA, los datos están separados por empresa, el tratamiento cumple el RGPD y está diseñado dentro del perímetro del AI Act. Ayudamos a los socios con la documentación en sectores regulados.')),
-    ]
-    body += section(t('Gli strati, dal settore al cliente.', 'Las capas, del sector al cliente.'), steps(layers), cls='layers')
-    body += section(t('Come si attiva un nuovo cliente.', 'Cómo se activa un cliente nuevo.'), steps([
-        (t('Si crea l’azienda', 'Se crea la empresa'), t('Un solo passaggio crea il cliente con i suoi limiti e le sue impostazioni, senza duplicati.', 'Un solo paso crea el cliente con sus límites y su configuración, sin duplicados.')),
-        (t('Staff e listino arrivano da soli', 'Equipo y tarifas llegan solos'), t('Si sincronizzano dal software di gestione ogni notte, e la base di conoscenza dell’agente si aggiorna con loro.', 'Se sincronizan desde el software de gestión cada noche, y la base de conocimiento del agente se actualiza con ellos.')),
-        (t('Uno specialista attiva i canali', 'Un especialista activa los canales'), t('Numero, WhatsApp e voce: una procedura di circa dieci minuti.', 'Número, WhatsApp y voz: un procedimiento de unos diez minutos.')),
-    ]), intro=t('Dal momento in cui il software di gestione è collegato.', 'Desde que el software de gestión está conectado.'), cls='sec-alt')
-    body += section(t('WhatsApp Business ufficiale.', 'WhatsApp Business oficial.'),
-                    f'<p class="prose">{t("Odyra è Tech Provider Meta tramite Vonage. Gestiamo l’infrastruttura di numeri e template per tutti i clienti, su più account WhatsApp Business, e i messaggi di conferma e disdetta usano template approvati.", "Odyra es Tech Provider de Meta a través de Vonage. Gestionamos la infraestructura de números y plantillas para todos los clientes, en varias cuentas de WhatsApp Business, y los mensajes de confirmación y cancelación usan plantillas aprobadas.")}</p><p class="small">{t("WhatsApp e Meta sono marchi di Meta Platforms, Inc.; Vonage è un marchio di Vonage Holdings Corp. Odyra non è affiliata a queste società.", "WhatsApp y Meta son marcas de Meta Platforms, Inc.; Vonage es una marca de Vonage Holdings Corp. Odyra no está afiliada a estas empresas.")}</p>')
-    body += cta(t('Domande tecniche o di conformità?', '¿Preguntas técnicas o de cumplimiento?'), t('Rispondiamo ai tuoi referenti IT e legali.', 'Respondemos a tus responsables de IT y legales.'), interest='partner')
-    return dict(
-        title=t('Piattaforma: regole di settore, connettori, voce e WhatsApp | Odyra System', 'Plataforma: reglas de sector, conectores, voz y WhatsApp | Odyra System'),
-        desc=t('Come funziona la piattaforma Odyra: regole di settore nel codice, connettori ai software di gestione, voce e WhatsApp, gestione operativa, GDPR e AI Act.',
-               'Cómo funciona la plataforma Odyra: reglas de sector en el código, conectores a los software de gestión, voz y WhatsApp, gestión operativa, RGPD y AI Act.'),
-        crumb=t('Piattaforma', 'Plataforma'), body=body, type='WebPage', ld=[])
-
-
-def page_settori():
-    body = head_block(
-        t('Settori di competenza.', 'Sectores de competencia.'),
-        t('Prima di costruire un agente impariamo un settore a fondo: ogni regola, ogni abitudine, ogni caso limite. La piattaforma è la stessa; le regole cambiano da settore a settore.',
-          'Antes de construir un agente aprendemos un sector a fondo: cada regla, cada costumbre, cada caso límite. La plataforma es la misma; las reglas cambian de un sector a otro.'))
-    body += section(t('Come entriamo in un settore.', 'Cómo entramos en un sector.'), steps([
-        (t('Ascoltiamo', 'Escuchamos'), t('Come lavora chi fa quel mestiere, cosa chiedono i clienti, dove si perdono chiamate e tempo.', 'Cómo trabaja quien hace ese oficio, qué piden los clientes, dónde se pierden llamadas y tiempo.')),
-        (t('Scriviamo le regole nel codice', 'Escribimos las reglas en el código'), t('Ogni regola del settore diventa codice, così l’agente la rispetta sempre.', 'Cada regla del sector se convierte en código, así el agente la respeta siempre.')),
-        (t('Ci colleghiamo', 'Nos conectamos'), t('Ai software di gestione che quel settore usa già.', 'A los software de gestión que ese sector ya usa.')),
-        (t('Gestiamo e misuriamo', 'Gestionamos y medimos'), t('Qualità, consumi e risultati, per migliorare ogni settimana.', 'Calidad, consumos y resultados, para mejorar cada semana.')),
-    ]))
-    body += section(t('Beauty: parrucchieri e centri estetici.', 'Beauty: peluquerías y centros de estética.'),
-                    f'''<p class="prose">{t('È il settore in cui siamo partiti. Con BOSS e il suo gestionale GoWeb l’agente è disponibile per una rete di oltre 1.500 saloni, con il nome GoAgent. Ecco alcune delle regole che segue:', 'Es el sector en el que empezamos. Con BOSS y su software GoWeb, el agente está disponible para una red de más de 1.500 salones, con el nombre GoAgent. Estas son algunas de las reglas que sigue:')}</p>
-{salon_rules(8)}
-<p class="more"><a href="{url('goagent')}">{t('Tutte le regole e la storia di GoAgent', 'Todas las reglas y la historia de GoAgent')}</a></p>''', cls='sec-alt')
-    others = [
-        (t('Dentale', 'Dental'), t('Studi dentistici e cliniche odontoiatriche.', 'Clínicas dentales.')),
-        (t('Autofficine', 'Talleres'), t('Officine meccaniche e centri di assistenza auto.', 'Talleres mecánicos y centros de servicio del automóvil.')),
-        (t('Ospitalità', 'Hostelería'), t('Hotel, strutture ricettive e ristorazione.', 'Hoteles, alojamientos y restauración.')),
-        (t('Veterinari', 'Veterinarios'), t('Ambulatori e cliniche veterinarie.', 'Consultas y clínicas veterinarias.')),
-    ]
-    body += section(t('Gli altri settori di competenza.', 'Los demás sectores de competencia.'), points(others, 'points cols4'),
-                    intro=t('Stessa piattaforma, regole diverse. Se il tuo software di gestione lavora in uno di questi settori, o in un altro, parliamone.',
-                            'Misma plataforma, reglas distintas. Si tu software de gestión trabaja en uno de estos sectores, o en otro, hablemos.'))
-    body += cta(t('Hai un software di gestione?', '¿Tienes un software de gestión?'), t('Raccontaci il tuo settore: vediamo insieme come portare l’agente ai tuoi clienti.', 'Cuéntanos tu sector: vemos juntos cómo llevar el agente a tus clientes.'), interest='partner')
-    return dict(
-        title=t('Settori: beauty, dentale, autofficine, ospitalità, veterinari | Odyra System', 'Sectores: beauty, dental, talleres, hostelería, veterinarios | Odyra System'),
-        desc=t('Odyra costruisce agenti AI con le regole di ogni settore nel codice. Beauty in produzione con GoAgent; competenze in dentale, autofficine, ospitalità e veterinari.',
-               'Odyra construye agentes IA con las reglas de cada sector en el código. Beauty en producción con GoAgent; competencias en dental, talleres, hostelería y veterinarios.'),
-        crumb=t('Settori', 'Sectores'), body=body, type='WebPage', ld=[])
-
-
 def faq_partner():
     return [
         (t('Cosa deve fare un software di gestione per diventare partner?', '¿Qué tiene que hacer un software de gestión para ser socio?'),
@@ -395,150 +191,6 @@ def faq_partner():
         (t('Chi segue i clienti dopo l’attivazione?', '¿Quién atiende a los clientes después de la activación?'),
          t('Odyra: onboarding, controllo di qualità, errori, consumi, WhatsApp Business e assistenza tecnica.', 'Odyra: alta, control de calidad, errores, consumos, WhatsApp Business y soporte técnico.')),
     ]
-
-
-def page_partner():
-    vtag, vld = video('partner-program', t('Il programma partner di Odyra', 'El programa de socios de Odyra'),
-                      t('Il programma partner spiegato in pochi minuti.', 'El programa de socios explicado en pocos minutos.'))
-    body = head_block(
-        t('Un’AI di settore per i tuoi clienti, col tuo marchio.', 'Una IA sectorial para tus clientes, con tu marca.'),
-        t('Il tuo software di gestione offre un agente che risponde, prenota e organizza al posto del cliente. Tu porti i clienti; Odyra porta prodotto, tecnologia e gestione.',
-          'Tu software de gestión ofrece un agente que contesta, reserva y organiza en lugar del cliente. Tú aportas los clientes; Odyra aporta producto, tecnología y gestión.'),
-        btn(url('contatti') + '?interesse=partner', t('Diventa partner', 'Hazte socio')))
-    body += section(t('Cosa fai tu, cosa facciamo noi.', 'Qué haces tú, qué hacemos nosotros.'), facts([
-        (t('Il partner', 'El socio'), t('Offre il servizio ai suoi clienti col suo marchio e dà accesso alle API: ricerca cliente, disponibilità, creazione e cancellazione appuntamenti.', 'Ofrece el servicio a sus clientes con su marca y da acceso a las API: búsqueda de cliente, disponibilidad, creación y cancelación de citas.')),
-        ('Odyra', t('Agente di settore, connettore al software, onboarding dei clienti, dashboard per i titolari, WhatsApp Business, controlli di qualità e assistenza.', 'Agente sectorial, conector al software, alta de clientes, paneles para los titulares, WhatsApp Business, controles de calidad y soporte.')),
-        (t('Il marchio', 'La marca'), t('Interfacce, messaggi e dashboard portano il logo del partner.', 'Interfaces, mensajes y paneles llevan el logo del socio.')),
-        (t('Il ricavo', 'Los ingresos'), t('Un nuovo canone ricorrente da ogni cliente che attiva l’agente, con revenue condivisa con Odyra.', 'Una nueva cuota recurrente de cada cliente que activa el agente, con ingresos compartidos con Odyra.')),
-    ]))
-    body += section(t('Come si parte.', 'Cómo se empieza.'), steps([
-        (t('Collegamento', 'Conexión'), t('Un connettore dedicato collega il tuo software alla piattaforma, senza toccarne il cuore.', 'Un conector dedicado une tu software a la plataforma, sin tocar su núcleo.')),
-        (t('Attivazione dei clienti', 'Activación de clientes'), t('Staff e listino si sincronizzano da soli. Numero, WhatsApp e voce li configura uno specialista Odyra in circa dieci minuti.', 'Equipo y tarifas se sincronizan solos. Número, WhatsApp y voz los configura un especialista de Odyra en unos diez minutos.')),
-        (t('Gestione continua', 'Gestión continua'), t('Controlliamo qualità, errori e consumi. Il cliente vede tutto nella sua dashboard.', 'Controlamos calidad, errores y consumos. El cliente lo ve todo en su panel.')),
-    ]) + vtag, cls='sec-alt')
-    body += section(t('Un caso reale: BOSS e GoWeb.', 'Un caso real: BOSS y GoWeb.'),
-                    f'<p class="prose">{t("BOSS sviluppa GoWeb, tra i software più diffusi per parrucchieri e centri estetici in Italia, con oltre 1.500 saloni. Con Odyra ha lanciato GoAgent con il proprio marchio.", "BOSS desarrolla GoWeb, uno de los software más difundidos para peluquerías y centros de estética en Italia, con más de 1.500 salones. Con Odyra ha lanzado GoAgent con su propia marca.")}</p><p class="more"><a href="{url("goagent")}">{t("La storia di GoAgent", "La historia de GoAgent")}</a></p>')
-    body += section(t('Domande dei partner.', 'Preguntas de los socios.'), faq_list(faq_partner()), cls='sec-alt')
-    body += cta(t('Porta l’AI nel tuo software di gestione.', 'Lleva la IA a tu software de gestión.'), t('Parliamo di integrazione, formula e tempi.', 'Hablemos de integración, fórmula y plazos.'), t('Diventa partner', 'Hazte socio'), 'partner')
-    ld = [{'@type': 'Service', 'name': t('Programma partner Odyra per software di gestione', 'Programa de socios Odyra para software de gestión'),
-           'serviceType': t('Agente AI in white-label', 'Agente IA en white-label'), 'provider': {'@id': f'{SITE}/#org'},
-           'audience': {'@type': 'BusinessAudience', 'audienceType': t('Software house di software di gestione', 'Empresas de software de gestión')},
-           'description': t('Il software di gestione offre ai suoi clienti un agente AI di settore col proprio marchio, con canone ricorrente e revenue condivisa; Odyra fornisce prodotto, connettore, onboarding e gestione.',
-                            'El software de gestión ofrece a sus clientes un agente IA sectorial con su marca, con cuota recurrente e ingresos compartidos; Odyra aporta producto, conector, alta y gestión.')}]
-    if vld:
-        ld.append(vld)
-    return dict(
-        title=t('Programma partner per software di gestione: AI in white-label | Odyra System', 'Programa de socios para software de gestión: IA en white-label | Odyra System'),
-        desc=t('Offri ai clienti del tuo software di gestione un agente AI di settore col tuo marchio. Canone ricorrente, revenue condivisa, tecnologia e gestione a carico di Odyra.',
-               'Ofrece a los clientes de tu software de gestión un agente IA sectorial con tu marca. Cuota recurrente, ingresos compartidos, tecnología y gestión a cargo de Odyra.'),
-        crumb=t('Per i software di gestione', 'Para software de gestión'), body=body, type='WebPage', ld=ld, faq=faq_partner())
-
-
-def page_goagent():
-    vtag, vld = video('goagent', 'GoAgent', t('Il video di presentazione di GoAgent.', 'El vídeo de presentación de GoAgent.'))
-    shots = [
-        ('panoramica', t('Panoramica: chiamate, appuntamenti fissati dall’AI, conversione e ore risparmiate.', 'Resumen: llamadas, citas fijadas por la IA, conversión y horas ahorradas.')),
-        ('inbox-whatsapp', t('Inbox WhatsApp: il titolare prende in carico la conversazione e la restituisce all’AI.', 'Bandeja de WhatsApp: el titular toma la conversación y se la devuelve a la IA.')),
-        ('chiamate', t('Chiamate: trascrizione, riassunto e dettagli dell’appuntamento.', 'Llamadas: transcripción, resumen y detalles de la cita.')),
-        ('pacchetti', t('Pacchetti: servizi abbinati con prezzo e durata totali.', 'Paquetes: servicios combinados con precio y duración totales.')),
-        ('consumi', t('Consumi del piano e impostazioni dell’agente.', 'Consumo del plan y ajustes del agente.')),
-    ]
-    gallery = '<div class="shots">' + ''.join(
-        f'<figure><img src="/assets/img/goagent-{n}.webp" width="1200" height="750" loading="lazy" decoding="async" alt="{e(c)}"><figcaption>{c}</figcaption></figure>' for n, c in shots) + '</div>'
-    body = head_block(
-        t('GoAgent: l’agente AI dei saloni GoWeb.', 'GoAgent: el agente IA de los salones GoWeb.'),
-        t('GoAgent è il servizio AI di BOSS per parrucchieri e centri estetici che usano GoWeb. Risponde al telefono e su WhatsApp, giorno e notte, e prenota direttamente nell’agenda del salone. Lo ha costruito e lo gestisce Odyra System.',
-          'GoAgent es el servicio IA de BOSS para peluquerías y centros de estética que usan GoWeb. Contesta al teléfono y por WhatsApp, día y noche, y reserva directamente en la agenda del salón. Lo ha construido y lo gestiona Odyra System.'),
-        btn(LINK_BOSS, t('Scopri GoAgent su BOSS', 'Descubre GoAgent en BOSS'), 'p', ' rel="noopener"'))
-    body += section(t('La storia.', 'La historia.'), steps([
-        (t('Il problema', 'El problema'), t('I saloni perdono prenotazioni ogni giorno: il telefono squilla mentre lo staff lavora, i messaggi arrivano a negozio chiuso.', 'Los salones pierden reservas cada día: el teléfono suena mientras el equipo trabaja, los mensajes llegan con el local cerrado.')),
-        (t('La scelta di BOSS', 'La decisión de BOSS'), t('BOSS sviluppa GoWeb, usato da oltre 1.500 saloni. Voleva offrire ai clienti un assistente AI vero, integrato nel gestionale, senza costruirlo in casa.', 'BOSS desarrolla GoWeb, usado por más de 1.500 salones. Quería ofrecer a sus clientes un asistente IA de verdad, integrado en el software, sin construirlo en casa.')),
-        (t('Il lancio', 'El lanzamiento'), t('Odyra ha costruito l’agente, l’onboarding dei saloni, la dashboard e la gestione. GoAgent è in produzione da giugno 2026 ed è stato presentato alla convention BOSS di ottobre 2026, davanti a oltre 300 persone.', 'Odyra construyó el agente, el alta de los salones, el panel y la gestión. GoAgent está en producción desde junio de 2026 y se presentó en la convención de BOSS de octubre de 2026, ante más de 300 personas.')),
-    ]) + vtag)
-    body += section(t('Conosce il mestiere.', 'Conoce el oficio.'), salon_rules(),
-                    intro=t('Le regole del salone sono nel codice, non solo in un prompt. Queste sono le principali.', 'Las reglas del salón están en el código, no solo en un prompt. Estas son las principales.'), cls='sec-alt')
-    body += section(t('Voce e WhatsApp.', 'Voz y WhatsApp.'), points([
-        (t('Un solo agente', 'Un solo agente'), t('Risponde al telefono e su WhatsApp, 24 ore su 24, anche su più conversazioni insieme.', 'Contesta al teléfono y por WhatsApp, las 24 horas, incluso en varias conversaciones a la vez.')),
-        (t('Dentro GoWeb', 'Dentro de GoWeb'), t('Legge servizi, operatori, turni e disponibilità e scrive gli appuntamenti nell’agenda.', 'Lee servicios, profesionales, turnos y disponibilidad y escribe las citas en la agenda.')),
-        (t('Parla come un salone', 'Habla como un salón'), t('Frasi brevi, una domanda alla volta, il nome della cliente e la sua ultima visita.', 'Frases cortas, una pregunta cada vez, el nombre de la clienta y su última visita.')),
-        (t('Conferme su WhatsApp', 'Confirmaciones por WhatsApp'), t('Conferma e disdetta di ogni appuntamento, con messaggi approvati.', 'Confirmación y cancelación de cada cita, con mensajes aprobados.')),
-    ], 'points cols4'))
-    body += section(t('La dashboard del titolare.', 'El panel del titular.'), gallery,
-                    intro=t('Schermate reali della dashboard, con dati di prova.', 'Pantallas reales del panel, con datos de prueba.'), cls='sec-alt')
-    body += section(t('In arrivo.', 'Próximamente.'), f'<p class="prose">{t("Chiamate in uscita ai clienti che non tornano in salone: l’agente li richiama, al telefono o su WhatsApp, e li riporta in agenda.", "Llamadas salientes a los clientes que no vuelven al salón: el agente los llama, por teléfono o por WhatsApp, y los vuelve a poner en la agenda.")}</p>')
-    body += cta(t('Hai un software di gestione come GoWeb?', '¿Tienes un software de gestión como GoWeb?'), t('Possiamo fare lo stesso per i tuoi clienti, col tuo marchio.', 'Podemos hacer lo mismo para tus clientes, con tu marca.'), t('Diventa partner', 'Hazte socio'), 'partner')
-    ld = [{'@type': 'SoftwareApplication', '@id': f'{SITE}{url("goagent")}#app', 'name': 'GoAgent',
-           'applicationCategory': 'BusinessApplication', 'operatingSystem': 'Web',
-           'description': t('Agente AI per saloni di parrucchieri e centri estetici: risponde al telefono e su WhatsApp e prenota nell’agenda del gestionale GoWeb.',
-                            'Agente IA para peluquerías y centros de estética: contesta al teléfono y por WhatsApp y reserva en la agenda del software GoWeb.'),
-           'brand': {'@type': 'Brand', 'name': 'BOSS'}, 'creator': {'@id': f'{SITE}/#org'},
-           'audience': {'@type': 'BusinessAudience', 'audienceType': t('Parrucchieri e centri estetici', 'Peluquerías y centros de estética')},
-           'screenshot': [f'{SITE}/assets/img/goagent-{n}.webp' for n, _ in shots]}]
-    if vld:
-        ld.append(vld)
-    return dict(
-        title=t('GoAgent: agente AI per parrucchieri e centri estetici GoWeb | Odyra System', 'GoAgent: agente IA para peluquerías y centros de estética GoWeb | Odyra System'),
-        desc=t('GoAgent risponde al telefono e su WhatsApp per i saloni GoWeb e prenota nell’agenda. Servizio di BOSS costruito e gestito da Odyra System. In produzione da giugno 2026.',
-               'GoAgent contesta al teléfono y por WhatsApp para los salones GoWeb y reserva en la agenda. Servicio de BOSS construido y gestionado por Odyra System. En producción desde junio de 2026.'),
-        crumb='GoAgent', body=body, type='WebPage', ld=ld)
-
-
-def page_misura():
-    body = head_block(
-        t('Progetti su misura per aziende con grandi volumi.', 'Proyectos a medida para empresas con grandes volúmenes.'),
-        t('La stessa piattaforma, applicata ai processi di una singola azienda: vendite, customer service e back office, integrati con CRM ed ERP.',
-          'La misma plataforma, aplicada a los procesos de una sola empresa: ventas, atención al cliente y back office, integrados con CRM y ERP.'),
-        btn(url('contatti') + '?interesse=misura', t('Parliamo del progetto', 'Hablemos del proyecto')))
-    body += section(t('Dove l’AI fa lavoro vero.', 'Donde la IA hace trabajo de verdad.'), points([
-        (t('Vendite', 'Ventas'), t('Un agente richiama ogni lead in pochi secondi, lo qualifica con domande strutturate e fissa l’appuntamento nel calendario del team. Chi non risponde al telefono viene ricontattato su WhatsApp.', 'Un agente llama a cada lead en pocos segundos, lo cualifica con preguntas estructuradas y fija la cita en el calendario del equipo. A quien no contesta al teléfono se le escribe por WhatsApp.')),
-        (t('Customer service', 'Atención al cliente'), t('Voce, WhatsApp ed e-mail, con risposte coerenti e passaggio a una persona quando serve.', 'Voz, WhatsApp y correo, con respuestas coherentes y paso a una persona cuando hace falta.')),
-        (t('Back office', 'Back office'), t('Automazioni sui processi ripetitivi, tra i sistemi che l’azienda usa già.', 'Automatizaciones de procesos repetitivos, entre los sistemas que la empresa ya usa.')),
-    ]))
-    body += section(t('Il caso Gruppo Colzani.', 'El caso Gruppo Colzani.'),
-                    f'<p class="prose">{t("Gruppo Colzani, dietro Sportit.com e Global Trading, genera centinaia di lead a ogni campagna. L’agente commerciale di Odyra scrive subito su WhatsApp, richiama in pochi secondi, qualifica il contatto, fissa l’appuntamento e registra l’esito nel CRM. La collaborazione prosegue con l’automazione del customer service via e-mail per i marketplace.", "Gruppo Colzani, detrás de Sportit.com y Global Trading, genera cientos de leads en cada campaña. El agente comercial de Odyra escribe enseguida por WhatsApp, llama en pocos segundos, cualifica el contacto, fija la cita y registra el resultado en el CRM. La colaboración sigue con la automatización de la atención al cliente por correo para los marketplaces.")}</p>', cls='sec-alt')
-    body += section(t('Come lavoriamo.', 'Cómo trabajamos.'), steps([
-        (t('Capiamo il processo', 'Entendemos el proceso'), t('Dove si perdono chiamate, tempo e margine.', 'Dónde se pierden llamadas, tiempo y margen.')),
-        (t('Disegniamo e integriamo', 'Diseñamos e integramos'), t('Cosa sa l’agente, quando passa la mano a una persona, con quali sistemi si collega.', 'Qué sabe el agente, cuándo pasa a una persona, con qué sistemas se conecta.')),
-        (t('Misuriamo', 'Medimos'), t('Chiamate, esiti e tempi in una dashboard, per migliorare ogni settimana.', 'Llamadas, resultados y tiempos en un panel, para mejorar cada semana.')),
-    ]))
-    body += cta(t('Hai un processo da automatizzare?', '¿Tienes un proceso que automatizar?'), t('Raccontacelo: ti diciamo cosa si può fare e in quanto tempo.', 'Cuéntanoslo: te decimos qué se puede hacer y en cuánto tiempo.'), interest='misura')
-    return dict(
-        title=t('Agenti AI su misura per vendite e customer service | Odyra System', 'Agentes IA a medida para ventas y atención al cliente | Odyra System'),
-        desc=t('Agenti AI e automazioni su misura per aziende con grandi volumi: richiamo dei lead in pochi secondi, qualifica, appuntamenti, customer service, integrazione con CRM ed ERP.',
-               'Agentes IA y automatizaciones a medida para empresas con grandes volúmenes: llamada a leads en segundos, cualificación, citas, atención al cliente, integración con CRM y ERP.'),
-        crumb=t('Su misura', 'A medida'), body=body, type='WebPage',
-        ld=[{'@type': 'Service', 'name': t('Agenti AI su misura', 'Agentes IA a medida'), 'provider': {'@id': f'{SITE}/#org'},
-             'serviceType': t('Automazione di vendite, customer service e back office con agenti AI', 'Automatización de ventas, atención al cliente y back office con agentes IA'),
-             'areaServed': ['IT', 'ES']}])
-
-
-def page_chi():
-    body = head_block(
-        t('Un settore alla volta.', 'Un sector cada vez.'),
-        t('Odyra System è un gruppo tecnologico di Milano. Impariamo un settore a fondo e costruiamo il software con l’AI che fa il lavoro. Lo portiamo ai clienti in tre modi.',
-          'Odyra System es un grupo tecnológico de Milán. Aprendemos un sector a fondo y construimos el software con la IA que hace el trabajo. Lo llevamos a los clientes de tres maneras.'))
-    body += section(t('Tre modi di portare l’AI al lavoro.', 'Tres maneras de llevar la IA al trabajo.'), points([
-        (t('Con i software di gestione', 'Con los software de gestión'), t('Agenti di settore in white-label, dentro il software che i clienti usano già. Nel beauty, con GoAgent di BOSS.', 'Agentes sectoriales en white-label, dentro del software que los clientes ya usan. En beauty, con GoAgent de BOSS.')),
-        (t('Con prodotti propri', 'Con productos propios'), t('Software proprietari venduti direttamente, come HAKO per le portinerie dei condomini.', 'Software propio vendido directamente, como HAKO para las conserjerías de comunidades de vecinos.')),
-        (t('Su misura', 'A medida'), t('Agenti e automazioni per aziende con grandi volumi.', 'Agentes y automatizaciones para empresas con grandes volúmenes.')),
-    ]))
-    body += section(t('Missione e visione.', 'Misión y visión.'), facts([
-        (t('Missione', 'Misión'), t('Dare a ogni azienda, dal singolo salone al gruppo industriale, una forza lavoro AI affidabile, integrata e misurabile.', 'Dar a cada empresa, del salón individual al grupo industrial, una fuerza de trabajo IA fiable, integrada y medible.')),
-        (t('Visione', 'Visión'), t('Diventare il gruppo europeo di riferimento per i software AI verticali: prodotti proprietari, ciascuno leader nel suo mercato, su un’unica infrastruttura condivisa.', 'Ser el grupo europeo de referencia en software IA vertical: productos propios, cada uno líder en su mercado, sobre una única infraestructura compartida.')),
-    ]), cls='sec-alt')
-    body += section(t('Dati societari.', 'Datos de la empresa.'), facts([
-        (t('Società', 'Sociedad'), COMPANY['legal']),
-        (t('Sede', 'Sede'), f"{COMPANY['street']}, {COMPANY['zip']} {COMPANY['city']}"),
-        (t('Partita IVA', 'NIF-IVA'), COMPANY['vat']),
-        ('REA', COMPANY['rea']),
-        (t('Contatto', 'Contacto'), f'<a href="mailto:{EMAIL}">{EMAIL}</a>'),
-    ]))
-    body += cta(t('Lavoriamo insieme.', 'Trabajemos juntos.'), t('Che tu sia un software di gestione o un’azienda, raccontaci il tuo caso.', 'Seas un software de gestión o una empresa, cuéntanos tu caso.'))
-    return dict(
-        title=t('Chi siamo: Odyra System, gruppo tecnologico di Milano', 'Quiénes somos: Odyra System, grupo tecnológico de Milán'),
-        desc=t('Odyra System (Verypos S.r.l.) è un gruppo tecnologico di Milano che costruisce software AI verticali: agenti di settore in white-label, prodotti propri come HAKO e progetti su misura.',
-               'Odyra System (Verypos S.r.l.) es un grupo tecnológico de Milán que construye software IA vertical: agentes sectoriales en white-label, productos propios como HAKO y proyectos a medida.'),
-        crumb=t('Chi siamo', 'Quiénes somos'), body=body, type='AboutPage', ld=[])
 
 
 def faq_all():
@@ -572,78 +224,6 @@ def faq_all():
     ]
 
 
-def page_faq():
-    body = head_block(t('Domande frequenti.', 'Preguntas frecuentes.'),
-                      t('Cosa fa Odyra, come funzionano gli agenti di settore, come si diventa partner. Risposte brevi e precise.',
-                        'Qué hace Odyra, cómo funcionan los agentes sectoriales, cómo hacerse socio. Respuestas breves y precisas.'))
-    body += f'<section class="sec"><div class="wrap">{faq_list(faq_all())}</div></section>'
-    body += cta(t('Non trovi la risposta?', '¿No encuentras la respuesta?'), t('Scrivici: rispondiamo entro un giorno lavorativo.', 'Escríbenos: respondemos en un día laborable.'), t('Scrivici', 'Escríbenos'))
-    return dict(
-        title=t('Domande frequenti su Odyra System e gli agenti AI di settore', 'Preguntas frecuentes sobre Odyra System y los agentes IA sectoriales'),
-        desc=t('Risposte su Odyra System: cos’è un agente AI di settore, canali, software di gestione supportati, partnership white-label, GDPR, AI Act e WhatsApp Business.',
-               'Respuestas sobre Odyra System: qué es un agente IA sectorial, canales, software de gestión compatibles, alianzas white-label, RGPD, AI Act y WhatsApp Business.'),
-        crumb=t('Domande frequenti', 'Preguntas frecuentes'), body=body, type='FAQPage', ld=[], faq=faq_all(), faq_main=True)
-
-
-def page_contatti():
-    opts = [('partner', t('Partnership per software di gestione', 'Alianza para software de gestión')), ('goagent', 'GoAgent'),
-            ('hako', 'HAKO'), ('misura', t('Progetto su misura', 'Proyecto a medida')), ('altro', t('Altro', 'Otro'))]
-    pv = url('privacy')
-    body = head_block(t('Parliamo del tuo caso.', 'Hablemos de tu caso.'),
-                      t('Raccontaci come lavori oggi. Rispondiamo entro un giorno lavorativo.', 'Cuéntanos cómo trabajas hoy. Respondemos en un día laborable.'))
-    body += f'''<section class="sec"><div class="wrap contact-grid">
-  <form class="form" id="form-contatti" data-md="skip" novalidate data-ok="{e(t('Richiesta inviata. Ti rispondiamo entro un giorno lavorativo.', 'Solicitud enviada. Respondemos en un día laborable.'))}" data-err="{e(t('Invio non riuscito. Scrivici a ' + EMAIL + '.', 'No se pudo enviar. Escríbenos a ' + EMAIL + '.'))}" data-mail="{e(t('Si è aperto il tuo programma di posta con la richiesta già scritta: premi Invia.', 'Se ha abierto tu programa de correo con la solicitud ya escrita: pulsa Enviar.'))}">
-    <p class="f2"><label>{t('Nome e cognome', 'Nombre y apellidos')}<input name="nome" autocomplete="name" required></label><label>{t('Azienda', 'Empresa')}<input name="azienda" autocomplete="organization"></label></p>
-    <p class="f2"><label>E-mail<input name="email" type="email" autocomplete="email" required></label><label>{t('Telefono', 'Teléfono')}<input name="telefono" type="tel" autocomplete="tel"></label></p>
-    <p><label>{t('Di cosa hai bisogno?', '¿Qué necesitas?')}<select name="interesse">{''.join(f'<option value="{v}">{l}</option>' for v, l in opts)}</select></label></p>
-    <p><label>{t('Messaggio', 'Mensaje')}<textarea name="messaggio" rows="5" required></textarea></label></p>
-    <p class="check"><label><input type="checkbox" name="privacy" required> <span>{t(f'Ho letto l’<a href="{pv}">informativa privacy</a> e acconsento a essere ricontattato.', f'He leído la <a href="{pv}">política de privacidad</a> y acepto ser contactado.')}</span></label></p>
-    <p><button class="btn btn-p" type="submit">{t('Invia la richiesta', 'Enviar la solicitud')}</button></p>
-    <p class="form-msg" id="form-msg" role="status" aria-live="polite"></p>
-  </form>
-  <aside class="contact-side">
-    {facts([('E-mail', f'<a href="mailto:{EMAIL}">{EMAIL}</a>'), (t('Sede', 'Sede'), f"{COMPANY['legal']}<br>{COMPANY['street']}<br>{COMPANY['zip']} {COMPANY['city']} (MI), {t('Italia', 'Italia')}")])}
-  </aside>
-</div></section>'''
-    return dict(
-        title=t('Contatti: richiedi una demo | Odyra System', 'Contacto: solicita una demo | Odyra System'),
-        desc=t('Contatta Odyra System per una demo degli agenti AI di settore, una partnership per il tuo software di gestione o un progetto su misura. Milano, team@odyrasystemautomation.it.',
-               'Contacta con Odyra System para una demo de los agentes IA sectoriales, una alianza para tu software de gestión o un proyecto a medida. Milán, team@odyrasystemautomation.it.'),
-        crumb=t('Contatti', 'Contacto'), body=body, type='ContactPage', ld=[])
-
-
-def page_privacy():
-    body = head_block(t('Informativa sulla privacy.', 'Política de privacidad.'), t('Come trattiamo i dati raccolti da questo sito.', 'Cómo tratamos los datos que recoge este sitio.'))
-    # Bozza: da far rivedere a un legale prima di considerarla definitiva.
-    body += f'''<section class="sec"><div class="wrap prose-block">
-<h2>{t('Titolare del trattamento', 'Responsable del tratamiento')}</h2>
-<p>{COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {COMPANY['city']}. {t('Partita IVA', 'NIF-IVA')} {COMPANY['vat']}. <a href="mailto:{EMAIL}">{EMAIL}</a></p>
-<h2>{t('Dati raccolti', 'Datos recogidos')}</h2>
-<p>{t('Con il modulo contatti raccogliamo nome, azienda, e-mail, telefono e messaggio, al solo scopo di rispondere alla tua richiesta. Li conserviamo per il tempo necessario a gestirla.', 'Con el formulario de contacto recogemos nombre, empresa, correo, teléfono y mensaje, solo para responder a tu solicitud. Los conservamos el tiempo necesario para gestionarla.')}</p>
-<h2>{t('Cookie e servizi esterni', 'Cookies y servicios externos')}</h2>
-<p>{t('Il sito non usa cookie di profilazione né strumenti di tracciamento. I caratteri sono ospitati sul nostro server: nessun dato viene inviato a servizi di terzi per visualizzare le pagine.', 'El sitio no usa cookies de perfilado ni herramientas de seguimiento. Las fuentes están alojadas en nuestro servidor: no se envía ningún dato a terceros para mostrar las páginas.')}</p>
-<h2>{t('I tuoi diritti', 'Tus derechos')}</h2>
-<p>{t(f'Puoi chiedere accesso, rettifica, cancellazione e opposizione scrivendo a <a href="mailto:{EMAIL}">{EMAIL}</a>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali.', f'Puedes pedir acceso, rectificación, supresión y oposición escribiendo a <a href="mailto:{EMAIL}">{EMAIL}</a>. También puedes presentar una reclamación ante la autoridad de protección de datos.')}</p>
-</div></section>'''
-    return dict(title=t('Informativa privacy | Odyra System', 'Política de privacidad | Odyra System'),
-                desc=t('Informativa sul trattamento dei dati personali del sito Odyra System.', 'Política de tratamiento de datos personales del sitio Odyra System.'),
-                crumb='Privacy', body=body, type='WebPage', ld=[], noindex=True)
-
-
-def page_404():
-    body = head_block(t('Questa pagina non esiste.', 'Esta página no existe.'),
-                      t('Il sito è stato rinnovato e alcuni indirizzi sono cambiati. Riparti da qui:', 'El sitio se ha renovado y algunas direcciones han cambiado. Empieza desde aquí:'),
-                      btn(url('home'), t('Vai alla home', 'Ir a la página de inicio')) + btn(url('faq'), t('Leggi le domande frequenti', 'Lee las preguntas frecuentes'), 'o'))
-    return dict(title=t('Pagina non trovata | Odyra System', 'Página no encontrada | Odyra System'), desc='', crumb='404', body=body, type='WebPage', ld=[], noindex=True)
-
-
-BUILDERS = {
-    'home': page_home, 'piattaforma': page_piattaforma, 'settori': page_settori, 'partner': page_partner,
-    'goagent': page_goagent, 'misura': page_misura, 'chi': page_chi, 'faq': page_faq, 'contatti': page_contatti, 'privacy': page_privacy,
-}
-LLMS_ORDER = ['home', 'piattaforma', 'settori', 'partner', 'goagent', 'misura', 'chi', 'faq', 'contatti']
-
-
 # ───────── JSON-LD ─────────
 def org_node():
     return {
@@ -660,106 +240,202 @@ def org_node():
     }
 
 
-def jsonld(key, p):
-    page_url = SITE + url(key)
-    nodes = [org_node(),
-             {'@type': 'WebSite', '@id': f'{SITE}/#website', 'url': f'{SITE}/', 'name': 'Odyra System', 'inLanguage': ['it-IT', 'es-ES'], 'publisher': {'@id': f'{SITE}/#org'}}]
-    page = {'@type': p['type'], '@id': page_url + '#page', 'url': page_url, 'name': p['title'], 'description': p['desc'],
-            'inLanguage': 'it-IT' if L == 'it' else 'es-ES', 'isPartOf': {'@id': f'{SITE}/#website'}, 'about': {'@id': f'{SITE}/#org'},
-            'dateModified': UPDATED, 'primaryImageOfPage': f'{SITE}/assets/img/og.jpg'}
-    if key != 'home':
-        page['breadcrumb'] = {'@type': 'BreadcrumbList', 'itemListElement': [
-            {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + url('home')},
-            {'@type': 'ListItem', 'position': 2, 'name': p['crumb'], 'item': page_url}]}
-    if p.get('faq_main'):
-        page['mainEntity'] = [{'@type': 'Question', 'name': strip(q), 'acceptedAnswer': {'@type': 'Answer', 'text': strip(a)}} for q, a in p['faq']]
-    nodes.append(page)
-    nodes += p.get('ld', [])
-    return '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': nodes}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>'
-
-
 def strip(s):
     return html.unescape(re.sub(r'<[^>]+>', '', s))
 
 
-# ───────── layout ─────────
-def hreflang_links(key):
-    """Alternate di lingua di una pagina spagnola: l'italiano solo se la pagina ha un vero equivalente."""
-    out = f'<link rel="alternate" hreflang="es" href="{SITE}{url(key, "es")}">'
-    if key in PAIRED:
-        out += f'<link rel="alternate" hreflang="it" href="{SITE}{url(key, "it")}"><link rel="alternate" hreflang="x-default" href="{SITE}{url(key, "it")}">'
+# ───────── corpi delle pagine ─────────
+def without_placeholders(body):
+    """Toglie i riquadri per foto, video e premi non ancora disponibili: in pagine/ restano, sul sito non si vedono.
+    Per pubblicarne uno basta sostituire il riquadro con il contenuto vero e rigenerare."""
+    drop_if = lambda marker: (lambda m: '' if marker in m.group(0) else m.group(0))
+    body = re.sub(r'(<!--[^>]*-->\s*)?<section class="film[^"]*">.*?</section>', '', body, flags=re.S)
+    body = re.sub(r'<div class="photo-strip[^"]*"[^>]*>.*?</ol></div>', drop_if('slot-mini'), body, flags=re.S)
+    body = re.sub(r'<figure class="slot[^"]*">\s*<div class="slot-box"[^>]*>.*?</div>\s*</figure>', '', body, flags=re.S)
+    body = re.sub(r'<section class="team paper">\s*<div class="wrap">\s*<h2>.*?</section>', drop_if('person-photo'), body, flags=re.S)
+    body = re.sub(r'<li class="partner-slot">.*?</li>', '', body, flags=re.S)
+    return body
+
+
+def phead(lang, crumb, h1, lead):
+    return f'''<section class="phead ink">
+  <canvas class="hero-guilloche" aria-hidden="true"></canvas>
+  <div class="wrap phead-in">
+    <p class="crumbs" data-md="skip"><a href="{base(lang)}">{TEXT[lang]['home'][1]}</a> <span aria-hidden="true">/</span> {crumb}</p>
+    <h1 class="display">{h1}</h1>
+    <p class="hero-lead">{lead}</p>
+  </div>
+</section>'''
+
+
+def body_domande(lang):
+    u = UI[lang]
+    qa = ''.join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faq_all())
+    return phead(lang, TEXT[lang]['domande'][1], TEXT[lang]['domande'][1] + '.', u['faq_lead']) + f'''
+<section class="qa paper">
+  <div class="wrap">
+    <div class="qa-list">{qa}</div>
+    <p class="sec-lead">{u['faq_more'].format(c=path('contatti', lang))}</p>
+  </div>
+</section>'''
+
+
+def body_privacy(lang):
+    u = UI[lang]
+    # Bozza: da far rivedere a un legale prima di considerarla definitiva.
+    return phead(lang, TEXT[lang]['privacy'][1], u['privacy_h1'], u['privacy_lead']) + f'''
+<section class="paper">
+  <div class="wrap prose">
+    <h2>{t('Titolare del trattamento', 'Responsable del tratamiento')}</h2>
+    <p>{COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {t('Milano', 'Milán')}. {u['vat']} {COMPANY['vat']}. <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+    <h2>{t('Dati raccolti', 'Datos recogidos')}</h2>
+    <p>{t('Con il modulo contatti raccogliamo nome, azienda, e-mail, telefono e messaggio, al solo scopo di rispondere alla tua richiesta. Li conserviamo per il tempo necessario a gestirla.', 'Con el formulario de contacto recogemos nombre, empresa, correo, teléfono y mensaje, solo para responder a tu solicitud. Los conservamos el tiempo necesario para gestionarla.')}</p>
+    <h2>{t('Cookie e servizi esterni', 'Cookies y servicios externos')}</h2>
+    <p>{t('Il sito non usa cookie di profilazione né strumenti di tracciamento. Caratteri e librerie sono ospitati sul nostro server: nessun dato viene inviato a servizi di terzi per visualizzare le pagine.', 'El sitio no usa cookies de perfilado ni herramientas de seguimiento. Las fuentes y librerías están alojadas en nuestro servidor: no se envía ningún dato a terceros para mostrar las páginas.')}</p>
+    <h2>{t('I tuoi diritti', 'Tus derechos')}</h2>
+    <p>{t(f'Puoi chiedere accesso, rettifica, cancellazione e opposizione scrivendo a <a href="mailto:{EMAIL}">{EMAIL}</a>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali.', f'Puedes pedir acceso, rectificación, supresión y oposición escribiendo a <a href="mailto:{EMAIL}">{EMAIL}</a>. También puedes presentar una reclamación ante la autoridad de protección de datos.')}</p>
+  </div>
+</section>'''
+
+
+def bodies(lang):
+    """Corpo HTML di ogni pagina della lingua, con i segnaposti già sostituiti."""
+    src_dir = PAGINE if lang == 'it' else os.path.join(PAGINE, 'es')
+    with open(os.path.join(src_dir, 'agents.json'), encoding='utf-8') as f:
+        cards = json.load(f)
+    grid = ''
+    for key, name, intro in CATS[lang]:
+        mine = [c for c in cards if f'data-cat="{key}"' in c]
+        grid += f'''<section class="cat" id="{key}"><div class="wrap">
+  <header class="cat-h"><h2>{name}</h2><p>{intro}</p><span class="cat-n">{len(mine)}</span></header>
+  <ol class="agents-grid">{''.join(mine)}</ol>
+</div></section>
+'''
+    out = {}
+    for key, src, _ in PAGES:
+        if src:
+            with open(os.path.join(src_dir, src), encoding='utf-8') as f:
+                body = f.read()
+            body = body.replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', base(lang))
+            body = without_placeholders(body)
+            if re.search(r'slot-mini|slot-box|partner-slot', body):
+                print(f'Attenzione: in {os.path.relpath(src_dir, ROOT)}/{src} è rimasto un segnaposto da riempire')
+        else:
+            body = body_domande(lang) if key == 'domande' else body_privacy(lang)
+        # le briciole di pane sono già nel JSON-LD: fuori dal Markdown
+        out[key] = body.replace('<p class="crumbs">', '<p class="crumbs" data-md="skip">').strip()
     return out
 
 
-def lang_switch(key):
-    return ('<p class="lang">' + ''.join(
-        f'<a href="{url(key, lg)}" hreflang="{lg}" lang="{lg}"{" aria-current=\"true\"" if lg == L else ""}>{lg.upper()}</a>' for lg in LANGS) + '</p>')
+# ───────── testata, piede, <head> ─────────
+def header(lang, current):
+    u = UI[lang]
+    links = ''.join(f'<a href="{path(k, lang)}"{" aria-current=\"page\"" if k == current else ""}>{TEXT[lang][k][1]}</a>' for k, _, nav in PAGES if nav)
+    other = 'es' if lang == 'it' else 'it'
+    return f'''<header class="top">
+  <a class="top-brand" href="{base(lang)}"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40"></a>
+  <nav class="top-nav" id="nav" aria-label="{u['nav']}">
+    {links}
+    <a href="{path(current or 'home', other)}" hreflang="{other}" lang="{other}" title="{u['other_name']}">{u['other']}</a>
+    <a class="b b-cyan" href="{path('contatti', lang)}">{u['demo']}</a>
+  </nav>
+  <button class="top-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav">{u['menu']}</button>
+</header>'''
 
 
-def layout(key, p):
-    path = url(key) if key != '404' else ('/404.html' if L == 'it' else '/es/404.html')
-    noindex = p.get('noindex')
-    alts = '' if key == '404' else hreflang_links(key)
-    md = '' if (noindex or key == '404') else f'<link rel="alternate" type="text/markdown" href="{md_url(key)}" title="Markdown">'
-    cur = lambda k: ' aria-current="page"' if k == key else ''
-    nav = ''.join(f'<a href="{url(k)}"{cur(k)}>{label}</a>' for k, label in nav_items())
-    lk = key if key in PATHS else 'home'
-    head = f'''<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<script>document.documentElement.classList.add('js')</script>
-<title>{e(p['title'])}</title>
-{f'<meta name="description" content="{e(p["desc"])}">' if p['desc'] else ''}
-<meta name="robots" content="{'noindex,follow' if noindex else 'index,follow,max-snippet:-1,max-image-preview:large'}">
-{'' if key == '404' else f'<link rel="canonical" href="{SITE}{path}">'}
+def footer(lang):
+    u = UI[lang]
+    p = lambda k: path(k, lang)
+    lab = lambda k: TEXT[lang][k][1]
+    col = lambda title, items: f'<div><h2>{title}</h2><ul>' + ''.join(f'<li><a href="{h}">{l}</a></li>' for l, h in items) + '</ul></div>'
+    other = 'es' if lang == 'it' else 'it'
+    return f'''<footer class="foot ink">
+  <div class="wrap">
+    <div class="foot-cols">
+      <div class="foot-about"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40" loading="lazy"><p>{u['about']}</p></div>
+      {col(u['solutions'], [(u['sw'], p('soluzioni') + '#software-house'), (u['big'], p('soluzioni') + '#grandi-aziende'), (u['fr'], p('soluzioni') + '#franchising'), (u['ag'], p('soluzioni') + '#agenzie')])}
+      {col('Odyra', [(u['agents'], p('agenti')), (lab('piattaforma'), p('piattaforma')), ('Odyra Academy', p('academy')), (lab('casi'), p('casi')), (lab('chi'), p('chi'))])}
+      {col(u['resources'], [(u['demo'], p('contatti')), (lab('domande'), p('domande')), (EMAIL, f'mailto:{EMAIL}'), (lab('privacy'), p('privacy')), ('llms.txt', '/llms.txt'), (u['other_name'], base(other))])}
+    </div>
+    <p class="foot-legal">© 2026 Odyra System, {COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {t('Milano', 'Milán')}. {u['vat']} {COMPANY['vat']}, REA {COMPANY['rea']}.</p>
+  </div>
+</footer>'''
+
+
+def qa_pairs(body):
+    """Domande e risposte di una pagina (<details><summary>), per il JSON-LD FAQPage."""
+    return [(strip(q), strip(a)) for q, a in re.findall(r'<details><summary>(.*?)</summary>(.*?)</details>', body, re.S)]
+
+
+def jsonld(lang, key, body):
+    _, label, title, desc = TEXT[lang][key]
+    page_url = SITE + path(key, lang)
+    page = {'@type': {'chi': 'AboutPage', 'contatti': 'ContactPage', 'domande': 'FAQPage'}.get(key, 'WebPage'),
+            '@id': page_url + '#page', 'url': page_url, 'name': title, 'description': desc,
+            'inLanguage': 'it-IT' if lang == 'it' else 'es-ES',
+            'isPartOf': {'@id': f'{SITE}/#website'}, 'about': {'@id': f'{SITE}/#org'},
+            'dateModified': UPDATED, 'primaryImageOfPage': f'{SITE}/assets/img/og.jpg'}
+    if key != 'home':
+        page['breadcrumb'] = {'@type': 'BreadcrumbList', 'itemListElement': [
+            {'@type': 'ListItem', 'position': 1, 'name': TEXT[lang]['home'][1], 'item': SITE + base(lang)},
+            {'@type': 'ListItem', 'position': 2, 'name': label, 'item': page_url}]}
+    if key == 'domande':
+        page['mainEntity'] = [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in qa_pairs(body)]
+    nodes = [org_node(),
+             {'@type': 'WebSite', '@id': f'{SITE}/#website', 'url': f'{SITE}/', 'name': 'Odyra System', 'inLanguage': ['it-IT', 'es-ES'], 'publisher': {'@id': f'{SITE}/#org'}},
+             page]
+    return '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': nodes}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>'
+
+
+def layout(lang, key, body, title=None, desc=None, not_found=False):
+    _, _, page_title, page_desc = TEXT[lang][key]
+    title, desc = title or page_title, desc or page_desc
+    u = UI[lang]
+    if not_found:
+        seo = '<meta name="robots" content="noindex,follow">'
+    else:
+        url = SITE + path(key, lang)
+        noindex = key in NOINDEX
+        alts = ''.join(f'<link rel="alternate" hreflang="{lg}" href="{SITE}{path(key, lg)}">' for lg in LANGS) + f'<link rel="alternate" hreflang="x-default" href="{SITE}{path(key, "it")}">'
+        md = '' if noindex else f'<link rel="alternate" type="text/markdown" href="{md_path(key, lang)}" title="Markdown">'
+        seo = f'''<meta name="robots" content="{'noindex,follow' if noindex else 'index,follow,max-snippet:-1,max-image-preview:large'}">
+<link rel="canonical" href="{url}">
 {alts}{md}
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Odyra System"><meta property="og:locale" content="{'it_IT' if L == 'it' else 'es_ES'}">
-<meta property="og:title" content="{e(p['title'])}"><meta property="og:description" content="{e(p['desc'])}">
-<meta property="og:url" content="{SITE}{path}"><meta property="og:image" content="{SITE}/assets/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Odyra System"><meta property="og:locale" content="{'it_IT' if lang == 'it' else 'es_ES'}">
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
+<meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/assets/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+{jsonld(lang, key, body)}'''
+    return f'''<!doctype html>
+<html lang="{lang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>document.documentElement.classList.add('js')</script>
+<title>{e(title)}</title>
+<meta name="description" content="{e(desc)}">
+{seo}
 <meta name="theme-color" content="#071A3A">
 <link rel="icon" href="/assets/icons/favicon.ico" sizes="any"><link rel="icon" href="/assets/icons/fav-48.png" type="image/png" sizes="48x48"><link rel="apple-touch-icon" href="/assets/icons/fav-180.png">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="preload" href="/assets/fonts/schibsted-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v={ASSET_V}">
-{'' if key == '404' else jsonld(key, p)}'''
-    crumbs = '' if key in ('home', '404') else f'<nav class="crumbs" aria-label="Breadcrumb" data-md="skip"><div class="wrap"><ol><li><a href="{url("home")}">Home</a></li><li aria-current="page">{p["crumb"]}</li></ol></div></nav>'
-    return f'''<!doctype html>
-<html lang="{L}">
-<head>
-{head}
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/odyra.css?v={ASSET_V}">
+<script src="/assets/vendor/gsap.min.js" defer></script>
+<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/vendor/SplitText.min.js" defer></script>
+<script src="/odyra.js?v={ASSET_V}" defer></script>
 </head>
 <body>
-<a class="skip" href="#main">{t('Vai al contenuto', 'Ir al contenido')}</a>
-<header class="hdr"><div class="wrap hdr-in">
-  <a class="brand" href="{url('home')}"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="163" height="44"></a>
-  <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="nav">{t('Menu', 'Menú')}</button>
-  <nav class="nav" id="nav" aria-label="{t('Principale', 'Principal')}">{nav}{lang_switch(lk)}{btn(url('contatti'), t('Richiedi una demo', 'Solicita una demo'), 'c')}</nav>
-</div></header>
-{crumbs}
+<a class="skip" href="#main">{u['skip']}</a>
+{header(lang, None if not_found else key)}
 <main id="main">
-{p['body']}
+{body}
 </main>
-{footer()}
-<script src="/script.js?v={ASSET_V}" defer></script>
+{footer(lang)}
 </body>
 </html>
 '''
-
-
-def footer():
-    col = lambda title, items: f'<div><h2>{title}</h2><ul>' + ''.join(f'<li>{i}</li>' for i in items) + '</ul></div>'
-    a = lambda k: f'<a href="{url(k)}">{dict(nav_items() + [("faq", t("Domande frequenti", "Preguntas frecuentes")), ("contatti", t("Contatti", "Contacto")), ("privacy", "Privacy")])[k]}</a>'
-    return f'''<footer class="ftr"><div class="wrap">
-  <div class="ftr-top">
-    <div class="ftr-about"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="163" height="44" loading="lazy">
-      <p>{t('Agenti AI di settore, in white-label per i software di gestione. Milano.', 'Agentes IA sectoriales, en white-label para software de gestión. Milán.')}</p></div>
-    {col('Odyra', [a('piattaforma'), a('settori'), a('partner'), a('misura'), a('chi')])}
-    {col(t('Costruito con Odyra', 'Construido con Odyra'), [a('goagent'), f'<a href="{LINK_HAKO}" rel="noopener">HAKO</a>'])}
-    {col(t('Risorse', 'Recursos'), [a('faq'), a('contatti'), '<a href="/llms.txt">llms.txt</a>'])}
-  </div>
-  <p class="ftr-legal">© 2026 Odyra System, {COMPANY['legal']}. {t('Partita IVA', 'NIF-IVA')} {COMPANY['vat']}, REA {COMPANY['rea']}. {COMPANY['street']}, {COMPANY['zip']} {COMPANY['city']}. {a('privacy')}</p>
-</div></footer>'''
 
 
 # ───────── HTML → Markdown (per /pagina.md e llms-full.txt) ─────────
@@ -859,253 +535,9 @@ def abs_url(h):
     return h
 
 
-def to_markdown(key, p):
-    m = re.search(r'<main id="main">(.*)</main>', layout(key, p), re.S)
-    parser = MD()
-    parser.feed(m.group(1))
-    parser.flush()
-    text = '\n'.join(parser.out)
-    text = re.sub(r'\*\*\s*\*\*', '', text)
-    text = re.sub(r'[ \t]+\n', '\n', text)
-    text = re.sub(r'\n{3,}', '\n\n', text).strip()
-    meta = f'> {p["desc"]}\n\n' + t('Fonte', 'Fuente') + f': {SITE}{url(key)} · ' + t('Aggiornato il', 'Actualizado el') + f' {UPDATED}\n\n'
-    # Il titolo H1 è già nel corpo: metadati subito dopo la prima riga.
-    first, _, rest = text.partition('\n')
-    return f'{first}\n\n{meta}{rest.strip()}\n'
-
-
-# ───────── sito italiano (design "filigrana") ─────────
-# Le pagine stanno in pagine/*.html (solo il contenuto di <main>); testata, piede e <head> li aggiunge build.py.
-# Segnaposti: {{P}} = radice del sito, {{AGENTS}} = card del catalogo, {{AGENTS_GRID}} = catalogo per categoria.
-PAGINE = os.path.join(ROOT, 'pagine')
-
-# slug, sorgente (None = generata qui), titolo, descrizione, voce di menu, pagina spagnola equivalente
-IT_PAGES = [
-    ('', 'home.html', 'Odyra System: agenti AI su scala, col vostro marchio',
-     'Odyra progetta e gestisce agenti AI white-label per aziende con centinaia o migliaia di sedi, clienti e punti vendita: voce, WhatsApp, prenotazioni, vendite e assistenza.', None, 'home'),
-    ('soluzioni', 'soluzioni.html', 'Soluzioni per software house, aziende, reti e agenzie | Odyra',
-     'Come Odyra lavora con software house, grandi aziende, franchising e agenzie: agenti AI col loro marchio, gestiti da Odyra.', 'Soluzioni', None),
-    ('agenti', 'agenti.html', 'Agenti AI e servizi | Odyra',
-     'Il catalogo degli agenti AI e dei servizi Odyra: voce, messaggi, vendite, assistenza, operazioni, qualità e infrastruttura.', 'Agenti', None),
-    ('piattaforma', 'piattaforma.html', 'La piattaforma | Odyra',
-     'Come è fatta la piattaforma Odyra: un solo cervello condiviso, regole di settore nel codice, connettori ai sistemi del cliente.', 'Piattaforma', 'piattaforma'),
-    ('academy', 'academy.html', 'Odyra Academy: consulenza e formazione sull’AI | Odyra',
-     'Workshop, webinar, percorsi e consulenza sull’intelligenza artificiale per le aziende.', 'Academy', None),
-    ('casi', 'casi.html', 'Casi di successo | Odyra',
-     'BOSS, HAKO e Gruppo Colzani: agenti Odyra al lavoro.', 'Casi di successo', None),
-    ('chi-siamo', 'chi-siamo.html', 'Chi siamo | Odyra',
-     'Odyra System, gruppo tecnologico di Milano: chi siamo, metodo, missione e visione.', 'Chi siamo', 'chi'),
-    ('contatti', 'contatti.html', 'Contatti | Odyra',
-     'Richiedi una demo di un agente AI Odyra o un workshop dell’Academy.', None, 'contatti'),
-    ('domande', None, 'Domande frequenti su Odyra System e gli agenti AI',
-     'Risposte su Odyra System: agenti AI di settore, canali, software supportati, white-label, GDPR, AI Act e WhatsApp Business.', None, 'faq'),
-    ('privacy', None, 'Informativa privacy | Odyra System',
-     'Informativa sul trattamento dei dati personali del sito Odyra System.', None, 'privacy'),
-]
-IT_NOINDEX = ('privacy',)
-
-CATS = [('voce', 'Voce', 'Agenti che parlano al telefono, in entrata e in uscita, e dal vostro sito.'),
-        ('messaggi', 'Messaggi', 'WhatsApp, promemoria, recensioni, in più lingue.'),
-        ('vendite', 'Vendite', 'Lead, ordini, solleciti: gli agenti che portano e difendono il fatturato.'),
-        ('assistenza', 'Assistenza', 'Clienti e dipendenti con una risposta giusta, a qualsiasi ora.'),
-        ('operazioni', 'Operazioni', 'Il lavoro ripetitivo dietro le quinte: documenti, dati, flussi.'),
-        ('qualita', 'Qualità e dati', 'Gli agenti che controllano gli altri agenti, e i report per chi decide.'),
-        ('infrastruttura', 'Infrastruttura', 'Dove gira l’AI e come si collega ai vostri sistemi.')]
-
-IT_ASSET_V = '1'
-
-
-def it_path(slug):
-    return f'/{slug}/' if slug else '/'
-
-
-def it_md_path(slug):
-    return f'/{slug or "index"}.md'
-
-
-def phead(crumb, h1, lead):
-    return f'''<section class="phead ink">
-  <canvas class="hero-guilloche" aria-hidden="true"></canvas>
-  <div class="wrap phead-in">
-    <p class="crumbs"><a href="/">Home</a> <span aria-hidden="true">/</span> {crumb}</p>
-    <h1 class="display">{h1}</h1>
-    <p class="hero-lead">{lead}</p>
-  </div>
-</section>'''
-
-
-def it_body_domande():
-    qa = ''.join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faq_all())
-    return phead('Domande frequenti', 'Domande frequenti.', 'Agenti AI di settore, canali, software supportati, white-label, dati e AI Act: le risposte in breve.') + f'''
-<section class="qa paper">
-  <div class="wrap">
-    <div class="qa-list">{qa}</div>
-    <p class="sec-lead">Non trovi la risposta? <a href="/contatti/">Scrivici</a>: rispondiamo entro un giorno lavorativo.</p>
-  </div>
-</section>'''
-
-
-def it_body_privacy():
-    # Bozza: da far rivedere a un legale prima di considerarla definitiva.
-    return phead('Privacy', 'Informativa sulla privacy.', 'Come trattiamo i dati raccolti da questo sito.') + f'''
-<section class="paper">
-  <div class="wrap prose">
-    <h2>Titolare del trattamento</h2>
-    <p>{COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {COMPANY['city']}. Partita IVA {COMPANY['vat']}. <a href="mailto:{EMAIL}">{EMAIL}</a></p>
-    <h2>Dati raccolti</h2>
-    <p>Con il modulo contatti raccogliamo nome, azienda, e-mail, telefono e messaggio, al solo scopo di rispondere alla tua richiesta. Li conserviamo per il tempo necessario a gestirla.</p>
-    <h2>Cookie e servizi esterni</h2>
-    <p>Il sito non usa cookie di profilazione né strumenti di tracciamento. Caratteri e librerie sono ospitati sul nostro server: nessun dato viene inviato a servizi di terzi per visualizzare le pagine.</p>
-    <h2>I tuoi diritti</h2>
-    <p>Puoi chiedere accesso, rettifica, cancellazione e opposizione scrivendo a <a href="mailto:{EMAIL}">{EMAIL}</a>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali.</p>
-  </div>
-</section>'''
-
-
-def without_placeholders(body):
-    """Toglie gli spazi per foto e video non ancora caricati: in pagine/ restano, sul sito non si vedono.
-    Per pubblicare una foto o un video basta sostituire il riquadro "da caricare" con il contenuto vero."""
-    body = re.sub(r'<!-- Video -->\s*<section class="film[^"]*">.*?</section>', '', body, flags=re.S)
-    body = re.sub(r'<div class="photo-strip[^"]*" aria-label="[^"]*da caricare">.*?</ol></div>', '', body, flags=re.S)
-    body = re.sub(r'<figure class="slot[^"]*">\s*<div class="slot-box"[^>]*>.*?</div>\s*</figure>', '', body, flags=re.S)
-    body = re.sub(r'<section class="team paper">\s*<div class="wrap">\s*<h2>Il team\.</h2>.*?</section>', '', body, flags=re.S)
-    body = re.sub(r'<li class="partner-slot">.*?</li>', '', body, flags=re.S)
-    return body
-
-
-def it_bodies():
-    """Corpo HTML di ogni pagina italiana, con i segnaposti già sostituiti."""
-    with open(os.path.join(PAGINE, 'agents.json'), encoding='utf-8') as f:
-        cards = json.load(f)
-    grid = ''
-    for key, name, intro in CATS:
-        mine = [c for c in cards if f'data-cat="{key}"' in c]
-        grid += f'''<section class="cat" id="{key}"><div class="wrap">
-  <header class="cat-h"><h2>{name}</h2><p>{intro}</p><span class="cat-n">{len(mine)}</span></header>
-  <ol class="agents-grid">{''.join(mine)}</ol>
-</div></section>
-'''
-    bodies = {}
-    for slug, src, *_ in IT_PAGES:
-        if src:
-            with open(os.path.join(PAGINE, src), encoding='utf-8') as f:
-                body = f.read()
-            body = body.replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', '/')
-            body = without_placeholders(body)
-            if 'da caricare' in body or 'da riempire' in body:
-                print(f'Attenzione: in pagine/{src} è rimasto un segnaposto da riempire')
-        else:
-            body = it_body_domande() if slug == 'domande' else it_body_privacy()
-        # le briciole di pane sono già nel JSON-LD: fuori dal Markdown
-        bodies[slug] = body.replace('<p class="crumbs">', '<p class="crumbs" data-md="skip">').strip()
-    return bodies
-
-
-def it_header(current, es_key):
-    links = ''.join(f'<a href="{it_path(s)}"{" aria-current=\"page\"" if s == current else ""}>{label}</a>'
-                    for s, _, _, _, label, _ in IT_PAGES if label)
-    es = url(es_key, 'es') if es_key else '/es/'
-    return f'''<header class="top">
-  <a class="top-brand" href="/"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40"></a>
-  <nav class="top-nav" id="nav" aria-label="Principale">
-    {links}
-    <a href="{es}" hreflang="es" lang="es">ES</a>
-    <a class="b b-cyan" href="/contatti/">Richiedi una demo</a>
-  </nav>
-  <button class="top-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
-</header>'''
-
-
-def it_footer():
-    col = lambda title, items: f'<div><h2>{title}</h2><ul>' + ''.join(f'<li><a href="{h}">{l}</a></li>' for l, h in items) + '</ul></div>'
-    return f'''<footer class="foot ink">
-  <div class="wrap">
-    <div class="foot-cols">
-      <div class="foot-about"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40" loading="lazy"><p>La fabbrica di agenti AI white-label. Milano, per l’Italia e la Spagna.</p></div>
-      {col('Soluzioni', [('Software house', '/soluzioni/#software-house'), ('Grandi aziende', '/soluzioni/#grandi-aziende'), ('Franchising e reti', '/soluzioni/#franchising'), ('Agenzie e integratori', '/soluzioni/#agenzie')])}
-      {col('Odyra', [('Agenti e servizi', '/agenti/'), ('Piattaforma', '/piattaforma/'), ('Odyra Academy', '/academy/'), ('Casi di successo', '/casi/'), ('Chi siamo', '/chi-siamo/')])}
-      {col('Risorse', [('Richiedi una demo', '/contatti/'), ('Domande frequenti', '/domande/'), (EMAIL, f'mailto:{EMAIL}'), ('Privacy', '/privacy/'), ('llms.txt', '/llms.txt'), ('Español', '/es/')])}
-    </div>
-    <p class="foot-legal">© 2026 Odyra System, {COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {COMPANY['city']}. Partita IVA {COMPANY['vat']}, REA {COMPANY['rea']}.</p>
-  </div>
-</footer>'''
-
-
-def it_qa(body):
-    """Domande e risposte di una pagina (<details><summary>), per il JSON-LD FAQPage."""
-    return [(strip(q), strip(a)) for q, a in re.findall(r'<details><summary>(.*?)</summary>(.*?)</details>', body, re.S)]
-
-
-def it_jsonld(slug, title, desc, label, body):
-    page_url = SITE + it_path(slug)
-    page = {'@type': {'chi-siamo': 'AboutPage', 'contatti': 'ContactPage', 'domande': 'FAQPage'}.get(slug, 'WebPage'),
-            '@id': page_url + '#page', 'url': page_url, 'name': title, 'description': desc, 'inLanguage': 'it-IT',
-            'isPartOf': {'@id': f'{SITE}/#website'}, 'about': {'@id': f'{SITE}/#org'},
-            'dateModified': UPDATED, 'primaryImageOfPage': f'{SITE}/assets/img/og.jpg'}
-    if slug:
-        page['breadcrumb'] = {'@type': 'BreadcrumbList', 'itemListElement': [
-            {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'},
-            {'@type': 'ListItem', 'position': 2, 'name': label or title.split(' | ')[0], 'item': page_url}]}
-    qa = it_qa(body)
-    if slug == 'domande' and qa:
-        page['mainEntity'] = [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in qa]
-    nodes = [org_node(),
-             {'@type': 'WebSite', '@id': f'{SITE}/#website', 'url': f'{SITE}/', 'name': 'Odyra System', 'inLanguage': ['it-IT', 'es-ES'], 'publisher': {'@id': f'{SITE}/#org'}},
-             page]
-    return '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': nodes}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>'
-
-
-def it_layout(slug, title, desc, label, es_key, body, noindex=False, not_found=False):
-    path = it_path(slug)
-    if not_found:
-        seo = '<meta name="robots" content="noindex,follow">'
-    else:
-        alts = ''
-        if es_key:
-            alts = (f'<link rel="alternate" hreflang="it" href="{SITE}{path}"><link rel="alternate" hreflang="es" href="{SITE}{url(es_key, "es")}">'
-                    f'<link rel="alternate" hreflang="x-default" href="{SITE}{path}">')
-        md = '' if noindex else f'<link rel="alternate" type="text/markdown" href="{it_md_path(slug)}" title="Markdown">'
-        seo = f'''<meta name="robots" content="{'noindex,follow' if noindex else 'index,follow,max-snippet:-1,max-image-preview:large'}">
-<link rel="canonical" href="{SITE}{path}">
-{alts}{md}
-<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Odyra System"><meta property="og:locale" content="it_IT">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
-<meta property="og:url" content="{SITE}{path}"><meta property="og:image" content="{SITE}/assets/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-{it_jsonld(slug, title, desc, label, body)}'''
-    return f'''<!doctype html>
-<html lang="it">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<script>document.documentElement.classList.add('js')</script>
-<title>{e(title)}</title>
-<meta name="description" content="{e(desc)}">
-{seo}
-<meta name="theme-color" content="#071A3A">
-<link rel="icon" href="/assets/icons/favicon.ico" sizes="any"><link rel="icon" href="/assets/icons/fav-48.png" type="image/png" sizes="48x48"><link rel="apple-touch-icon" href="/assets/icons/fav-180.png">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/odyra.css?v={IT_ASSET_V}">
-<script src="/assets/vendor/gsap.min.js" defer></script>
-<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
-<script src="/assets/vendor/SplitText.min.js" defer></script>
-<script src="/odyra.js?v={IT_ASSET_V}" defer></script>
-</head>
-<body>
-<a class="skip" href="#main">Vai al contenuto</a>
-{it_header(slug, es_key)}
-<main id="main">
-{body}
-</main>
-{it_footer()}
-</body>
-</html>
-'''
-
-
-def it_markdown(slug, title, desc, body):
+def to_markdown(lang, key, body):
+    _, _, title, desc = TEXT[lang][key]
+    u = UI[lang]
     parser = MD()
     parser.feed(body)
     parser.flush()
@@ -1116,26 +548,7 @@ def it_markdown(slug, title, desc, body):
     if not text.startswith('# '):
         text = f'# {title}\n\n{text}'
     first, _, rest = text.partition('\n')
-    return f'{first}\n\n> {desc}\n\nFonte: {SITE}{it_path(slug)} · Aggiornato il {UPDATED}\n\n{rest.strip()}\n'
-
-
-def build_it():
-    """Scrive le pagine italiane e restituisce, per llms.txt e sitemap, titolo, descrizione e Markdown di ciascuna."""
-    global L
-    L = 'it'
-    bodies = it_bodies()
-    pages = []
-    for slug, _, title, desc, label, es_key in IT_PAGES:
-        noindex = slug in IT_NOINDEX
-        body = bodies[slug]
-        write(f'{slug + "/" if slug else ""}index.html', it_layout(slug, title, desc, label, es_key, body, noindex))
-        md = None if noindex else it_markdown(slug, title, desc, body)
-        if md:
-            write(it_md_path(slug), md)
-        pages.append(dict(slug=slug, title=title, desc=desc, label=label or title.split(' | ')[0].split(':')[0], es_key=es_key, noindex=noindex, md=md))
-    nf = phead('Pagina non trovata', 'Pagina non trovata.', 'L’indirizzo non esiste o è stato spostato. Riparti dalla <a href="/">home</a> o <a href="/contatti/">scrivici</a>.')
-    write('404.html', it_layout('', 'Pagina non trovata | Odyra System', 'Pagina non trovata.', None, None, nf, not_found=True))
-    return pages
+    return f'{first}\n\n> {desc}\n\n{u["source"]}: {SITE}{path(key, lang)} · {u["updated"]} {UPDATED}\n\n{rest.strip()}\n'
 
 
 # ───────── scrittura ─────────
@@ -1143,14 +556,13 @@ ASSET_V = '1'
 
 
 def write(rel, content):
-    path = os.path.join(DIST, rel.lstrip('/'))
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, 'w', encoding='utf-8') as f:
+    dest = os.path.join(DIST, rel.lstrip('/'))
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    with open(dest, 'w', encoding='utf-8') as f:
         f.write(content)
 
 
 def asset_version(*names):
-    import hashlib
     h = hashlib.sha1()
     for n in names:
         with open(os.path.join(STATIC, n), 'rb') as f:
@@ -1158,16 +570,12 @@ def asset_version(*names):
     return h.hexdigest()[:8]
 
 
-def llms_txt(it_pages, es_pages, full=False):
-    global L
-    it_list = [p for p in it_pages if not p['noindex']]
+def llms_txt(mds, full=False):
+    pages = [k for k, _, _ in PAGES if k not in NOINDEX]
     if full:
-        L = 'es'
-        parts = [p['md'] for p in it_list] + [es_pages[k]['md'] for k in LLMS_ORDER]
-        L = 'it'
         head = ('# Odyra System: testo completo del sito / texto completo del sitio\n\n'
                 f'> Tutte le pagine pubbliche di {SITE} in Markdown, in italiano e in spagnolo. Aggiornato il {UPDATED}.\n\n')
-        return head + '\n\n---\n\n'.join(parts)
+        return head + '\n\n---\n\n'.join(mds[lg][k] for lg in LANGS for k in pages)
     out = ['# Odyra System', '',
            '> Odyra System è un gruppo tecnologico di Milano (Verypos S.r.l.) che progetta e gestisce agenti AI white-label: sistemi di agenti per aziende con centinaia o migliaia di sedi, clienti e punti vendita, venduti e usati col marchio del cliente.', '',
            'Fatti chiave:', '',
@@ -1178,36 +586,25 @@ def llms_txt(it_pages, es_pages, full=False):
            '- L’agente dice sempre di essere un’AI (AI Act); dati isolati per cliente, conforme al GDPR.',
            '- Altri prodotti e servizi: HAKO, software proprietario per le portinerie dei condomini (https://hakocondomini.com); progetti su misura (es. Gruppo Colzani); Odyra Academy, consulenza e formazione sull’AI.',
            f'- Contatti: {EMAIL}, {COMPANY["street"]}, {COMPANY["zip"]} {COMPANY["city"]}, Italia.', '',
-           'Ogni pagina ha una versione Markdown allo stesso indirizzo con estensione .md. Il testo completo è in /llms-full.txt.', '',
-           '## Pagine (italiano)', '']
-    out += [f'- [{p["label"]}]({SITE}{it_md_path(p["slug"])}): {p["desc"]}' for p in it_list]
-    out += ['', '## Páginas (español)', '']
-    L = 'es'
-    out += [f'- [{es_pages[k]["crumb"]}]({SITE}{md_url(k, "es")}): {es_pages[k]["desc"]}' for k in LLMS_ORDER]
-    L = 'it'
-    out += ['', '## Optional', '', f'- [Testo completo / Texto completo]({SITE}/llms-full.txt): tutte le pagine in un unico file.',
+           'Ogni pagina ha una versione Markdown allo stesso indirizzo con estensione .md. Il testo completo è in /llms-full.txt.', '']
+    for lg, title in (('it', '## Pagine (italiano)'), ('es', '## Páginas (español)')):
+        out += [title, '']
+        out += [f'- [{TEXT[lg][k][1]}]({SITE}{md_path(k, lg)}): {TEXT[lg][k][3]}' for k in pages]
+        out.append('')
+    out += ['## Optional', '', f'- [Testo completo / Texto completo]({SITE}/llms-full.txt): tutte le pagine in un unico file.',
             f'- [Sitemap]({SITE}/sitemap.xml)', '']
     return '\n'.join(out)
 
 
-def sitemap(it_pages, es_keys):
+def sitemap():
     rows = []
-    for p in it_pages:
-        if p['noindex']:
+    for k, _, _ in PAGES:
+        if k in NOINDEX:
             continue
-        loc = SITE + it_path(p['slug'])
-        alts = ''
-        if p['es_key']:
-            alts = (f'<xhtml:link rel="alternate" hreflang="it" href="{loc}"/><xhtml:link rel="alternate" hreflang="es" href="{SITE}{url(p["es_key"], "es")}"/>'
-                    f'<xhtml:link rel="alternate" hreflang="x-default" href="{loc}"/>')
-        rows.append(f'<url><loc>{loc}</loc><lastmod>{UPDATED}</lastmod><priority>{"1.0" if not p["slug"] else "0.8"}</priority>{alts}</url>')
-    for k in es_keys:
-        loc = SITE + url(k, 'es')
-        alts = f'<xhtml:link rel="alternate" hreflang="es" href="{loc}"/>'
-        if k in PAIRED:
-            alts += (f'<xhtml:link rel="alternate" hreflang="it" href="{SITE}{url(k, "it")}"/>'
-                     f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE}{url(k, "it")}"/>')
-        rows.append(f'<url><loc>{loc}</loc><lastmod>{UPDATED}</lastmod><priority>{"0.9" if k == "home" else "0.7"}</priority>{alts}</url>')
+        alts = ''.join(f'<xhtml:link rel="alternate" hreflang="{lg}" href="{SITE}{path(k, lg)}"/>' for lg in LANGS)
+        alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE}{path(k, "it")}"/>'
+        for lg in LANGS:
+            rows.append(f'<url><loc>{SITE}{path(k, lg)}</loc><lastmod>{UPDATED}</lastmod><priority>{"1.0" if k == "home" else "0.8"}</priority>{alts}</url>')
     return ('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
             + '\n'.join(rows) + '\n</urlset>\n')
 
@@ -1252,33 +649,31 @@ MANIFEST = json.dumps({'name': 'Odyra System', 'short_name': 'Odyra', 'start_url
 
 
 def main():
-    global L, ASSET_V, IT_ASSET_V
+    global L, ASSET_V
     if os.path.exists(DIST):
         shutil.rmtree(DIST)
     shutil.copytree(STATIC, DIST)
-    ASSET_V = asset_version('styles.css', 'script.js')
-    IT_ASSET_V = asset_version('odyra.css', 'odyra.js')
-    # Spagnolo: pagine con la struttura precedente, in /es/.
-    L = 'es'
-    es_pages = {}
-    for k, fn in BUILDERS.items():
-        p = fn()
-        html_out = layout(k, p)
-        p['md'] = to_markdown(k, p)
-        es_pages[k] = p
-        path = PATHS[k][LANGS.index('es')]
-        write(f'es/{path + "/" if path else ""}index.html', html_out)
-        if not p.get('noindex'):
-            write(md_url(k), p['md'])
-    write('es/404.html', layout('404', page_404()))
-    # Italiano: il sito nuovo in radice.
-    it_pages = build_it()
-    write('llms.txt', llms_txt(it_pages, es_pages))
-    write('llms-full.txt', llms_txt(it_pages, es_pages, full=True))
-    write('sitemap.xml', sitemap(it_pages, [k for k in BUILDERS if k != 'privacy']))
+    ASSET_V = asset_version('odyra.css', 'odyra.js')
+    mds = {}
+    for lang in LANGS:
+        L = lang
+        mds[lang] = {}
+        for key, body in bodies(lang).items():
+            slug = TEXT[lang][key][0]
+            write(f'{base(lang)}{slug + "/" if slug else ""}index.html', layout(lang, key, body))
+            if key not in NOINDEX:
+                mds[lang][key] = to_markdown(lang, key, body)
+                write(md_path(key, lang), mds[lang][key])
+        u = UI[lang]
+        nf = phead(lang, u['nf_title'], u['nf_title'] + '.', u['nf_lead'].format(h=base(lang), c=path('contatti', lang)))
+        write(f'{base(lang)}404.html', layout(lang, 'home', nf, title=f"{u['nf_title']} | Odyra System", desc=u['nf_title'] + '.', not_found=True))
+    L = 'it'
+    write('llms.txt', llms_txt(mds))
+    write('llms-full.txt', llms_txt(mds, full=True))
+    write('sitemap.xml', sitemap())
     write('robots.txt', ROBOTS)
     write('manifest.webmanifest', MANIFEST)
-    print(f'Generate {len(it_pages)} pagine in italiano e {len(es_pages)} in spagnolo in {DIST}')
+    print(f'Generate {sum(len(v) for v in mds.values())} pagine indicizzabili ({", ".join(f"{lg}: {len(v)}" for lg, v in mds.items())}) in {DIST}')
 
 
 if __name__ == '__main__':
