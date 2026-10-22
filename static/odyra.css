@@ -156,6 +156,14 @@ h3 { font-size: 1.3rem; font-weight: 720; font-stretch: 104%; letter-spacing: -.
 .slot-wide .slot-box { aspect-ratio: 16 / 9; }
 .film { padding: clamp(4rem, 9vw, 7rem) 0; }
 .film .slot { margin-top: 2.5rem; }
+.films { margin-top: 2.5rem; display: grid; gap: 2rem 1.6rem; }
+@media (min-width: 52rem) { .films { grid-template-columns: 1fr 1fr; } }
+.film-item, .sol-film { margin: 0; }
+.film-item video, .sol-film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: .7rem; background: var(--ink); box-shadow: 0 0 0 1px var(--ink-rule), 0 18px 40px -22px rgba(7, 26, 58, .7); }
+.film-item figcaption, .sol-film figcaption { display: grid; gap: .15rem; margin-top: .8rem; }
+.film-item b, .sol-film b { font-stretch: 110%; font-size: 1.1rem; color: var(--ink); }
+.film-item span, .sol-film span { color: var(--text-soft); font-size: .95rem; }
+.sol-film { margin-top: 2.2rem; }
 
 /* Clienti */
 .clients { padding: clamp(4.5rem, 9vw, 7.5rem) 0; }

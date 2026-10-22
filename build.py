@@ -251,7 +251,7 @@ def without_placeholders(body):
     """Toglie i riquadri per foto, video e premi non ancora disponibili: in pagine/ restano, sul sito non si vedono.
     Per pubblicarne uno basta sostituire il riquadro con il contenuto vero e rigenerare."""
     drop_if = lambda marker: (lambda m: '' if marker in m.group(0) else m.group(0))
-    body = re.sub(r'(<!--[^>]*-->\s*)?<section class="film[^"]*">.*?</section>', '', body, flags=re.S)
+    body = re.sub(r'(<!--[^>]*-->\s*)?<section class="film[^"]*">.*?</section>', drop_if('slot-box'), body, flags=re.S)
     body = re.sub(r'<div class="photo-strip[^"]*"[^>]*>.*?</ol></div>', drop_if('slot-mini'), body, flags=re.S)
     body = re.sub(r'<figure class="slot[^"]*">\s*<div class="slot-box"[^>]*>.*?</div>\s*</figure>', '', body, flags=re.S)
     body = re.sub(r'<section class="team paper">\s*<div class="wrap">\s*<h2>.*?</section>', drop_if('person-photo'), body, flags=re.S)
