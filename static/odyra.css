@@ -455,10 +455,6 @@ html:not(.js) [data-js-only] { display: none; }
 /* Teaser Academy in home */
 .acad-teaser { overflow: hidden; padding: clamp(4.5rem, 9vw, 7rem) 0; }
 .acad-in { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
-.acad-formats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--ink-rule); border: 1px solid var(--ink-rule); border-radius: .9rem; overflow: hidden; }
-.acad-formats li { display: grid; gap: .3rem; padding: 1.5rem 1.3rem; background: var(--ink); }
-.acad-formats b { color: #fff; font-size: 1.3rem; font-stretch: 114%; }
-.acad-formats span { color: var(--on-ink-soft); font-size: .95rem; }
 @media (max-width: 900px) { .acad-in { grid-template-columns: 1fr; } }
 
 /* Academy */
@@ -468,23 +464,6 @@ html:not(.js) [data-js-only] { display: none; }
 .acad-why dd { margin: .5rem 0 0; color: var(--text-soft); font-size: 1rem; }
 @media (max-width: 960px) { .acad-why { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .acad-why { grid-template-columns: 1fr; } }
-.formats { padding: clamp(4.5rem, 9vw, 7rem) 0; scroll-margin-top: 4rem; }
-.format-grid { margin-top: 2.8rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; }
-.format { position: relative; display: grid; grid-template-rows: auto auto 1fr auto; gap: .6rem; padding: 1.6rem 1.5rem 1.4rem; border-radius: 1rem; background: linear-gradient(160deg, #10306A, #0A2149); box-shadow: 0 0 0 1px rgba(168, 230, 249, .16) inset; overflow: hidden; transition: transform .4s var(--ease), box-shadow .4s var(--ease); }
-.format::after { content: ''; position: absolute; right: -2.5rem; top: -2.5rem; width: 7rem; height: 7rem; border-radius: 50%; border: 1px solid rgba(92, 203, 240, .25); box-shadow: 0 0 0 .8rem rgba(92, 203, 240, .05), 0 0 0 1.6rem rgba(92, 203, 240, .04); pointer-events: none; }
-.format:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px rgba(92, 203, 240, .5) inset; }
-.format-kind { font-size: .85rem; font-weight: 700; color: var(--cyan); font-stretch: 112%; }
-.format h3 { color: #fff; font-size: 1.45rem; font-stretch: 114%; }
-.format p:not(.format-kind):not(.format-meta) { color: var(--on-ink-soft); font-size: 1rem; }
-.format-meta { margin-top: .4rem; padding-top: .8rem; border-top: 1px solid var(--ink-rule); color: var(--cyan-hi); font-size: .92rem; font-weight: 600; }
-@media (max-width: 960px) { .format-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 600px) { .format-grid { grid-template-columns: 1fr; } }
-.topics, .next { padding: clamp(4.5rem, 9vw, 7rem) 0; }
-.dates { margin-top: 2.4rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-.date-slot { display: grid; gap: .3rem; padding: 1.3rem 1.4rem; border-radius: .9rem; border: 1.5px dashed rgba(19, 58, 114, .4); background: var(--paper-2); }
-.date-slot span { font: 500 .85rem var(--mono); color: var(--cyan-deep); }
-.date-slot b { font-size: 1.2rem; font-stretch: 110%; }
-.date-slot small { color: var(--text-soft); font-size: .92rem; }
 .acad-photos { color: var(--ink-3); }
 @media (max-width: 760px) { .dates { grid-template-columns: 1fr; } }
 
@@ -687,3 +666,65 @@ a[href^="mailto:"] { overflow-wrap: anywhere; }
 .js .seals div::before { --seal: 0deg; -webkit-mask: conic-gradient(#000 var(--seal), transparent 0); mask: conic-gradient(#000 var(--seal), transparent 0); transition: --seal 1.2s var(--ease); }
 .js .seals div.on::before { --seal: 360deg; }
 @media (prefers-reduced-motion: reduce) { .js .seals div::before { --seal: 360deg; transition: none; } }
+
+/* ───────── Odyra Academy: l'attestato e il programma ───────── */
+
+/* L'attestato: carta chiara con guilloché blu, sigillo ciano, nome del team scritto dal visitatore. */
+.acad-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(2.5rem, 6vw, 5rem); align-items: center; }
+.acad-hero .display { max-width: 15ch; font-size: clamp(2.5rem, 4.6vw, 4.1rem); }
+.cert-wrap { margin: 0; perspective: 1200px; }
+.cert { position: relative; aspect-ratio: 1.42 / 1; border-radius: .9rem; overflow: hidden; isolation: isolate; color: var(--text);
+  background: linear-gradient(155deg, #F7FAFD 0%, #E6EEF7 100%);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .6) inset, 0 40px 70px -30px rgba(0, 0, 0, .75), 0 12px 24px -12px rgba(0, 0, 0, .45);
+  transform: rotate(-2deg); transform-style: preserve-3d; }
+.cert::before { /* doppia cornice incisa */ content: ''; position: absolute; inset: .8rem; border: 1px solid rgba(15, 110, 153, .45); border-radius: .5rem; box-shadow: 0 0 0 4px #EDF3F9, 0 0 0 5px rgba(15, 110, 153, .25); z-index: 1; pointer-events: none; }
+.cert-guilloche { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.cert-face { position: relative; z-index: 2; height: 100%; display: grid; align-content: center; justify-items: center; text-align: center; gap: .35rem; padding: clamp(1.6rem, 4vw, 2.8rem) clamp(1.6rem, 4vw, 3rem); }
+.cert-kind { font-size: .82rem; font-weight: 760; font-stretch: 125%; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan-deep); }
+.cert-title { font-size: clamp(1.25rem, 2.2vw, 1.75rem); font-weight: 820; font-stretch: 118%; letter-spacing: -.01em; color: var(--text); }
+.cert-to { margin-top: .6rem; font-size: .9rem; color: #42577A; }
+.cert-name { display: block; width: 100%; margin-top: .1rem; }
+.cert-name input, .cert-name span { display: block; width: 100%; padding: .15rem 0 .35rem; background: transparent; border: 0; border-bottom: 1.5px solid rgba(11, 27, 54, .5); text-align: center; color: var(--ink); font: 800 clamp(1.6rem, 3.4vw, 2.6rem)/1.1 var(--sans); font-stretch: 115%; letter-spacing: -.02em; caret-color: var(--cyan-deep); }
+.cert-name input:hover, .cert-name input:focus { outline: none; border-bottom-color: var(--cyan-deep); }
+.cert-course { margin-top: .5rem; font-size: .95rem; font-weight: 650; color: var(--text); }
+.cert-foot { margin-top: 1rem; display: flex; justify-content: flex-start; gap: 1.2rem; width: 100%; padding-right: 28%; font-size: .8rem; color: #42577A; }
+.cert-serial { font: 500 .78rem var(--mono); letter-spacing: .1em; color: var(--cyan-deep); }
+.cert-seal { position: absolute; z-index: 3; right: 6%; bottom: 9%; width: clamp(4.6rem, 9vw, 6.4rem); color: var(--cyan-deep); transform: rotate(-12deg); }
+.cert-seal text { font: 700 8.4px var(--sans); letter-spacing: .14em; fill: currentColor; }
+.cert-seal circle { opacity: .9; }
+.cert-small .cert { transform: rotate(2deg); }
+.cert-small .cert-name span { border-bottom-style: dashed; }
+@media (max-width: 900px) { .acad-hero { grid-template-columns: 1fr; } .cert-wrap { max-width: 34rem; } }
+@media (max-width: 520px) { .cert { aspect-ratio: 1.15 / 1; } .cert-seal { width: 4rem; right: 5%; bottom: 5%; } }
+
+/* Il programma: si sceglie per chi è la formazione, formati e temi giusti restano accesi. */
+.program { padding: clamp(4.5rem, 9vw, 7rem) 0; scroll-margin-top: 4rem; }
+.aud { margin-top: 2.2rem; display: flex; flex-wrap: wrap; gap: .6rem; }
+.aud button { padding: .6rem 1.15rem; border-radius: 99px; border: 1px solid rgba(168, 230, 249, .4); background: transparent; color: var(--on-ink); font: 650 1rem var(--sans); cursor: pointer; transition: background-color .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease); }
+.aud button:hover { border-color: var(--cyan); color: #fff; }
+.aud button[aria-pressed="true"] { background: var(--cyan); border-color: var(--cyan); color: var(--ink); }
+.prog { margin-top: 2.6rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem clamp(2rem, 5vw, 4.5rem); }
+.prog-h { color: var(--cyan-hi); font-size: 1rem; font-weight: 760; font-stretch: 120%; letter-spacing: .08em; text-transform: uppercase; padding-bottom: .9rem; border-bottom: 2px solid var(--cyan); }
+.prog-list li { display: grid; gap: .3rem; padding: 1.2rem 0 1.2rem 1.4rem; border-bottom: 1px solid var(--ink-rule); position: relative; transition: opacity .45s var(--ease); }
+.prog-list li > * { transition: transform .45s var(--ease); }
+.prog-list li::before { content: ''; position: absolute; left: 0; top: 1.55rem; width: .55rem; height: .55rem; border-radius: 50%; background: var(--cyan); transition: transform .45s var(--ease), background-color .45s var(--ease); }
+.prog-list b { color: #fff; font-size: 1.22rem; font-weight: 740; font-stretch: 112%; }
+.prog-list span { color: var(--on-ink-soft); font-size: 1rem; max-width: 34rem; }
+.prog-list small { color: var(--cyan-hi); font-size: .88rem; font-weight: 600; }
+.prog-list li.off { opacity: .32; }
+.prog-list li.off::before { transform: scale(.6); background: var(--on-ink-soft); }
+.prog-list li.hit > * { transform: translateX(.35rem); }
+@media (max-width: 860px) { .prog { grid-template-columns: 1fr; } }
+
+/* Cosa resta all'azienda, sotto il percorso. */
+.keeps { margin-top: clamp(3rem, 6vw, 4.5rem); padding-top: 2rem; border-top: 2px solid var(--text); }
+.keeps h3 { font-size: 1.35rem; font-stretch: 112%; }
+.keeps ul { margin-top: 1.4rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.4rem clamp(1.5rem, 3vw, 2.5rem); }
+.keeps li { display: grid; gap: .35rem; color: var(--text-soft); font-size: 1rem; }
+.keeps b { color: var(--text); font-size: 1.15rem; font-weight: 740; font-stretch: 110%; }
+@media (max-width: 860px) { .keeps ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .keeps ul { grid-template-columns: 1fr; } }
+
+/* Il timbro: parte grande e trasparente, si posa con un piccolo rimbalzo. */
+.cert-seal.stamp-ready { opacity: 0; transform: rotate(-30deg) scale(1.9); }
+.cert-seal.stamped { opacity: 1; transform: rotate(-12deg) scale(1); transition: opacity .25s ease-out .35s, transform .7s cubic-bezier(.34, 1.56, .64, 1) .35s; }
