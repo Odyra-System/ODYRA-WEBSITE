@@ -389,3 +389,16 @@ audButtons.forEach((btn) => btn.addEventListener('click', () => {
     li.classList.toggle('hit', match && aud !== 'tutti')
   })
 }))
+
+// Video: la copertina disegnata copre il player; al clic parte il video con i comandi.
+$$('.reel').forEach((reel) => {
+  const video = $('video', reel), play = $('.reel-play', reel)
+  if (!video || !play) return
+  video.controls = false
+  play.addEventListener('click', () => {
+    reel.classList.add('playing')
+    video.controls = true
+    video.play().catch(() => {})
+    video.focus()
+  })
+})
