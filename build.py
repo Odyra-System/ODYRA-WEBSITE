@@ -225,6 +225,8 @@ def faq_all():
 
 
 # ───────── JSON-LD ─────────
+def og_image(lang):
+    return f"{SITE}/assets/img/{'og.jpg' if lang == 'it' else 'og-es.jpg'}"
 def org_node():
     return {
         '@type': 'Organization', '@id': f'{SITE}/#org', 'name': 'Odyra System', 'legalName': COMPANY['legal'],
@@ -374,7 +376,7 @@ def jsonld(lang, key, body):
             '@id': page_url + '#page', 'url': page_url, 'name': title, 'description': desc,
             'inLanguage': 'it-IT' if lang == 'it' else 'es-ES',
             'isPartOf': {'@id': f'{SITE}/#website'}, 'about': {'@id': f'{SITE}/#org'},
-            'dateModified': UPDATED, 'primaryImageOfPage': f'{SITE}/assets/img/og.jpg'}
+            'dateModified': UPDATED, 'primaryImageOfPage': og_image(lang)}
     if key != 'home':
         page['breadcrumb'] = {'@type': 'BreadcrumbList', 'itemListElement': [
             {'@type': 'ListItem', 'position': 1, 'name': TEXT[lang]['home'][1], 'item': SITE + base(lang)},
@@ -404,7 +406,7 @@ def layout(lang, key, body, title=None, desc=None, not_found=False):
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Odyra System"><meta property="og:locale" content="{'it_IT' if lang == 'it' else 'es_ES'}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
-<meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/assets/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:url" content="{url}"><meta property="og:image" content="{og_image(lang)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 {jsonld(lang, key, body)}'''
     return f'''<!doctype html>
