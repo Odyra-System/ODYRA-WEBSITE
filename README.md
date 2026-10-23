@@ -30,5 +30,6 @@ I riquadri "da caricare" / "pendiente de subir" (video di presentazione, foto de
 
 ## Da completare
 - `FORM_ENDPOINT` in `static/odyra.js`: finché è vuoto il modulo apre la posta con la richiesta già scritta.
-- Ok di Gruppo Colzani per citare nome, Sportit.com e Global Trading.
+- Foto e schermate vere di Gruppo Colzani al posto di quelle dimostrative (l'ok a citarli c'è).
+- Foto dei workshop dell'Academy.
 - Informativa privacy: bozza da far rivedere a un legale.
