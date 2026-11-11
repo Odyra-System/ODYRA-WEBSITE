@@ -18,7 +18,7 @@ from html.parser import HTMLParser
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(ROOT, 'static')
-DIST = os.path.join(ROOT, 'dist')
+DIST = os.environ.get('ODYRA_DIST') or os.path.join(ROOT, 'dist')  # ODYRA_DIST: cartella d'uscita alternativa
 PAGINE = os.path.join(ROOT, 'pagine')
 
 SITE = 'https://odyrasystemautomation.it'
@@ -251,8 +251,8 @@ def faq_all():
          t('Ogni azienda ha un agente con dati e configurazione isolati. Il trattamento è conforme al GDPR e progettato nel perimetro dell’AI Act.',
            'Cada empresa tiene un agente con datos y configuración aislados. El tratamiento cumple el RGPD y está diseñado dentro del perímetro del AI Act.')),
         (t('Di chi è il numero WhatsApp Business?', '¿De quién es el número de WhatsApp Business?'),
-         t('Del cliente. Odyra, come Tech Provider Meta tramite Vonage, attiva il numero e gestisce template e conversazioni, ma la titolarità dell’account resta al cliente.',
-           'Del cliente. Odyra, como Tech Provider de Meta a través de Vonage, activa el número y gestiona plantillas y conversaciones, pero la titularidad de la cuenta sigue siendo del cliente.')),
+         t('Del cliente. Odyra attiva il numero sul canale ufficiale WhatsApp Business e gestisce template e conversazioni, ma la titolarità dell’account resta al cliente.',
+           'Del cliente. Odyra activa el número en el canal oficial de WhatsApp Business y gestiona plantillas y conversaciones, pero la titularidad de la cuenta sigue siendo del cliente.')),
         (t('Cos’è HAKO?', '¿Qué es HAKO?'),
          t('HAKO è un software proprietario di Odyra per le portinerie dei condomini, venduto direttamente. Ha un sito dedicato: hakocondomini.com.',
            'HAKO es un software propio de Odyra para las conserjerías de comunidades de vecinos, vendido directamente. Tiene una web propia: hakocondomini.com.')),
@@ -341,6 +341,13 @@ def body_privacy(lang):
 </section>'''
 
 
+def url_or_warn(key, lang, src):
+    if has(key, lang) or has(key, 'it'):
+        return path(key, lang)
+    print(f'Attenzione: {os.path.relpath(src, ROOT)} rimanda a {{{{URL:{key}}}}}, pagina che non esiste (per ora punta a #)')
+    return '#'
+
+
 def bodies(lang):
     """Corpo HTML di ogni pagina della lingua, con i segnaposti già sostituiti."""
     src_dir = PAGINE if lang == 'it' else os.path.join(PAGINE, 'es')
@@ -359,7 +366,7 @@ def bodies(lang):
         if meta['src']:
             body = meta['body']
             body = body.replace('{{AGENTS_N}}', str(len(cards))).replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', base(lang))
-            body = re.sub(r'\{\{URL:([a-z0-9-]+)\}\}', lambda m: path(m.group(1), lang) if (has(m.group(1), lang) or has(m.group(1), 'it')) else (_ for _ in ()).throw(SystemExit(f'{os.path.relpath(meta["src"], ROOT)}: {{{{URL:{m.group(1)}}}}} non esiste')), body)
+            body = re.sub(r'\{\{URL:([a-z0-9-]+)\}\}', lambda m: url_or_warn(m.group(1), lang, meta['src']), body)
             body = without_placeholders(body)
             if re.search(r'slot-mini|slot-box|partner-slot', body):
                 print(f'Attenzione: in {os.path.relpath(meta["src"], ROOT)} è rimasto un segnaposto da riempire')
@@ -654,7 +661,7 @@ def llms_txt(mds, full=False):
            '- Agenti per voce (telefono in tempo reale), WhatsApp Business ed e-mail: prenotazioni, vendite, assistenza, operazioni e controllo qualità.',
            '- In produzione nel settore beauty con GoAgent, il servizio AI di BOSS per gli oltre 1.500 saloni che usano il gestionale GoWeb, da giugno 2026.',
            '- Modello white-label: Odyra costruisce e gestisce l’agente (connettori, onboarding, qualità, assistenza), il cliente lo offre col proprio marchio.',
-           '- Clienti: software house, grandi aziende, franchising e reti, agenzie e integratori. Odyra è Tech Provider Meta tramite Vonage.',
+           '- Clienti: software house, grandi aziende, franchising e reti, agenzie e integratori.',
            '- L’agente dice sempre di essere un’AI (AI Act); dati isolati per cliente, conforme al GDPR.',
            '- Altri prodotti e servizi: HAKO, software proprietario per le portinerie dei condomini (https://hakocondomini.com); progetti su misura (es. Gruppo Colzani); Odyra Academy, consulenza e formazione sull’AI.',
            f'- Contatti: {EMAIL}, {COMPANY["street"]}, {COMPANY["zip"]} {COMPANY["city"]}, Italia.', '',
