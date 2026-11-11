@@ -11,8 +11,8 @@ type: WebPage
   <div class="wrap phead-in">
     <p class="crumbs"><a href="{{URL:home}}">Home</a> <span aria-hidden="true">/</span> Demo dal vivo</p>
     <h1 class="display">Prova l’agente AI dal vivo.</h1>
-    <p class="hero-lead">Niente video registrati. Premi il pulsante, consenti il microfono e parla con l’agente vocale di Odyra, lo stesso motore che risponde ai clienti dei nostri partner.</p>
-    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="#richiesta">Preferisci una demo sul tuo caso?</a></p>
+    <p class="hero-lead">Nessuna registrazione preparata. Premi il pulsante, consenti il microfono e parla con l’agente vocale di Odyra, lo stesso motore che risponde ai clienti dei nostri partner.</p>
+    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="{{URL:prenota}}">Prenota una call</a></p>
   </div>
 </section>
 
@@ -49,14 +49,14 @@ type: WebPage
   <div class="wrap">
     <p class="kicker">In alternativa</p>
     <h2 class="display-2">Una demo collegata al tuo caso.</h2>
-    <p class="sec-lead">Dicci settore e numero di sedi: ti mostriamo l’agente con servizi e regole simili ai tuoi. Rispondiamo entro un giorno lavorativo.</p>
+    <p class="sec-lead">Dicci quale gestionale sviluppi o usi, il settore e il numero di centri: ti mostriamo l’agente con servizi e regole simili ai tuoi. Rispondiamo entro un giorno lavorativo. Se preferisci fissare subito un orario, <a href="{{URL:prenota}}">prenota una call</a>.</p>
     <form class="lead-form" data-lead-form data-source="demo" action="mailto:team@odyrasystemautomation.it" method="post" enctype="text/plain">
       <label>Nome <input type="text" name="name" autocomplete="name" required></label>
       <label>Azienda <input type="text" name="company" autocomplete="organization"></label>
       <label>E-mail <input type="email" name="email" autocomplete="email" required></label>
       <label>Telefono <input type="tel" name="phone" autocomplete="tel"></label>
       <input type="hidden" name="need" value="demo">
-      <label>Settore e numero di sedi <textarea name="message" rows="4"></textarea></label>
+      <label>Gestionale, settore e numero di centri o sedi <textarea name="message" rows="4"></textarea></label>
       <label class="check"><input type="checkbox" name="privacy" required> Ho letto l’<a href="{{URL:privacy}}">informativa privacy</a></label>
       <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button class="b b-cyan" type="submit">Richiedi una demo sul tuo caso</button>
@@ -87,7 +87,7 @@ type: WebPage
 <section class="cta-band ink">
   <div class="wrap">
     <h2 class="display-2">Due minuti al microfono.</h2>
-    <p class="sec-lead">Poi decidi tu se parlarne con una persona.</p>
-    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="{{URL:contatti}}">Scrivici</a></p>
+    <p class="sec-lead">Poi decidi tu se parlarne con il nostro team.</p>
+    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="{{URL:prenota}}">Prenota una call</a></p>
   </div>
 </section>

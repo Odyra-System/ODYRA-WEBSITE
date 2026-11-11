@@ -1119,3 +1119,159 @@ a[href^="mailto:"] { overflow-wrap: anywhere; }
 .ink .dialog > li:nth-child(even) { background: var(--cyan); color: var(--ink); }
 .ink .dialog > li:nth-child(even) > b:first-child { color: var(--ink-3); }
 @media (max-width: 480px) { .dialog > li { max-width: 94%; } }
+
+/* Pulsanti <button> a contorno: niente sfondo grigio del browser, su fondo chiaro e scuro. */
+button.b-line { background-color: transparent; }
+
+/* ───────── prezzi ───────── */
+/* Listino: la scala degli scaglioni come filo di sicurezza, il margine stampato su una banconota. */
+.pz-seals { margin-top: clamp(2.4rem, 5vw, 3.4rem); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(1.2rem, 3vw, 2.5rem); max-width: 60rem; }
+.pz-seals li { position: relative; display: grid; gap: .25rem; padding: 1.1rem 0 0 2.9rem; border-top: 1px solid var(--ink-rule); }
+.pz-seals li::before { content: ''; position: absolute; left: 0; top: 1.15rem; width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 2px solid var(--cyan); box-shadow: inset 0 0 0 4px var(--ink), inset 0 0 0 5.5px rgba(92, 203, 240, .55); }
+.pz-seals b { color: #fff; font-weight: 720; font-stretch: 108%; }
+.pz-seals span { color: var(--on-ink-soft); font-size: .95rem; line-height: 1.45; }
+@media (max-width: 760px) { .pz-seals { grid-template-columns: 1fr; } .pz-seals li { padding-bottom: .9rem; } }
+
+/* Interruttore tra i due pubblici */
+.pz-switch-band { padding-top: clamp(2.5rem, 5vw, 3.5rem); }
+.pz-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; padding: .45rem; max-width: 56rem; border-radius: 1.2rem; background: var(--surface); box-shadow: 0 0 0 1px var(--rule), 0 22px 44px -36px rgba(7, 26, 58, .5); }
+.pz-switch button { position: relative; display: grid; gap: .2rem; text-align: left; padding: 1rem 1.2rem 1.15rem; border: 0; border-radius: .85rem; background: none; color: var(--text); font: inherit; cursor: pointer; overflow: hidden; transition: background-color .3s var(--ease), color .3s var(--ease); }
+.pz-switch button b { font-size: clamp(1.02rem, 1.6vw, 1.22rem); font-weight: 760; font-stretch: 110%; line-height: 1.2; }
+.pz-switch button span { font-size: .9rem; color: var(--text-soft); line-height: 1.35; }
+.pz-switch button:hover { background: var(--paper); }
+.pz-switch button[aria-selected="true"] { background: var(--ink); color: #fff; }
+.pz-switch button[aria-selected="true"] span { color: var(--on-ink-soft); }
+.pz-switch button[aria-selected="true"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: .3rem; background: var(--thread-h); }
+.pz-switch button:focus-visible { outline: 3px solid var(--cyan-deep); outline-offset: 2px; }
+.pz-panel { margin-top: clamp(2.8rem, 6vw, 4.2rem); }
+.pz-panel[hidden], [data-pz-aud][hidden] { display: none; }
+.pz-panel + .pz-panel { padding-top: clamp(3rem, 6vw, 4.5rem); border-top: 1px solid var(--rule); }
+.js .pz-panel + .pz-panel { padding-top: 0; border-top: 0; }
+
+/* La scala degli scaglioni */
+.pz-tiers { margin: 2.4rem 0 0; padding: 0; border: 0; min-width: 0; }
+.pz-tiers legend { padding: 0; margin-bottom: .9rem; font-weight: 720; font-stretch: 108%; font-size: 1.08rem; }
+.pz-tier-track { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 44rem; padding: .35rem; border-radius: 99px; background: var(--surface); box-shadow: 0 0 0 1px var(--rule); }
+.pz-tier-track::before { content: ''; position: absolute; z-index: -1; top: .35rem; bottom: .35rem; left: .35rem; width: calc((100% - .7rem) / 4); border-radius: 99px; background: var(--ink); box-shadow: inset 0 -.3rem 0 -0.05rem transparent; transition: transform .45s var(--ease); }
+.pz-tier-track:has(input[value="1"]:checked)::before { transform: translateX(100%); }
+.pz-tier-track:has(input[value="2"]:checked)::before { transform: translateX(200%); }
+.pz-tier-track:has(input[value="3"]:checked)::before { transform: translateX(300%); }
+.pz-tier { position: relative; display: grid; justify-items: center; gap: 0; padding: .55rem .3rem .6rem; border-radius: 99px; cursor: pointer; color: var(--text); transition: color .3s var(--ease); }
+.pz-tier input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.pz-tier-n { font-weight: 820; font-stretch: 78%; font-size: clamp(1.2rem, 2.4vw, 1.55rem); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.pz-tier-l { font-size: .78rem; color: var(--text-soft); transition: color .3s var(--ease); }
+.pz-tier:has(input:checked) { color: #fff; }
+.pz-tier:has(input:checked) .pz-tier-l { color: var(--cyan-hi); }
+.pz-tier:has(input:focus-visible) { outline: 3px solid var(--cyan-deep); outline-offset: 2px; }
+.pz-tier:not(:has(input:checked)):hover { background: var(--paper); }
+.pz-tier-note { margin-top: .9rem; max-width: 44rem; color: var(--text-soft); font-size: .98rem; }
+.pz-tier-note b { color: var(--text); }
+.js .pz-nojs { display: none; }
+.pz-nojs { margin-top: 1.6rem; color: var(--text-soft); }
+
+/* Le schede dei prodotti */
+.pz-cards { margin-top: 2.2rem; align-items: start; }
+.pz-card { gap: .8rem; }
+.pz-card > p:not([class]) { font-size: 1rem; }
+.pz-rows { width: 100%; margin-top: .4rem; }
+.pz-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem 1rem; padding: 1.15rem 0 1.2rem; border-top: 1px solid var(--rule); }
+.pz-size { display: flex; gap: .7rem; align-items: flex-start; font-weight: 640; line-height: 1.35; font-size: 1rem; }
+.pz-letter { flex: none; display: inline-grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 1.5px solid var(--ink-3); color: var(--ink-3); font-weight: 800; font-stretch: 110%; font-size: .9rem; line-height: 1; }
+.pz-price { grid-column: 2; grid-row: 1 / span 2; display: grid; justify-items: end; text-align: right; align-self: start; }
+.pz-w { font-weight: 820; font-stretch: 72%; font-size: clamp(2.2rem, 3.6vw, 2.9rem); line-height: .95; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
+.pz-unit { margin-top: .3rem; max-width: 9rem; font-size: .78rem; line-height: 1.3; color: var(--text-soft); }
+.pz-rec { padding-left: 2.6rem; font-size: .95rem; color: var(--text-soft); }
+.pz-margin { grid-column: 1 / -1; margin-top: .45rem; padding: .6rem .8rem .6rem 1rem; border-radius: .5rem; background: rgba(15, 110, 153, .07); box-shadow: inset .25rem 0 0 var(--cyan-deep); font-size: .95rem; line-height: 1.45; color: var(--text-soft); }
+.pz-margin b { color: var(--cyan-deep); font-weight: 760; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pz-foot { margin-top: 1.4rem; max-width: 46rem; font-size: .9rem; color: var(--text-soft); }
+
+/* Combo: la scheda scura */
+.pz-card-combo { background: linear-gradient(165deg, var(--ink-3), var(--ink) 70%); color: var(--on-ink); box-shadow: 0 30px 60px -34px rgba(7, 26, 58, .8); }
+.pz-card-combo::before { border-color: rgba(168, 230, 249, .2); }
+.pz-card-combo h3 { color: #fff; }
+.pz-card-combo > p:not([class]) { color: var(--on-ink-soft); }
+.pz-card-combo .card-tag { color: var(--ink); background: var(--cyan); border-color: var(--cyan); }
+.pz-card-combo .pz-row { border-top-color: var(--ink-rule); }
+.pz-card-combo .pz-letter { border-color: var(--cyan); color: var(--cyan); }
+.pz-card-combo .pz-w { color: #fff; }
+.pz-card-combo :is(.pz-unit, .pz-rec, .pz-margin) { color: var(--on-ink-soft); }
+.pz-card-combo .pz-margin { background: rgba(92, 203, 240, .1); box-shadow: inset .25rem 0 0 var(--cyan); }
+.pz-card-combo .pz-margin b { color: var(--cyan-hi); }
+.pz-card-combo :focus-visible { outline-color: var(--cyan); }
+
+/* Le cifre che cambiano: un breve lampo, solo quando chi visita sceglie. */
+.pz-tick { animation: pz-tick .7s var(--ease); }
+@keyframes pz-tick { from { opacity: .25; transform: translateY(-.25em); } }
+.pz-w.pz-tick, .pz-note-big.pz-tick { display: inline-block; }
+
+/* Aziende */
+.pz-pv-grid { margin-top: 2.2rem; }
+.pz-from { font-size: 1.05rem; color: var(--text-soft); }
+.pz-from b { font-weight: 820; font-stretch: 72%; font-size: 2.3rem; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.pz-card-combo .pz-from { color: var(--on-ink-soft); }
+.pz-card-combo .pz-from b { color: #fff; }
+.pz-pv-rows { width: 100%; margin-top: .3rem; }
+.pz-pv-rows li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .8rem; align-items: center; padding: .75rem 0; border-top: 1px solid var(--rule); font-size: .95rem; }
+.pz-card-combo .pz-pv-rows li { border-top-color: var(--ink-rule); }
+.pz-pv-inc { color: var(--text-soft); line-height: 1.35; }
+.pz-card-combo .pz-pv-inc { color: var(--on-ink-soft); }
+.pz-pv-price { font-weight: 760; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pz-pv-price::after { content: ' /sede'; font-weight: 500; font-size: .82rem; color: var(--text-soft); }
+.pz-card-combo .pz-pv-price::after { color: var(--on-ink-soft); }
+.pz-pv-terms { margin-top: 1.5rem; }
+.pz-sub { margin: clamp(3rem, 6vw, 4.2rem) 0 1.4rem; max-width: 30ch; font-size: clamp(1.45rem, 2.6vw, 2rem); font-stretch: 108%; line-height: 1.15; letter-spacing: -.02em; }
+.pz-panel > .actions { margin-top: 2.2rem; }
+
+/* Calcolatore */
+.pz-calc { margin-top: clamp(2.2rem, 4vw, 3rem); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(1.8rem, 4vw, 3.5rem); align-items: center; }
+.pz-form { display: grid; gap: 1.1rem; }
+.pz-field { display: grid; gap: .45rem; }
+.pz-field > span { font-weight: 650; font-size: .98rem; color: var(--on-ink); }
+.pz-field :is(input, select) { width: 100%; min-height: 3.3rem; padding: .6rem 1rem; border-radius: .7rem; border: 1.5px solid rgba(168, 230, 249, .3); background: rgba(255, 255, 255, .06); color: #fff; font: 700 1.2rem var(--sans); font-stretch: 104%; font-variant-numeric: tabular-nums; transition: border-color .2s var(--ease), background-color .2s var(--ease); }
+.pz-field select { appearance: none; -webkit-appearance: none; padding-right: 2.8rem; background: rgba(255, 255, 255, .06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%235CCBF0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 1rem center / 1.1rem no-repeat; }
+.pz-field option, .pz-field optgroup { color: var(--text); background: #fff; }
+.pz-field :is(input, select):hover { border-color: rgba(92, 203, 240, .6); }
+.pz-field :is(input, select):focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; border-color: var(--cyan); background-color: rgba(255, 255, 255, .1); }
+.pz-hint { font-size: .95rem; color: var(--on-ink-soft); min-height: 1.5em; }
+.pz-hint.warn { color: #FFD48A; }
+
+/* La banconota del margine */
+.pz-note { position: relative; margin: 0; aspect-ratio: 1.9 / 1; border-radius: 1rem; overflow: hidden; isolation: isolate;
+  background: radial-gradient(120% 140% at 15% 20%, #163F7C 0%, var(--ink-2) 55%, #081D42 100%);
+  box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .75), 0 0 0 1px rgba(168, 230, 249, .18) inset; transform: rotate(-1.5deg); }
+.pz-note::before { content: ''; position: absolute; inset: .9rem; border: 1px solid rgba(168, 230, 249, .28); border-radius: .55rem; z-index: 2; pointer-events: none; }
+.pz-note::after { content: ''; position: absolute; top: 0; bottom: 0; left: 76%; width: .65rem; z-index: 1; background: var(--thread-v); box-shadow: 0 0 0 1px rgba(7, 26, 58, .6); }
+.pz-note-guilloche { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.pz-note-face { position: absolute; inset: 0; z-index: 3; display: grid; align-content: center; gap: .5rem; padding: clamp(1.4rem, 3vw, 2.4rem) clamp(1.5rem, 3.5vw, 2.6rem); }
+.pz-note-kind { font-weight: 700; font-stretch: 118%; font-size: clamp(.9rem, 1.4vw, 1.05rem); color: var(--cyan-hi); }
+.pz-note-big { font-weight: 840; font-stretch: 112%; font-size: clamp(2.5rem, 6.4vw, 5rem); line-height: .95; letter-spacing: -.035em; color: #fff; font-variant-numeric: tabular-nums; text-shadow: 0 2px 0 rgba(0, 0, 0, .35); white-space: nowrap; }
+.pz-note-sub { max-width: 68%; font-size: clamp(.85rem, 1.3vw, .98rem); line-height: 1.4; color: var(--on-ink-soft); }
+.pz-out { grid-column: 1 / -1; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.4rem clamp(1rem, 2.5vw, 2rem); }
+.pz-out div { display: grid; align-content: start; gap: .45rem; padding-top: 1rem; border-top: 2px solid var(--cyan); }
+.pz-out dd { order: -1; margin: 0; font-weight: 820; font-stretch: 72%; font-size: clamp(1.9rem, 3vw, 2.5rem); line-height: 1; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+.pz-out dt { font-size: .92rem; line-height: 1.35; color: var(--on-ink-soft); }
+.pz-out dd.neg { color: #FFB4A8; }
+.pz-calc-note { grid-column: 1 / -1; max-width: 52rem; font-size: .9rem; color: var(--on-ink-soft); }
+@media (max-width: 1000px) { .pz-out { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .pz-calc { grid-template-columns: 1fr; } .pz-note { transform: none; } }
+@media (max-width: 560px) { .pz-out { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pz-out div:last-child { grid-column: 1 / -1; } .pz-note { aspect-ratio: 1.45 / 1; } .pz-note::after { left: 84%; } .pz-note-sub { max-width: 76%; } }
+
+/* Listino completo */
+.pz-full .pz-th { margin: clamp(2.6rem, 5vw, 3.4rem) 0 1rem; font-size: clamp(1.3rem, 2vw, 1.6rem); font-stretch: 110%; }
+.pz-table td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pz-table tbody th { white-space: normal; }
+.pz-inc { display: block; margin-top: .15rem; font-weight: 450; font-size: .88rem; color: var(--text-soft); max-width: 18rem; }
+.compare.pz-narrow { min-width: 0; }
+.pz-small-tables { align-items: start; }
+.pz-small-tables .compare:not(.pz-narrow) { min-width: 30rem; }
+.pz-terms { margin-top: 1.2rem; }
+@media (min-width: 900px) { .pz-terms { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(2rem, 4vw, 3.5rem); } }
+.pz-glossary { margin-top: 1.8rem; max-width: 52rem; font-size: .92rem; color: var(--text-soft); }
+@media (max-width: 640px) { .pz-row { grid-template-columns: minmax(0, 1fr) auto; } .pz-rec { padding-left: 0; } .pz-unit { max-width: 7rem; } }
+@media (prefers-reduced-motion: reduce) { .pz-tier-track::before { transition: none; } }
+#listino, #calcolatore, #listino-completo, .pz-card, .pz-th { scroll-margin-top: calc(var(--top-h) + 1.2rem); }
+@media (max-width: 560px) { .pz-switch button { padding: .85rem .9rem 1rem; } .pz-switch button span { font-size: .84rem; } }
+/* I pulsanti <button> con contorno non devono prendere lo sfondo grigio del browser. */
+:is(.pz-head, .pz-panel, .pz-cta) button.b-line:not(:hover) { background-color: transparent; }
+:is(.pz-head, .pz-cta) button.b-line:hover { background-color: rgba(92, 203, 240, .08); }
+.band.pz-full .wrap > .pz-th + .compare-wrap { margin-top: 0; }

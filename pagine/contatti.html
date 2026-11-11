@@ -2,8 +2,8 @@
 id: contatti
 slug: contatti
 label: Contatti
-title: Contatti: richiedi una demo dell’agente AI | Odyra
-description: Richiedi una demo dell’agente AI Odyra, diventa partner o organizza un workshop dell’Academy. Rispondiamo entro un giorno lavorativo. Italia e Spagna.
+title: Contatti: prenota una call con Odyra | Odyra
+description: Prenota una call o scrivici: programma partner per software house, agente AI per gruppi multi-sede, progetti su misura. Rispondiamo entro un giorno lavorativo.
 type: ContactPage
 -->
 <section class="phead ink">
@@ -11,8 +11,8 @@ type: ContactPage
   <div class="wrap phead-in">
     <p class="crumbs"><a href="{{URL:home}}">Home</a> <span aria-hidden="true">/</span> Contatti</p>
     <h1 class="display">Parliamo del vostro caso.</h1>
-    <p class="hero-lead">Una demo dell’agente, una partnership col vostro marchio, un agente per il vostro gruppo o un workshop dell’Academy. Rispondiamo entro un giorno lavorativo.</p>
-    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla subito con l’agente</button> <a class="b b-line" href="mailto:team@odyrasystemautomation.it">team@odyrasystemautomation.it</a></p>
+    <p class="hero-lead">Il programma partner per il vostro gestionale, un agente per il vostro gruppo, un progetto su misura o un workshop dell’Academy. Prenotate una call oppure scriveteci: rispondiamo entro un giorno lavorativo.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:prenota}}">Prenota una call</a> <button class="b b-line" type="button" data-voice-demo>Parla con l’agente</button></p>
   </div>
 </section>
 
@@ -24,14 +24,14 @@ type: ContactPage
       <p class="field"><label for="lf-email">E-mail</label><input id="lf-email" name="email" type="email" autocomplete="email" required></p>
       <p class="field"><label for="lf-phone">Telefono</label><input id="lf-phone" name="phone" type="tel" autocomplete="tel"></p>
       <p class="field"><label for="lf-need">Di cosa avete bisogno?</label><select id="lf-need" name="need" data-param="interesse">
+        <option value="partner">Programma partner (software house e gestionali)</option>
+        <option value="gruppo">Agente per il mio gruppo o la mia azienda</option>
         <option value="demo">Demo dell’agente</option>
-        <option value="partner">Diventare partner (software house)</option>
-        <option value="gruppo">Agente per il mio gruppo multi-sede</option>
         <option value="progetto">Progetto su misura</option>
         <option value="academy">Academy e formazione</option>
         <option value="altro">Altro</option>
       </select></p>
-      <p class="field"><label for="lf-message">Messaggio</label><textarea id="lf-message" name="message" rows="5" placeholder="Quante sedi o clienti avete, che gestionale usate, cosa vorreste che facesse l’agente."></textarea></p>
+      <p class="field"><label for="lf-message">Messaggio</label><textarea id="lf-message" name="message" rows="5" placeholder="Che gestionale sviluppate o usate, quanti centri o sedi, cosa vorreste che facesse l’agente."></textarea></p>
       <label class="check"><input type="checkbox" name="privacy" required> Ho letto l’<a href="{{URL:privacy}}">informativa privacy</a></label>
       <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button class="b b-cyan" type="submit">Invia la richiesta</button>
@@ -42,7 +42,7 @@ type: ContactPage
       <ol class="mini-steps">
         <li><b>Vi rispondiamo</b>Entro un giorno lavorativo.</li>
         <li><b>Prima call</b>Capiamo il vostro caso e cosa volete ottenere.</li>
-        <li><b>Demo o programma</b>Vi mostriamo l’agente al lavoro sul vostro caso, o il programma dell’Academy.</li>
+        <li><b>Proposta</b>Vi mostriamo l’agente al lavoro sul vostro caso e vi proponiamo il percorso: beta per i partner, sedi pilota per le aziende.</li>
       </ol>
       <h2>Non volete aspettare?</h2>
       <p>Parlate subito con l’agente dal browser: risponde a voce, come farebbe con i vostri clienti.</p>
@@ -58,8 +58,8 @@ type: ContactPage
 
 <section class="cta-band ink">
   <div class="wrap">
-    <h2 class="display-2">Prima di scriverci, provate l’agente.</h2>
-    <p class="sec-lead">Nella pagina della demo potete sentirlo rispondere e prenotare come farebbe con i vostri clienti.</p>
-    <p class="actions"><a class="b b-cyan" href="{{URL:demo}}">Prova l’agente</a> <a class="b b-line" href="{{URL:soluzioni}}">Le soluzioni</a></p>
+    <h2 class="display-2">Prima di scriverci, guardate i numeri.</h2>
+    <p class="sec-lead">Pacchetti, scaglioni e condizioni sono pubblici: per i partner e per le aziende.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:prezzi}}">Vedi i prezzi</a> <a class="b b-line" href="{{URL:partner}}">Il programma partner</a></p>
   </div>
 </section>

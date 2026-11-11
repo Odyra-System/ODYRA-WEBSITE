@@ -454,3 +454,129 @@ $$('.reel').forEach((reel) => {
     else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen()
   })
 })
+
+// ───────── prezzi ─────────
+// Listino: interruttore tra i due pubblici, scala degli scaglioni, calcolatore di margine.
+// Tutte le cifre sono già nell'HTML (attributi data-w e data-r): qui si ricalcolano soltanto.
+{
+  const list = $('#listino')
+  if (list) {
+    const TIER_N = [20, 50, 100, 200]
+    const TIER_T = ['20–49', '50–99', '100–199', '200+']
+    const ACT = [69, 59, 49, 0]
+    const ACT_REC = 99
+    const tierOf = (n) => (n < 50 ? 0 : n < 100 ? 1 : n < 200 ? 2 : 3)
+    // Euro all'italiana: punto per le migliaia (anche a quattro cifre), virgola per i decimali.
+    const num = (v) => {
+      const neg = v < 0, a = Math.abs(Math.round(v * 100) / 100)
+      const [i, d] = a.toFixed(2).split('.')
+      const int = i.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      return (neg ? '−' : '') + int + (d === '00' ? '' : ',' + d)
+    }
+    const eur = (v) => num(v) + ' €'
+    const ints = (s) => s.split(',').map(Number)
+    const set = (el, text) => {
+      if (!el || el.textContent === text) return
+      el.textContent = text
+      if (reduce) return
+      el.classList.remove('pz-tick'); void el.offsetWidth; el.classList.add('pz-tick')
+    }
+
+    // Interruttore: due schede accessibili; senza JavaScript si vedono entrambi i pannelli.
+    const tabs = $$('[role="tab"]', list)
+    const partnerOnly = $$('[data-pz-aud="partner"]')
+    const choose = (tab, focus = false, push = false) => {
+      tabs.forEach((t) => {
+        const on = t === tab
+        t.setAttribute('aria-selected', String(on))
+        t.tabIndex = on ? 0 : -1
+        const panel = document.getElementById(t.getAttribute('aria-controls'))
+        if (panel) panel.hidden = !on
+      })
+      const partner = tab.id === 'tab-partner'
+      partnerOnly.forEach((s) => { s.hidden = !partner })
+      if (focus) tab.focus()
+      if (push) history.replaceState(null, '', partner ? '#per-partner' : '#per-aziende')
+    }
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => choose(t, false, true))
+      t.addEventListener('keydown', (e) => {
+        const k = { ArrowRight: 1, ArrowLeft: -1, Home: -i, End: tabs.length - 1 - i }[e.key]
+        if (k === undefined) return
+        e.preventDefault()
+        choose(tabs[(i + k + tabs.length) % tabs.length], true, true)
+      })
+    })
+    if (tabs.length) {
+      const fromHash = /aziend/.test(location.hash) ? $('#tab-aziende') : tabs[0]
+      choose(fromHash || tabs[0])
+      if (fromHash && fromHash !== tabs[0]) list.scrollIntoView()
+    }
+
+    // Scala degli scaglioni: aggiorna prezzo wholesale, margine ed esempio annuo di ogni taglia.
+    const tierNote = $('[data-pz="tier-text"]', list), tierAct = $('[data-pz="act"]', list)
+    const applyTier = (ti) => {
+      $$('.pz-row', list).forEach((row) => {
+        const w = ints(row.dataset.w)[ti], r = ints(row.dataset.r)[0], m = r - w
+        set($('[data-pz="w"]', row), eur(w))
+        set($('[data-pz="m"]', row), '+' + eur(m))
+        set($('[data-pz="n"]', row), String(TIER_N[ti]))
+        set($('[data-pz="y"]', row), eur(m * TIER_N[ti] * 12))
+      })
+      if (tierNote) tierNote.textContent = `Prezzi per ${TIER_T[ti]} licenze.`
+      if (tierAct) set(tierAct, ACT[ti] ? eur(ACT[ti]) : 'gratis')
+    }
+    $$('input[name="pz-tier"]', list).forEach((r) => r.addEventListener('change', () => applyTier(Number(r.value))))
+    const checked = $('input[name="pz-tier"]:checked', list)
+    if (checked && checked.value !== '0') applyTier(Number(checked.value))
+
+    // Calcolatore di margine.
+    const form = $('#pz-form')
+    if (form) {
+      const inN = $('#pz-n'), inLic = $('#pz-lic'), inP = $('#pz-p'), hint = $('#pz-hint')
+      const out = (k) => $(`[data-pc="${k}"]`)
+      const opt = () => inLic.options[inLic.selectedIndex]
+      const recText = () => { const [a, b] = ints(opt().dataset.r); return `Prezzo consigliato per questa licenza: ${a}–${b} €.` }
+      const calc = () => {
+        const o = opt()
+        let n = Math.floor(Number(inN.value))
+        const fewer = !(n >= 20)
+        if (fewer) n = 20
+        const ti = tierOf(n)
+        const w = ints(o.dataset.w)[ti]
+        let p = Number(String(inP.value).replace(',', '.'))
+        if (inP.value === '' || !(p >= 0)) p = ints(o.dataset.r)[0]
+        const m = p - w
+        set(out('w'), eur(w))
+        set(out('m'), eur(m))
+        set(out('rev'), eur(p * n))
+        set(out('mon'), eur(m * n))
+        set(out('year'), eur(m * n * 12))
+        set(out('act'), eur((ACT_REC - ACT[ti]) * n))
+        set(out('actw'), ACT[ti] ? eur(ACT[ti]) : '0 € (gratis)')
+        set(out('n'), String(n))
+        set(out('lic'), o.textContent)
+        set(out('tier'), TIER_T[ti])
+        ;['m', 'mon', 'year'].forEach((k) => out(k)?.classList.toggle('neg', m < 0))
+        let msg = recText(), warn = false
+        if (fewer) { msg = 'L’impegno minimo dopo la beta è di 20 licenze: calcoliamo su 20 centri.'; warn = true }
+        else if (m < 0) { msg = `Sotto il prezzo wholesale (${eur(w)}) il margine è negativo. ` + recText(); warn = true }
+        hint.textContent = msg
+        hint.classList.toggle('warn', warn)
+      }
+      inLic.addEventListener('change', () => { inP.value = ints(opt().dataset.r)[0]; calc() })
+      inN.addEventListener('input', calc)
+      inP.addEventListener('input', calc)
+      form.addEventListener('submit', (e) => { e.preventDefault(); calc() })
+      calc()
+    }
+
+    // La banconota del margine: guilloché disegnato come quello della home.
+    const cv = $('.pz-note-guilloche')
+    if (cv) {
+      const draw = () => guilloche(cv, { phase: 0.9, rosette: { x: 0.2, y: 0.55, r: 0.5, lobes: 16, rings: 32, depth: 0.2, alpha: 0.3 }, waves: { lines: 20, amp: 0.035, freq: 2.5, alpha: 0.12, top: 0.1, bottom: 0.9 } })
+      draw()
+      new ResizeObserver(draw).observe(cv)
+    }
+  }
+}

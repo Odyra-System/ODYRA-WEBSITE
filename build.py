@@ -25,6 +25,10 @@ SITE = 'https://odyrasystemautomation.it'
 EMAIL = 'team@odyrasystemautomation.it'
 UPDATED = '2026-11-11'  # data dell'ultimo aggiornamento dei contenuti (sitemap, JSON-LD)
 LINK_HAKO = 'https://hakocondomini.com'
+# Pagina di prenotazione Google Calendar (Calendario → Programma di appuntamenti → Condividi → "Incorpora sul sito web":
+# l'indirizzo che inizia con https://calendar.google.com/calendar/appointments/schedules/...). Vuoto = la pagina /prenota
+# mostra il modulo contatti al posto del calendario.
+BOOKING_URL = ''
 COMPANY = {
     'legal': 'Verypos S.r.l.',
     'vat': '11630390968',
@@ -148,19 +152,19 @@ TEXT = {lg: {} for lg in LANGS}
 
 # testi fissi di testata, piede e pagine generate
 UI = {
-    'it': dict(skip='Vai al contenuto', menu='Menu', nav='Principale', demo='Richiedi una demo', other='ES', other_name='Español',
-               about='La fabbrica di agenti AI white-label. Milano, per l’Italia e la Spagna.',
+    'it': dict(skip='Vai al contenuto', menu='Menu', nav='Principale', demo='Prenota una call', other='ES', other_name='Español',
+               about='Agenti AI vocali e WhatsApp dentro i gestionali verticali, in white-label per le software house. Milano, per l’Italia e la Spagna.',
                solutions='Soluzioni', resources='Risorse', sw='Software house', big='Grandi aziende', fr='Franchising e reti', ag='Agenzie e integratori',
                agents='Agenti e servizi', vat='Partita IVA', source='Fonte', updated='Aggiornato il',
-               faq_lead='Agenti AI di settore, canali, software supportati, white-label, dati e AI Act: le risposte in breve.',
+               faq_lead='Modello partner, prezzi, canali, gestionali supportati, white-label, dati e AI Act: le risposte in breve.',
                faq_more='Non trovi la risposta? <a href="{c}">Scrivici</a>: rispondiamo entro un giorno lavorativo.',
                nf_title='Pagina non trovata', nf_lead='L’indirizzo non esiste o è stato spostato. Riparti dalla <a href="{h}">home</a> o <a href="{c}">scrivici</a>.',
                privacy_h1='Informativa sulla privacy.', privacy_lead='Come trattiamo i dati raccolti da questo sito.'),
-    'es': dict(skip='Ir al contenido', menu='Menú', nav='Principal', demo='Solicita una demo', other='IT', other_name='Italiano',
-               about='La fábrica de agentes IA white-label. Milán, para Italia y España.',
+    'es': dict(skip='Ir al contenido', menu='Menú', nav='Principal', demo='Reserva una llamada', other='IT', other_name='Italiano',
+               about='Agentes IA de voz y WhatsApp dentro de los programas de gestión verticales, en white-label para empresas de software. Milán, para Italia y España.',
                solutions='Soluciones', resources='Recursos', sw='Empresas de software', big='Grandes empresas', fr='Franquicias y redes', ag='Agencias e integradores',
                agents='Agentes y servicios', vat='NIF-IVA', source='Fuente', updated='Actualizado el',
-               faq_lead='Agentes IA sectoriales, canales, software compatible, white-label, datos y AI Act: las respuestas en breve.',
+               faq_lead='Modelo de partners, precios, canales, software compatible, white-label, datos y AI Act: las respuestas en breve.',
                faq_more='¿No encuentras la respuesta? <a href="{c}">Escríbenos</a>: respondemos en un día laborable.',
                nf_title='Página no encontrada', nf_lead='La dirección no existe o se ha movido. Vuelve al <a href="{h}">inicio</a> o <a href="{c}">escríbenos</a>.',
                privacy_h1='Política de privacidad.', privacy_lead='Cómo tratamos los datos que recoge este sitio.'),
@@ -205,8 +209,8 @@ def md_path(key, lang):
 def faq_home():
     return [
         (t('Cos’è Odyra System?', '¿Qué es Odyra System?'),
-         t('Odyra System è un’azienda tecnologica di Milano che costruisce agenti AI di settore: assistenti che rispondono al telefono e su WhatsApp e gestiscono appuntamenti seguendo le regole di un settore preciso. Li collega ai software di gestione, che li offrono ai loro clienti con il proprio marchio.',
-           'Odyra System es una empresa tecnológica de Milán que construye agentes IA sectoriales: asistentes que contestan al teléfono y por WhatsApp y gestionan citas siguiendo las reglas de un sector concreto. Los conecta a los software de gestión, que los ofrecen a sus clientes con su propia marca.')),
+         t('Odyra System, di Milano, è la piattaforma di agenti AI vocali e WhatsApp che lavorano dentro i gestionali verticali, in white-label per le software house. Gli agenti rispondono al telefono e su WhatsApp e prenotano, spostano e cancellano appuntamenti nel gestionale, seguendo le regole del settore. La software house li rivende ai propri centri col proprio marchio.',
+           'Odyra System, de Milán, es la plataforma de agentes IA de voz y WhatsApp que trabajan dentro de los programas de gestión verticales, en white-label para las empresas de software. Los agentes contestan al teléfono y por WhatsApp y reservan, cambian y cancelan citas en el programa, siguiendo las reglas del sector. La empresa de software los revende a sus centros con su propia marca.')),
         (t('Che differenza c’è tra un agente di settore e un’AI generica?', '¿Qué diferencia hay entre un agente sectorial y una IA genérica?'),
          t('Un agente di settore ha le regole di quel mestiere scritte nel codice, non solo in un prompt: per un salone, per esempio, l’ordine colore-taglio-piega, i pacchetti e la regola delle 24 ore per le disdette. Inoltre legge e scrive direttamente nel software di gestione, quindi prenota solo orari realmente liberi.',
            'Un agente sectorial tiene las reglas de ese oficio escritas en el código, no solo en un prompt: en un salón, por ejemplo, el orden color-corte-peinado, los paquetes y la regla de 24 horas para cancelar. Además lee y escribe directamente en el software de gestión, así que solo reserva horarios realmente libres.')),
@@ -221,24 +225,31 @@ def faq_home():
 
 def faq_partner():
     return [
-        (t('Cosa deve fare un software di gestione per diventare partner?', '¿Qué tiene que hacer un software de gestión para ser socio?'),
-         t('Dare accesso alle API essenziali: ricerca del cliente, disponibilità, creazione e cancellazione degli appuntamenti. Il connettore lo scrive Odyra, senza toccare il cuore del software.',
-           'Dar acceso a las API esenciales: búsqueda de cliente, disponibilidad, creación y cancelación de citas. El conector lo escribe Odyra, sin tocar el núcleo del software.')),
-        (t('Come guadagna il partner?', '¿Cómo gana el socio?'),
-         t('Con un canone ricorrente da ogni cliente che attiva l’agente, con ricavi condivisi con Odyra. La formula si definisce insieme.',
-           'Con una cuota recurrente de cada cliente que activa el agente, con ingresos compartidos con Odyra. La fórmula se define juntos.')),
-        (t('Con quale marchio arriva ai clienti?', '¿Con qué marca llega a los clientes?'),
-         t('Con quello del partner: interfacce, messaggi e dashboard portano il suo nome e il suo logo.', 'Con la del socio: interfaces, mensajes y paneles llevan su nombre y su logo.')),
-        (t('Chi segue i clienti dopo l’attivazione?', '¿Quién atiende a los clientes después de la activación?'),
-         t('Odyra: onboarding, controllo di qualità, errori, consumi, WhatsApp Business e assistenza tecnica.', 'Odyra: alta, control de calidad, errores, consumos, WhatsApp Business y soporte técnico.')),
+        (t('Cosa serve a un gestionale per diventare partner?', '¿Qué necesita un software de gestión para ser partner?'),
+         t('Dare accesso alle API per anagrafiche, agenda, turni e disponibilità. L’integrazione la scrive Odyra, a proprie spese, senza toccare il cuore del software.',
+           'Dar acceso a las API de fichas de clientes, agenda, turnos y disponibilidad. La integración la escribe Odyra, a su cargo, sin tocar el núcleo del software.')),
+        (t('Come guadagna il partner?', '¿Cómo gana el partner?'),
+         t('Acquista da Odyra le licenze all’ingrosso, una per centro al mese, e le rivende ai propri centri col proprio marchio, al prezzo che decide. Per esempio la voce inbound S costa al partner 49 € al mese al primo scaglione, e il prezzo consigliato al centro è 79–89 €.',
+           'Compra a Odyra las licencias al por mayor, una por centro al mes, y las revende a sus centros con su propia marca, al precio que decide. Por ejemplo, la voz entrante S le cuesta al partner 49 € al mes en el primer tramo, y el precio recomendado al centro es de 79–89 €.')),
+        (t('Quanto costa partire?', '¿Cuánto cuesta empezar?'),
+         t('Integrazione e dashboard white-label sono a carico di Odyra e la beta è gratuita fino a 5 centri per 60 giorni. Al termine della beta l’impegno minimo è di 20 licenze per 12 mesi, fatturate mensilmente.',
+           'La integración y el panel white-label corren a cargo de Odyra y la beta es gratuita para hasta 5 centros durante 60 días. Al terminar la beta, el compromiso mínimo es de 20 licencias durante 12 meses, facturadas mensualmente.')),
+        (t('Con quale marchio arriva ai centri?', '¿Con qué marca llega a los centros?'),
+         t('Con quello del partner: nome dell’agente, messaggi e dashboard nello stile grafico del gestionale.', 'Con la del partner: nombre del agente, mensajes y panel con el estilo gráfico del programa.')),
+        (t('Chi segue i centri dopo l’attivazione?', '¿Quién atiende a los centros después de la activación?'),
+         t('Odyra: attivazione di numero e canale WhatsApp, qualità delle conversazioni, consumi e assistenza tecnica sull’agente. Il partner resta il riferimento commerciale.',
+           'Odyra: activación del número y del canal WhatsApp, calidad de las conversaciones, consumos y soporte técnico del agente. El partner sigue siendo la referencia comercial.')),
     ]
 
 
 def faq_all():
     return faq_home() + faq_partner() + [
         (t('Con quali software di gestione funziona?', '¿Con qué software de gestión funciona?'),
-         t('Con ogni software di gestione che espone le API per clienti, disponibilità e appuntamenti: per ciascuno Odyra scrive un connettore dedicato. Oggi è in produzione con GoWeb di BOSS.',
-           'Con cualquier software de gestión que exponga API de clientes, disponibilidad y citas: para cada uno Odyra escribe un conector dedicado. Hoy está en producción con GoWeb de BOSS.')),
+         t('Con ogni software di gestione che espone le API per clienti, disponibilità e appuntamenti: per ciascuno Odyra scrive un connettore dedicato. Oggi è in produzione nel beauty con GoWeb di BOSS; dentale, poliambulatori e gli altri servizi su appuntamento sono i verticali successivi.',
+           'Con cualquier software de gestión que exponga API de clientes, disponibilidad y citas: para cada uno Odyra escribe un conector dedicado. Hoy está en producción en el sector de la belleza con GoWeb de BOSS; clínicas dentales, policlínicas y los demás servicios con cita previa son los siguientes sectores.')),
+        (t('Quanto costa?', '¿Cuánto cuesta?'),
+         t('Si paga una licenza per centro al mese: voce, WhatsApp o combo, in taglia S, M o L. Per le software house il prezzo è all’ingrosso, da 22 € a licenza, con scaglioni di volume; il prezzo al centro lo decide il partner. Le aziende acquistano direttamente gli stessi pacchetti, da 39 € per sede al mese. I costi WhatsApp sono inclusi nei pacchetti WhatsApp e Combo. Prezzi IVA esclusa.',
+           'Se paga una licencia por centro al mes: voz, WhatsApp o combo, en talla S, M o L. Para las empresas de software el precio es mayorista, desde 22 € por licencia, con tramos de volumen; el precio al centro lo decide el partner. Las empresas compran directamente los mismos paquetes, desde 39 € por sede al mes. Los costes de WhatsApp están incluidos en los paquetes WhatsApp y Combo. Precios sin IVA.')),
         (t('Quanto ci vuole per attivare un nuovo cliente?', '¿Cuánto se tarda en activar un cliente nuevo?'),
          t('Con il software di gestione già collegato, staff e listino si sincronizzano da soli e uno specialista Odyra attiva numero, WhatsApp e voce in circa dieci minuti.',
            'Con el software de gestión ya conectado, equipo y tarifas se sincronizan solos y un especialista de Odyra activa número, WhatsApp y voz en unos diez minutos.')),
@@ -257,8 +268,8 @@ def faq_all():
          t('HAKO è un software proprietario di Odyra per le portinerie dei condomini, venduto direttamente. Ha un sito dedicato: hakocondomini.com.',
            'HAKO es un software propio de Odyra para las conserjerías de comunidades de vecinos, vendido directamente. Tiene una web propia: hakocondomini.com.')),
         (t('Odyra lavora anche con aziende che non sono software house?', '¿Odyra trabaja también con empresas que no son de software?'),
-         t('Sì, con progetti su misura per aziende con grandi volumi: agenti commerciali che richiamano i lead in pochi secondi, customer service e automazioni di back office, integrati con CRM ed ERP.',
-           'Sí, con proyectos a medida para empresas con grandes volúmenes: agentes comerciales que llaman a los leads en segundos, atención al cliente y automatizaciones de back office, integrados con CRM y ERP.')),
+         t('Sì. Gruppi multi-sede, catene e aziende con molte chiamate acquistano direttamente gli stessi pacchetti dei partner, con un prezzo per sede che scende all’aumentare delle sedi. Per le aziende con grandi volumi ci sono anche progetti su misura: agenti commerciali che richiamano i lead in pochi secondi, customer service e automazioni di back office, integrati con CRM ed ERP.',
+           'Sí. Los grupos multisede, las cadenas y las empresas con muchas llamadas compran directamente los mismos paquetes que los partners, con un precio por sede que baja a medida que crecen las sedes. Para empresas con grandes volúmenes hay también proyectos a medida: agentes comerciales que llaman a los leads en segundos, atención al cliente y automatizaciones de back office, integrados con CRM y ERP.')),
         (t('Chi c’è dietro Odyra System?', '¿Quién está detrás de Odyra System?'),
          t('Odyra System è un marchio di Verypos S.r.l., con sede in Viale Papiniano 8, 20123 Milano. Partita IVA 11630390968.',
            'Odyra System es una marca de Verypos S.r.l., con sede en Viale Papiniano 8, 20123 Milán (Italia). NIF-IVA 11630390968.')),
@@ -273,8 +284,9 @@ def org_node():
         '@type': 'Organization', '@id': f'{SITE}/#org', 'name': 'Odyra System', 'legalName': COMPANY['legal'],
         'url': f'{SITE}/', 'logo': f'{SITE}/assets/logos/odyra-mark.png', 'image': f'{SITE}/assets/img/og.jpg', 'email': EMAIL,
         'vatID': 'IT' + COMPANY['vat'], 'foundingLocation': 'Milano',
-        'description': t('Azienda tecnologica di Milano che costruisce agenti AI di settore, voce e WhatsApp, in white-label per i software di gestione.',
-                         'Empresa tecnológica de Milán que construye agentes IA sectoriales, de voz y WhatsApp, en white-label para software de gestión.'),
+        'description': t('Piattaforma di agenti AI vocali e WhatsApp che lavorano dentro i gestionali verticali, in white-label per le software house, con licenze all’ingrosso per centro. Milano.',
+                         'Plataforma de agentes IA de voz y WhatsApp que trabajan dentro de los programas de gestión verticales, en white-label para las empresas de software, con licencias mayoristas por centro. Milán.'),
+        'slogan': t('Voi mettete il marchio. Noi il motore.', 'Vosotros ponéis la marca. Nosotros, el motor.'),
         'address': {'@type': 'PostalAddress', 'streetAddress': COMPANY['street'], 'postalCode': COMPANY['zip'], 'addressLocality': COMPANY['city'], 'addressRegion': 'MI', 'addressCountry': 'IT'},
         'contactPoint': {'@type': 'ContactPoint', 'contactType': 'sales', 'email': EMAIL, 'availableLanguage': ['it', 'es']},
         'knowsAbout': ['AI agents', 'Voice AI', 'WhatsApp Business API', t('Software di gestione', 'Software de gestión'), 'White-label SaaS', 'AI Act', 'GDPR'],
@@ -372,6 +384,21 @@ def body_privacy(lang):
 </section>'''
 
 
+def booking_block(lang):
+    """Calendario per prenotare una call, incorporato nella pagina /prenota; senza indirizzo, rimanda al modulo."""
+    if BOOKING_URL:
+        if not BOOKING_URL.startswith('https://calendar.google.com/'):
+            raise SystemExit('BOOKING_URL deve iniziare con https://calendar.google.com/ (indirizzo "Incorpora" della pagina di prenotazione)')
+        src = BOOKING_URL + ('&' if '?' in BOOKING_URL else '?') + 'gv=true'
+        return (f'<div class="booking-frame"><iframe src="{e(src)}" title="{t("Calendario per prenotare una call con Odyra", "Calendario para reservar una llamada con Odyra")}" '
+                f'loading="lazy" width="100%" height="720"></iframe></div>'
+                f'<p class="sec-lead booking-alt">{t("Il calendario non si carica?", "¿El calendario no carga?")} '
+                f'<a href="{e(BOOKING_URL)}" target="_blank" rel="noopener">{t("Apri la pagina di prenotazione", "Abre la página de reservas")}</a>.</p>')
+    return (f'<div class="booking-frame booking-empty"><p>{t("Scrivici quando preferisci: ti proponiamo noi due orari entro un giorno lavorativo.", "Escríbenos cuándo prefieres: te proponemos dos horarios en un día laborable.")}</p>'
+            f'<p class="actions"><a class="b b-cyan" href="{path("contatti", lang)}?interesse=demo">{t("Scegli un orario", "Elige un horario")}</a> '
+            f'<a class="b b-line" href="mailto:{EMAIL}?subject={t("Prenotazione%20call", "Reserva%20llamada")}">{EMAIL}</a></p></div>')
+
+
 def url_or_warn(key, lang, src):
     if has(key, lang) or has(key, 'it'):
         return path(key, lang)
@@ -398,6 +425,8 @@ def bodies(lang):
             body = meta['body']
             body = body.replace('{{AGENTS_N}}', str(len(cards))).replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', base(lang))
             body = re.sub(r'\{\{URL:([a-z0-9-]+)\}\}', lambda m: url_or_warn(m.group(1), lang, meta['src']), body)
+            if '{{BOOKING}}' in body:
+                body = body.replace('{{BOOKING}}', booking_block(lang))
             body = without_placeholders(body)
             if re.search(r'slot-mini|slot-box|partner-slot', body):
                 print(f'Attenzione: in {os.path.relpath(meta["src"], ROOT)} è rimasto un segnaposto da riempire')
@@ -420,7 +449,7 @@ def header(lang, current):
     <ul class="top-links">{links}</ul>
     <div class="top-side">
       <a class="top-lang" href="{switch}" hreflang="{other}" lang="{other}"><span aria-hidden="true">{u['other']}</span><span class="sr">{u['other_name']}</span></a>
-      <a class="b b-cyan top-cta" href="{path('contatti', lang)}">{u['demo']}</a>
+      <a class="b b-cyan top-cta" href="{path('prenota' if has('prenota', lang) or has('prenota', 'it') else 'contatti', lang)}">{t('Prenota una call', 'Reserva una llamada')}</a>
     </div>
   </nav>
   <button class="top-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" data-open="{u['menu']}" data-close="{close}"><span class="top-menu-icon" aria-hidden="true"><i></i><i></i></span><span class="top-menu-label">{u['menu']}</span></button>
@@ -717,12 +746,12 @@ def llms_txt(mds, full=False):
                 f'> Tutte le pagine pubbliche di {SITE} in Markdown, in italiano e in spagnolo. Aggiornato il {UPDATED}.\n\n')
         return head + '\n\n---\n\n'.join(mds[lg][k] for lg in LANGS for k in mds[lg])
     out = ['# Odyra System', '',
-           '> Odyra System è un gruppo tecnologico di Milano (Verypos S.r.l.) che progetta e gestisce agenti AI white-label: sistemi di agenti per aziende con centinaia o migliaia di sedi, clienti e punti vendita, venduti e usati col marchio del cliente.', '',
+           '> Odyra System (Milano, Verypos S.r.l.) è la piattaforma di agenti AI vocali e WhatsApp che lavorano dentro i gestionali verticali, in white-label per le software house. Si parte dai saloni con BOSS.', '',
            'Fatti chiave:', '',
-           '- Agenti per voce (telefono in tempo reale), WhatsApp Business ed e-mail: prenotazioni, vendite, assistenza, operazioni e controllo qualità.',
-           '- In produzione nel settore beauty con GoAgent, il servizio AI di BOSS per gli oltre 1.500 saloni che usano il gestionale GoWeb, da giugno 2026.',
-           '- Modello white-label: Odyra costruisce e gestisce l’agente (connettori, onboarding, qualità, assistenza), il cliente lo offre col proprio marchio.',
-           '- Clienti: software house, grandi aziende, franchising e reti, agenzie e integratori.',
+           '- Agenti per voce (telefono in tempo reale, in entrata e in uscita) e WhatsApp Business: riconoscono il cliente, prenotano, spostano e cancellano appuntamenti nel gestionale, seguono le regole del centro e passano all’operatore quando serve.',
+           '- In produzione nel settore beauty con GoAgent, il servizio AI di BOSS per gli oltre 1.500 saloni che usano il gestionale GoWeb, da giugno 2026. Dentale, poliambulatori e altri servizi su appuntamento sono i verticali successivi.',
+           '- Modello wholesale per le software house: licenza per centro al mese (voce, WhatsApp o combo, taglie S, M, L), da 22 € all’ingrosso con scaglioni di volume su tutte le licenze; il partner rivende col proprio marchio e decide il prezzo al centro. Integrazione con le API del gestionale e dashboard white-label incluse, a carico di Odyra. Beta gratuita fino a 5 centri per 60 giorni. Costi WhatsApp inclusi nei pacchetti WhatsApp e Combo. Prezzi IVA esclusa.',
+           '- Secondo pubblico: gruppi multi-sede e aziende con molte chiamate, che acquistano gli stessi pacchetti direttamente, da 39 € per sede al mese; progetti su misura per le grandi aziende.',
            '- L’agente dice sempre di essere un’AI (AI Act); dati isolati per cliente, conforme al GDPR.',
            '- Altri prodotti e servizi: HAKO, software proprietario per le portinerie dei condomini (https://hakocondomini.com); progetti su misura (es. Gruppo Colzani); Odyra Academy, consulenza e formazione sull’AI.',
            f'- Contatti: {EMAIL}, {COMPANY["street"]}, {COMPANY["zip"]} {COMPANY["city"]}, Italia.', '',
