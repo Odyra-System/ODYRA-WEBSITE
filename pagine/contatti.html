@@ -1,3 +1,11 @@
+<!--pagina
+id: contatti
+slug: contatti
+label: Contatti
+title: Contatti | Odyra
+description: Richiedi una demo di un agente AI Odyra o un workshop dell’Academy.
+type: ContactPage
+-->
 <section class="phead ink">
   <canvas class="hero-guilloche" aria-hidden="true"></canvas>
   <div class="wrap phead-in">
@@ -21,7 +29,7 @@
         <label><input type="radio" name="interesse" value="altro"><span>Altro</span></label>
       </fieldset>
       <label for="f-msg">Cosa vorresti automatizzare?<textarea id="f-msg" name="messaggio" rows="5" required></textarea></label>
-      <label class="check" for="f-privacy"><input id="f-privacy" type="checkbox" name="privacy" required><span>Ho letto l’<a href="/privacy/">informativa privacy</a> e acconsento a essere ricontattato.</span></label>
+      <label class="check" for="f-privacy"><input id="f-privacy" type="checkbox" name="privacy" required><span>Ho letto l’<a href="{{URL:privacy}}">informativa privacy</a> e acconsento a essere ricontattato.</span></label>
       <p><button class="b b-ink" type="submit">Invia la richiesta</button></p>
       <p class="form-msg" id="form-msg" role="status" aria-live="polite"></p>
     </form>

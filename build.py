@@ -46,68 +46,105 @@ def e(s):
 
 
 # ───────── pagine e indirizzi ─────────
-# chiave, sorgente in pagine/ e pagine/es/ (None = generata qui), voce di menu
-PAGES = [
-    ('home', 'home.html', False),
-    ('soluzioni', 'soluzioni.html', True),
-    ('agenti', 'agenti.html', True),
-    ('piattaforma', 'piattaforma.html', True),
-    ('academy', 'academy.html', True),
-    ('casi', 'casi.html', True),
-    ('chi', 'chi-siamo.html', True),
-    ('contatti', 'contatti.html', False),
-    ('domande', None, False),
-    ('privacy', None, False),
-]
-NOINDEX = ('privacy',)
-
-# per lingua: indirizzo, etichetta (menu e briciole), titolo, descrizione
-TEXT = {
+# Ogni file .html in pagine/ (italiano, anche in sottocartelle) e in pagine/es/ (spagnolo) è una pagina.
+# In cima al file c'è un commento con i dati della pagina:
+#
+#   <!--pagina
+#   id: capabilities            (stesso id in italiano e spagnolo = la stessa pagina tradotta, per hreflang)
+#   slug: capabilities          (indirizzo senza / iniziale e finale; vuoto per la home)
+#   label: Agenti               (voce di menu e briciole di pane)
+#   title: Agenti AI e servizi | Odyra
+#   description: Il catalogo degli agenti ...
+#   nav: 2                      (facoltativo: posizione nel menu in alto)
+#   type: WebPage               (facoltativo: AboutPage, ContactPage, CollectionPage, FAQPage, Service...)
+#   noindex: 1                  (facoltativo: pagina fuori da motori e sitemap)
+#   parent: partner             (facoltativo: id della pagina madre, per le briciole di pane)
+#   -->
+#
+# Le pagine "domande" e "privacy" sono generate qui sotto (GENERATED).
+GENERATED = {
     'it': {
-        'home': ('', 'Home', 'Odyra System: agenti AI su scala, col vostro marchio',
-                 'Odyra progetta e gestisce agenti AI white-label per aziende con centinaia o migliaia di sedi, clienti e punti vendita: voce, WhatsApp, prenotazioni, vendite e assistenza.'),
-        'soluzioni': ('soluzioni', 'Soluzioni', 'Soluzioni per software house, aziende, reti e agenzie | Odyra',
-                      'Come Odyra lavora con software house, grandi aziende, franchising e agenzie: agenti AI col loro marchio, gestiti da Odyra.'),
-        'agenti': ('agenti', 'Agenti', 'Agenti AI e servizi | Odyra',
-                   'Il catalogo degli agenti AI e dei servizi Odyra: voce, messaggi, vendite, assistenza, operazioni, qualità e infrastruttura.'),
-        'piattaforma': ('piattaforma', 'Piattaforma', 'La piattaforma | Odyra',
-                        'Come è fatta la piattaforma Odyra: un solo cervello condiviso, regole di settore nel codice, connettori ai sistemi del cliente.'),
-        'academy': ('academy', 'Academy', 'Odyra Academy: consulenza e formazione sull’AI | Odyra',
-                    'Workshop, webinar, percorsi per i team e consulenza sull’intelligenza artificiale per le aziende, da chi mette agenti AI in produzione.'),
-        'casi': ('casi', 'Casi di successo', 'Casi di successo | Odyra',
-                 'BOSS, HAKO e Gruppo Colzani: agenti Odyra al lavoro.'),
-        'chi': ('chi-siamo', 'Chi siamo', 'Chi siamo | Odyra',
-                'Odyra System, gruppo tecnologico di Milano: chi siamo, metodo, missione e visione.'),
-        'contatti': ('contatti', 'Contatti', 'Contatti | Odyra',
-                     'Richiedi una demo di un agente AI Odyra o un workshop dell’Academy.'),
-        'domande': ('domande', 'Domande frequenti', 'Domande frequenti su Odyra System e gli agenti AI',
-                    'Risposte su Odyra System: agenti AI di settore, canali, software supportati, white-label, GDPR, AI Act e WhatsApp Business.'),
-        'privacy': ('privacy', 'Privacy', 'Informativa privacy | Odyra System',
-                    'Informativa sul trattamento dei dati personali del sito Odyra System.'),
+        'domande': dict(slug='domande', label='Domande frequenti', title='Domande frequenti su Odyra System e gli agenti AI',
+                        description='Risposte su Odyra System: agenti AI di settore, canali, software supportati, white-label, GDPR, AI Act e WhatsApp Business.', type='FAQPage'),
+        'privacy': dict(slug='privacy', label='Privacy', title='Informativa privacy | Odyra System',
+                        description='Informativa sul trattamento dei dati personali del sito Odyra System.'),
     },
     'es': {
-        'home': ('', 'Inicio', 'Odyra System: agentes IA a escala, con vuestra marca',
-                 'Odyra diseña y gestiona agentes IA white-label para empresas con cientos o miles de sedes, clientes y puntos de venta: voz, WhatsApp, reservas, ventas y atención al cliente.'),
-        'soluzioni': ('soluciones', 'Soluciones', 'Soluciones para empresas de software, grandes empresas, redes y agencias | Odyra',
-                      'Cómo trabaja Odyra con empresas de software, grandes empresas, franquicias y agencias: agentes IA con su marca, gestionados por Odyra.'),
-        'agenti': ('agentes', 'Agentes', 'Agentes IA y servicios | Odyra',
-                   'El catálogo de agentes IA y servicios de Odyra: voz, mensajes, ventas, atención, operaciones, calidad e infraestructura.'),
-        'piattaforma': ('plataforma', 'Plataforma', 'La plataforma | Odyra',
-                        'Cómo está hecha la plataforma Odyra: un único cerebro compartido, reglas del sector en el código, conectores con los sistemas del cliente.'),
-        'academy': ('academy', 'Academy', 'Odyra Academy: consultoría y formación en IA | Odyra',
-                    'Talleres, webinars, itinerarios para equipos y consultoría sobre inteligencia artificial para empresas, de quien pone agentes IA en producción.'),
-        'casi': ('casos', 'Casos de éxito', 'Casos de éxito | Odyra',
-                 'BOSS, HAKO y Gruppo Colzani: agentes Odyra trabajando.'),
-        'chi': ('quienes-somos', 'Quiénes somos', 'Quiénes somos | Odyra',
-                'Odyra System, grupo tecnológico de Milán: quiénes somos, método, misión y visión.'),
-        'contatti': ('contacto', 'Contacto', 'Contacto | Odyra',
-                     'Solicita una demo de un agente IA de Odyra o un taller de la Academy.'),
-        'domande': ('preguntas', 'Preguntas frecuentes', 'Preguntas frecuentes sobre Odyra System y los agentes IA',
-                    'Respuestas sobre Odyra System: agentes IA sectoriales, canales, software compatible, white-label, RGPD, AI Act y WhatsApp Business.'),
-        'privacy': ('privacidad', 'Privacidad', 'Política de privacidad | Odyra System',
-                    'Política de tratamiento de datos personales del sitio Odyra System.'),
+        'domande': dict(slug='preguntas', label='Preguntas frecuentes', title='Preguntas frecuentes sobre Odyra System y los agentes IA',
+                        description='Respuestas sobre Odyra System: agentes IA sectoriales, canales, software compatible, white-label, RGPD, AI Act y WhatsApp Business.', type='FAQPage'),
+        'privacy': dict(slug='privacidad', label='Privacidad', title='Política de privacidad | Odyra System',
+                        description='Política de tratamiento de datos personales del sitio Odyra System.'),
     },
 }
+NOINDEX_GENERATED = ()
+
+META_RE = re.compile(r'\A\s*<!--pagina\s*\n(.*?)-->\s*', re.S)
+REG = {lg: {} for lg in LANGS}   # lingua -> id -> dati della pagina (slug, label, title, description, src, ...)
+
+
+def load_registry():
+    for lang in LANGS:
+        src_dir = PAGINE if lang == 'it' else os.path.join(PAGINE, 'es')
+        found = {}
+        for root, dirs, files in os.walk(src_dir):
+            if lang == 'it' and os.path.abspath(root) == os.path.abspath(PAGINE) and 'es' in dirs:
+                dirs.remove('es')
+            dirs.sort()
+            for fn in sorted(files):
+                if not fn.endswith('.html'):
+                    continue
+                full = os.path.join(root, fn)
+                with open(full, encoding='utf-8') as f:
+                    text = f.read()
+                m = META_RE.match(text)
+                rel = os.path.relpath(full, ROOT)
+                if not m:
+                    raise SystemExit(f'{rel}: manca il commento <!--pagina ... --> in cima al file')
+                meta = {}
+                for line in m.group(1).splitlines():
+                    if ':' in line:
+                        k, v = line.split(':', 1)
+                        meta[k.strip()] = re.sub(r'\s+\(.*\)\s*$', '', v.strip()) if k.strip() in ('nav', 'noindex') else v.strip()
+                for need in ('id', 'label', 'title', 'description'):
+                    if not meta.get(need):
+                        raise SystemExit(f'{rel}: nel commento in cima manca "{need}"')
+                meta.setdefault('slug', '')
+                meta['slug'] = meta['slug'].strip('/')
+                meta['src'] = full
+                meta['body'] = text[m.end():]
+                if meta['id'] in found:
+                    raise SystemExit(f'{rel}: id "{meta["id"]}" già usato da {os.path.relpath(found[meta["id"]]["src"], ROOT)}')
+                found[meta['id']] = meta
+        for k, v in GENERATED[lang].items():
+            found[k] = dict(v, id=k, src=None, body=None)
+        slugs = {}
+        for k, v in found.items():
+            if v['slug'] in slugs:
+                raise SystemExit(f'indirizzo "/{v["slug"]}" usato da due pagine: {k} e {slugs[v["slug"]]}')
+            slugs[v['slug']] = k
+        if 'home' not in found or 'contatti' not in found:
+            raise SystemExit(f'pagine {lang}: servono almeno le pagine con id "home" e "contatti"')
+        REG[lang] = dict(sorted(found.items(), key=lambda kv: (kv[1]['slug'] != '', kv[1]['slug'])))
+        for k, v in REG[lang].items():
+            TEXT[lang][k] = (v['slug'], v['label'], v['title'], v['description'])
+
+
+def has(key, lang):
+    return key in REG[lang]
+
+
+def noindex(key, lang):
+    v = REG[lang].get(key) or REG['it'].get(key) or {}
+    return str(v.get('noindex', '0')) not in ('', '0', 'false', 'no')
+
+
+def nav_items(lang):
+    items = [(int(v['nav']), k) for k, v in REG[lang].items() if str(v.get('nav', '')).strip().isdigit()]
+    return [k for _, k in sorted(items)]
+
+
+# per lingua: id -> (indirizzo, etichetta, titolo, descrizione); riempito da load_registry()
+TEXT = {lg: {} for lg in LANGS}
 
 # testi fissi di testata, piede e pagine generate
 UI = {
@@ -152,11 +189,15 @@ def base(lang):
 
 
 def path(key, lang):
+    if key not in TEXT[lang]:
+        lang = 'it'
     slug = TEXT[lang][key][0]
-    return base(lang) + (slug + '/' if slug else '')
+    return base(lang) + slug  # senza barra finale: gli indirizzi già indicizzati sono così
 
 
 def md_path(key, lang):
+    if key not in TEXT[lang]:
+        lang = 'it'
     return base(lang) + (TEXT[lang][key][0] or 'index') + '.md'
 
 
@@ -314,17 +355,16 @@ def bodies(lang):
 </div></section>
 '''
     out = {}
-    for key, src, _ in PAGES:
-        if src:
-            with open(os.path.join(src_dir, src), encoding='utf-8') as f:
-                body = f.read()
+    for key, meta in REG[lang].items():
+        if meta['src']:
+            body = meta['body']
             body = body.replace('{{AGENTS_N}}', str(len(cards))).replace('{{AGENTS}}', ''.join(cards)).replace('{{AGENTS_GRID}}', grid).replace('{{P}}', base(lang))
+            body = re.sub(r'\{\{URL:([a-z0-9-]+)\}\}', lambda m: path(m.group(1), lang) if (has(m.group(1), lang) or has(m.group(1), 'it')) else (_ for _ in ()).throw(SystemExit(f'{os.path.relpath(meta["src"], ROOT)}: {{{{URL:{m.group(1)}}}}} non esiste')), body)
             body = without_placeholders(body)
             if re.search(r'slot-mini|slot-box|partner-slot', body):
-                print(f'Attenzione: in {os.path.relpath(src_dir, ROOT)}/{src} è rimasto un segnaposto da riempire')
+                print(f'Attenzione: in {os.path.relpath(meta["src"], ROOT)} è rimasto un segnaposto da riempire')
         else:
             body = body_domande(lang) if key == 'domande' else body_privacy(lang)
-        # le briciole di pane sono già nel JSON-LD: fuori dal Markdown
         out[key] = body.replace('<p class="crumbs">', '<p class="crumbs" data-md="skip">').strip()
     return out
 
@@ -332,32 +372,47 @@ def bodies(lang):
 # ───────── testata, piede, <head> ─────────
 def header(lang, current):
     u = UI[lang]
-    links = ''.join(f'<a href="{path(k, lang)}"{" aria-current=\"page\"" if k == current else ""}>{TEXT[lang][k][1]}</a>' for k, _, nav in PAGES if nav)
+    links = ''.join(f'<a href="{path(k, lang)}"{" aria-current=\"page\"" if k == current else ""}>{TEXT[lang][k][1]}</a>' for k in nav_items(lang))
     other = 'es' if lang == 'it' else 'it'
+    switch = path(current, other) if current and has(current, other) else base(other)
     return f'''<header class="top">
   <a class="top-brand" href="{base(lang)}"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40"></a>
   <nav class="top-nav" id="nav" aria-label="{u['nav']}">
     {links}
-    <a href="{path(current or 'home', other)}" hreflang="{other}" lang="{other}" title="{u['other_name']}">{u['other']}</a>
+    <a href="{switch}" hreflang="{other}" lang="{other}" title="{u['other_name']}">{u['other']}</a>
     <a class="b b-cyan" href="{path('contatti', lang)}">{u['demo']}</a>
   </nav>
   <button class="top-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav">{u['menu']}</button>
 </header>'''
 
 
+# Colonne del piede: (titolo it, titolo es, [id di pagina o (etichetta, indirizzo)]). Le pagine mancanti in una lingua si saltano.
+FOOTER = [
+    ('Soluzioni', 'Soluciones', ['soluzioni', 'centralino-ai', 'segretaria-ai', 'settore-estetica', 'settore-dentale', 'partner']),
+    ('Odyra', 'Odyra', ['capabilities', 'tecnologie', 'processo', 'lavori', 'eventi', 'studio', 'team']),
+    ('Risorse', 'Recursos', ['demo', 'contatti', 'domande', 'privacy', 'cookie', 'termini']),
+]
+
+
 def footer(lang):
     u = UI[lang]
-    p = lambda k: path(k, lang)
-    lab = lambda k: TEXT[lang][k][1]
-    col = lambda title, items: f'<div><h2>{title}</h2><ul>' + ''.join(f'<li><a href="{h}">{l}</a></li>' for l, h in items) + '</ul></div>'
     other = 'es' if lang == 'it' else 'it'
+
+    def items(ids):
+        out = []
+        for k in ids:
+            if isinstance(k, tuple):
+                out.append(k)
+            elif has(k, lang):
+                out.append((TEXT[lang][k][1], path(k, lang)))
+        return out
+    col = lambda title, its: f'<div><h2>{title}</h2><ul>' + ''.join(f'<li><a href="{h}">{l}</a></li>' for l, h in its) + '</ul></div>'
+    cols = ''.join(col(ti if lang == 'it' else te, items(ids + ([(EMAIL, f'mailto:{EMAIL}'), (u['other_name'], base(other))] if ti == 'Risorse' else []))) for ti, te, ids in FOOTER)
     return f'''<footer class="foot ink">
   <div class="wrap">
     <div class="foot-cols">
       <div class="foot-about"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40" loading="lazy"><p>{u['about']}</p></div>
-      {col(u['solutions'], [(u['sw'], p('soluzioni') + '#software-house'), (u['big'], p('soluzioni') + '#grandi-aziende'), (u['fr'], p('soluzioni') + '#franchising'), (u['ag'], p('soluzioni') + '#agenzie')])}
-      {col('Odyra', [(u['agents'], p('agenti')), (lab('piattaforma'), p('piattaforma')), ('Odyra Academy', p('academy')), (lab('casi'), p('casi')), (lab('chi'), p('chi'))])}
-      {col(u['resources'], [(u['demo'], p('contatti')), (lab('domande'), p('domande')), (EMAIL, f'mailto:{EMAIL}'), (lab('privacy'), p('privacy')), ('llms.txt', '/llms.txt'), (u['other_name'], base(other))])}
+      {cols}
     </div>
     <p class="foot-legal">© 2026 Odyra System, {COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {t('Milano', 'Milán')}. {u['vat']} {COMPANY['vat']}, REA {COMPANY['rea']}.</p>
   </div>
@@ -371,21 +426,35 @@ def qa_pairs(body):
 
 def jsonld(lang, key, body):
     _, label, title, desc = TEXT[lang][key]
+    meta = REG[lang][key]
     page_url = SITE + path(key, lang)
-    page = {'@type': {'chi': 'AboutPage', 'contatti': 'ContactPage', 'domande': 'FAQPage'}.get(key, 'WebPage'),
+    ptype = meta.get('type') or {'domande': 'FAQPage'}.get(key, 'WebPage')
+    page = {'@type': ptype if ptype != 'Service' else 'WebPage',
             '@id': page_url + '#page', 'url': page_url, 'name': title, 'description': desc,
             'inLanguage': 'it-IT' if lang == 'it' else 'es-ES',
             'isPartOf': {'@id': f'{SITE}/#website'}, 'about': {'@id': f'{SITE}/#org'},
             'dateModified': UPDATED, 'primaryImageOfPage': og_image(lang)}
     if key != 'home':
+        trail = [(TEXT[lang]['home'][1], SITE + base(lang))]
+        parent = meta.get('parent')
+        if parent and has(parent, lang):
+            trail.append((TEXT[lang][parent][1], SITE + path(parent, lang)))
+        trail.append((label, page_url))
         page['breadcrumb'] = {'@type': 'BreadcrumbList', 'itemListElement': [
-            {'@type': 'ListItem', 'position': 1, 'name': TEXT[lang]['home'][1], 'item': SITE + base(lang)},
-            {'@type': 'ListItem', 'position': 2, 'name': label, 'item': page_url}]}
-    if key == 'domande':
-        page['mainEntity'] = [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in qa_pairs(body)]
+            {'@type': 'ListItem', 'position': i + 1, 'name': n, 'item': it} for i, (n, it) in enumerate(trail)]}
     nodes = [org_node(),
              {'@type': 'WebSite', '@id': f'{SITE}/#website', 'url': f'{SITE}/', 'name': 'Odyra System', 'inLanguage': ['it-IT', 'es-ES'], 'publisher': {'@id': f'{SITE}/#org'}},
              page]
+    qa = qa_pairs(body)
+    if qa:
+        main = [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in qa]
+        if ptype == 'FAQPage':
+            page['mainEntity'] = main
+        else:
+            nodes.append({'@type': 'FAQPage', '@id': page_url + '#faq', 'url': page_url, 'mainEntity': main})
+    if ptype == 'Service':
+        nodes.append({'@type': 'Service', '@id': page_url + '#service', 'name': label, 'description': desc, 'url': page_url,
+                      'provider': {'@id': f'{SITE}/#org'}, 'areaServed': ['IT', 'ES'], 'serviceType': label})
     return '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': nodes}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>'
 
 
@@ -397,8 +466,9 @@ def layout(lang, key, body, title=None, desc=None, not_found=False):
         seo = '<meta name="robots" content="noindex,follow">'
     else:
         url = SITE + path(key, lang)
-        noindex = key in NOINDEX
-        alts = ''.join(f'<link rel="alternate" hreflang="{lg}" href="{SITE}{path(key, lg)}">' for lg in LANGS) + f'<link rel="alternate" hreflang="x-default" href="{SITE}{path(key, "it")}">'
+        noindex = globals()['noindex'](key, lang)
+        langs = [lg for lg in LANGS if has(key, lg)]
+        alts = (''.join(f'<link rel="alternate" hreflang="{lg}" href="{SITE}{path(key, lg)}">' for lg in langs) + f'<link rel="alternate" hreflang="x-default" href="{SITE}{path(key, "it")}">') if len(langs) > 1 else ''
         md = '' if noindex else f'<link rel="alternate" type="text/markdown" href="{md_path(key, lang)}" title="Markdown">'
         seo = f'''<meta name="robots" content="{'noindex,follow' if noindex else 'index,follow,max-snippet:-1,max-image-preview:large'}">
 <link rel="canonical" href="{url}">
@@ -573,11 +643,11 @@ def asset_version(*names):
 
 
 def llms_txt(mds, full=False):
-    pages = [k for k, _, _ in PAGES if k not in NOINDEX]
+    # mds: lingua -> id -> markdown, solo pagine indicizzabili
     if full:
         head = ('# Odyra System: testo completo del sito / texto completo del sitio\n\n'
                 f'> Tutte le pagine pubbliche di {SITE} in Markdown, in italiano e in spagnolo. Aggiornato il {UPDATED}.\n\n')
-        return head + '\n\n---\n\n'.join(mds[lg][k] for lg in LANGS for k in pages)
+        return head + '\n\n---\n\n'.join(mds[lg][k] for lg in LANGS for k in mds[lg])
     out = ['# Odyra System', '',
            '> Odyra System è un gruppo tecnologico di Milano (Verypos S.r.l.) che progetta e gestisce agenti AI white-label: sistemi di agenti per aziende con centinaia o migliaia di sedi, clienti e punti vendita, venduti e usati col marchio del cliente.', '',
            'Fatti chiave:', '',
@@ -591,7 +661,7 @@ def llms_txt(mds, full=False):
            'Ogni pagina ha una versione Markdown allo stesso indirizzo con estensione .md. Il testo completo è in /llms-full.txt.', '']
     for lg, title in (('it', '## Pagine (italiano)'), ('es', '## Páginas (español)')):
         out += [title, '']
-        out += [f'- [{TEXT[lg][k][1]}]({SITE}{md_path(k, lg)}): {TEXT[lg][k][3]}' for k in pages]
+        out += [f'- [{TEXT[lg][k][1]}]({SITE}{md_path(k, lg)}): {TEXT[lg][k][3]}' for k in mds[lg]]
         out.append('')
     out += ['## Optional', '', f'- [Testo completo / Texto completo]({SITE}/llms-full.txt): tutte le pagine in un unico file.',
             f'- [Sitemap]({SITE}/sitemap.xml)', '']
@@ -600,13 +670,18 @@ def llms_txt(mds, full=False):
 
 def sitemap():
     rows = []
-    for k, _, _ in PAGES:
-        if k in NOINDEX:
-            continue
-        alts = ''.join(f'<xhtml:link rel="alternate" hreflang="{lg}" href="{SITE}{path(k, lg)}"/>' for lg in LANGS)
-        alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE}{path(k, "it")}"/>'
-        for lg in LANGS:
-            rows.append(f'<url><loc>{SITE}{path(k, lg)}</loc><lastmod>{UPDATED}</lastmod><priority>{"1.0" if k == "home" else "0.8"}</priority>{alts}</url>')
+    for lg in LANGS:
+        for k in REG[lg]:
+            if noindex(k, lg):
+                continue
+            langs = [x for x in LANGS if has(k, x) and not noindex(k, x)]
+            alts = ''
+            if len(langs) > 1:
+                alts = ''.join(f'<xhtml:link rel="alternate" hreflang="{x}" href="{SITE}{path(k, x)}"/>' for x in langs)
+                alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE}{path(k, "it")}"/>'
+            depth = TEXT[lg][k][0].count('/') + (1 if TEXT[lg][k][0] else 0)
+            prio = '1.0' if k == 'home' else ('0.9' if depth == 1 else '0.8')
+            rows.append(f'<url><loc>{SITE}{path(k, lg)}</loc><lastmod>{UPDATED}</lastmod><priority>{prio}</priority>{alts}</url>')
     return ('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
             + '\n'.join(rows) + '\n</urlset>\n')
 
@@ -656,6 +731,7 @@ def main():
         shutil.rmtree(DIST)
     shutil.copytree(STATIC, DIST)
     ASSET_V = asset_version('odyra.css', 'odyra.js')
+    load_registry()
     mds = {}
     for lang in LANGS:
         L = lang
@@ -663,7 +739,7 @@ def main():
         for key, body in bodies(lang).items():
             slug = TEXT[lang][key][0]
             write(f'{base(lang)}{slug + "/" if slug else ""}index.html', layout(lang, key, body))
-            if key not in NOINDEX:
+            if not noindex(key, lang):
                 mds[lang][key] = to_markdown(lang, key, body)
                 write(md_path(key, lang), mds[lang][key])
         u = UI[lang]
