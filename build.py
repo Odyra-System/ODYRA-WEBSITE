@@ -28,7 +28,7 @@ LINK_HAKO = 'https://hakocondomini.com'
 # Pagina di prenotazione Google Calendar (Calendario → Programma di appuntamenti → Condividi → "Incorpora sul sito web":
 # l'indirizzo che inizia con https://calendar.google.com/calendar/appointments/schedules/...). Vuoto = la pagina /prenota
 # mostra il modulo contatti al posto del calendario.
-BOOKING_URL = ''
+BOOKING_URL = 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1OY8thmgYsT5ahuiF3XfcvMsWsrHk-qNXZTg8Qc0pqzRI7kZIJuTzbqnSQo-OmBW2-HXcnT7_h'
 COMPANY = {
     'legal': 'Verypos S.r.l.',
     'vat': '11630390968',
