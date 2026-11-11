@@ -965,3 +965,24 @@ class TestAgenteFiles(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TestVoiceKnowledge(ChatBase):
+    """GET /api/voce/conoscenza: istruzioni e conoscenza per l'agente vocale, solo con il segreto condiviso."""
+
+    def get(self, secret='s3greto-lungo'):
+        return self.req('GET', '/api/voce/conoscenza', None, ip='10.0.0.7', headers={'X-Odyra-Secret': secret})
+
+    def test_503_without_secret(self):
+        os.environ.pop('VOICE_LEAD_SECRET', None)
+        self.assertEqual(self.get()[0], 503)
+
+    def test_auth_and_content(self):
+        os.environ['VOICE_LEAD_SECRET'] = 's3greto-lungo'
+        for bad in (None, '', 'sbagliato'):
+            self.assertEqual(self.get(secret=bad), (401, {'error': 'non_autorizzato'}), bad)
+        status, data = self.get()
+        self.assertEqual(status, 200)
+        self.assertTrue(data['istruzioni'].strip())
+        self.assertIn('conoscenza', data)
+        self.assertIn('pagine', data)

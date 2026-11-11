@@ -4,6 +4,7 @@
   POST /api/contatto     modulo contatti: e-mail al team + conferma al visitatore, webhook facoltativo
   POST /api/voce/token   token per la demo vocale nel browser (JWT HS256, 15 minuti)
   POST /api/voce/lead    lead raccolti dall'agente vocale (servizio separato, autenticato con segreto condiviso)
+  GET  /api/voce/conoscenza  istruzioni e conoscenza per l'agente vocale (stesso segreto)
   POST /api/chat         demo in chat: assistente AI con la stessa conoscenza della voce (cartella agente/)
   GET  /api/salute       stato e canali configurati (senza valori)
 
@@ -895,9 +896,34 @@ class Handler(BaseHTTPRequestHandler):
             webhook = bool(env('LEAD_WEBHOOK_URL'))
             return self.reply(200, {'ok': True, 'contatto': bool(ch or webhook), 'email': ch, 'webhook': webhook,
                                     'voce': voice_configured(), 'chat': chat_configured()})
+        if route == '/api/voce/conoscenza':
+            return self.voce_conoscenza()
         if route in self.POST_ROUTES:
             return self.reply(405, {'error': 'metodo'}, allow='POST')
         self.reply(404, {'error': 'non_trovato'})
+
+    def voce_conoscenza(self):
+        """Istruzioni, conoscenza e pagine condivise, lette dall'agente vocale all'avvio (servizio e repository separati):
+        così il testo sta in un posto solo, il repository del sito. Stesso segreto di /api/voce/lead."""
+        secret = env('VOICE_LEAD_SECRET')
+        if not secret:
+            return self.reply(503, {'error': 'non_configurato'})
+        given = self.headers.get('X-Odyra-Secret') or ''
+        if not hmac.compare_digest(given.encode('utf-8', 'replace'), secret.encode('utf-8')):
+            log.info('voce/conoscenza: segreto non valido')
+            return self.reply(401, {'error': 'non_autorizzato'})
+        base = agente_dir()
+        out = {}
+        for key, name in (('istruzioni', 'istruzioni.md'), ('conoscenza', 'conoscenza.md'), ('pagine', 'pagine.json')):
+            try:
+                with open(os.path.join(base, name), encoding='utf-8') as f:
+                    out[key] = f.read()
+            except OSError:
+                out[key] = ''
+        if not out['istruzioni']:
+            return self.reply(503, {'error': 'non_configurato'})
+        log.info('voce/conoscenza: inviata')
+        self.reply(200, out)
 
     def do_HEAD(self):
         self.reply(405, {'error': 'metodo'}, allow='GET, POST')

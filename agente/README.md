@@ -3,7 +3,7 @@
 Questi file sono la stessa "testa" per i due canali della demo "Prova l'agente":
 
 - **chat** (scheda "Scrivi"): `server/odyra_server.py`, `POST /api/chat`;
-- **voce** (scheda "Parla"): l'agente vocale in `agente-voce/`.
+- **voce** (scheda "Parla"): l'agente vocale, repository `Odyra-System/MASTER-ODYRA-WEB` (servizio Railway `website-agent-voce`). Scarica questi file all'avvio da `GET /api/voce/conoscenza` (segreto `VOICE_LEAD_SECRET`): dopo una modifica qui si pubblica il sito e si riavvia quel servizio.
 
 Così chat e voce danno le stesse risposte: cambia solo il modo di dirle (la sezione "Canale" di `istruzioni.md`; ogni canale aggiunge in fondo il proprio contesto).
 
@@ -16,7 +16,7 @@ Così chat e voce danno le stesse risposte: cambia solo il modo di dirle (la sez
 ## Come si aggiornano
 1. Si modifica il testo in Markdown semplice. In `conoscenza.md` vanno solo fatti già pubblicati sul sito o nel listino ufficiale: niente numeri stimati, niente clienti non autorizzati, niente nomi di fornitori, modelli AI o concorrenti.
 2. Se cambiano i prezzi sul sito (`pagine/prezzi.html`), si aggiorna anche la sezione listino di `conoscenza.md`: l'assistente cita solo quello che c'è qui.
-3. Se si aggiunge una pagina a `mostra_pagina`, va aggiunta in tre posti: `pagine.json`, l'elenco in `istruzioni.md` e la whitelist `PAGES` in `static/odyra-app.js` (e in `agente-voce/`).
+3. Se si aggiunge una pagina a `mostra_pagina`, va aggiunta in tre posti: `pagine.json`, l'elenco in `istruzioni.md` e la whitelist `PAGES` in `static/odyra-app.js` (e in `PAGINE` di `core.py` nel repository dell'agente vocale).
 4. I file si leggono all'avvio: dopo una modifica serve un nuovo deploy (il Dockerfile copia la cartella in `/app/agente`).
 5. Prova: `python3 -m unittest discover -s server` (i test controllano che i file ci siano e che il prompt li contenga).
 
