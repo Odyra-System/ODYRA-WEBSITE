@@ -124,7 +124,9 @@ a.ov-b { display: inline-flex; align-items: center; text-decoration: none; }
 .ch-msg { max-width: 88%; padding: .65rem .85rem; border-radius: 16px; font-size: .92rem; line-height: 1.5; overflow-wrap: anywhere; }
 .ch-msg p { margin: 0; }
 .ch-msg p + p, .ch-msg p + ul, .ch-msg ul + p, .ch-msg ul + ul { margin-top: .4rem; }
-.ch-msg ul { margin: 0; padding-left: 1.1rem; }
+.ch-msg ul { margin: 0; padding-left: 1.1rem; list-style: disc; }
+.ch-msg li { display: list-item; }
+.ch-msg li::marker { color: var(--cyan, #5CCBF0); }
 .ch-msg li + li { margin-top: .2rem; }
 .ch-msg strong { font-weight: 720; color: #fff; }
 .ch-agent { align-self: flex-start; background: rgba(231, 238, 248, .07); border: 1px solid rgba(231, 238, 248, .1); border-bottom-left-radius: 6px; }
