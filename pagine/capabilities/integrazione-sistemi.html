@@ -1,0 +1,88 @@
+<!--pagina
+id: cap-integrazione-sistemi
+slug: capabilities/integrazione-sistemi
+label: Integrazione sistemi
+title: Integrazione sistemi: gestionali, CRM e API | Odyra
+description: Integrazione dei sistemi esistenti: gestionali, CRM, agende, e-commerce e WhatsApp collegati agli agenti AI con connettori affidabili e log. Dati in UE.
+parent: capabilities
+type: Service
+-->
+<section class="phead ink">
+  <canvas class="hero-guilloche" aria-hidden="true"></canvas>
+  <div class="wrap phead-in">
+    <p class="crumbs"><a href="{{URL:home}}">Home</a> <span aria-hidden="true">/</span> <a href="{{URL:capabilities}}">Agenti</a> <span aria-hidden="true">/</span> Integrazione sistemi</p>
+    <h1 class="display">Integrazione sistemi: gestionali, CRM e API che si parlano.</h1>
+    <p class="hero-lead">Non vi chiediamo di cambiare gestionale. Colleghiamo l’agente AI ai sistemi che usate ogni giorno, con connettori che sappiamo far funzionare anche quando qualcosa va storto.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:demo}}">Prova l’agente</a> <a class="b b-line" href="{{URL:contatti}}">Richiedi una demo</a></p>
+  </div>
+</section>
+
+<section class="band paper">
+  <div class="wrap">
+    <p class="kicker">Perché</p>
+    <h2 class="display-2">Il dato esiste già. È chiuso in cinque sistemi che non si parlano.</h2>
+    <div class="prose">
+      <p>L’agenda è nel gestionale, i contatti nel CRM, le conversazioni su WhatsApp, gli ordini nell’e-commerce, le fatture altrove. Qualcuno ogni giorno copia dati da una parte all’altra. Un agente AI che non può leggere e scrivere in questi sistemi resta un risponditore gentile.</p>
+      <p>L’integrazione è il motivo per cui i nostri agenti producono appuntamenti in agenda e non appunti da ricopiare. È anche la parte più delicata: per questo la trattiamo come software da progettare, provare e sorvegliare.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band paper-2">
+  <div class="wrap">
+    <p class="kicker">Cosa colleghiamo</p>
+    <h2 class="display-2">I sistemi che incontriamo più spesso.</h2>
+    <div class="grid-3">
+      <article class="card"><h3>Gestionali verticali</h3><p>Agenda, anagrafiche clienti, operatori, listini. Per BOSS l’agente lavora direttamente su agenda e anagrafiche di GoWeb (vedi <a href="{{URL:case-boss}}">il caso BOSS</a>).</p></article>
+      <article class="card"><h3>CRM</h3><p>Lead, attività, esiti, appuntamenti dei commerciali. È il cuore di <a href="{{URL:cap-lead-to-sale}}">Lead-to-Sale</a>.</p></article>
+      <article class="card"><h3>Canali di messaggi</h3><p>WhatsApp Business, SMS, e-mail, con stato di consegna e risposte che tornano al posto giusto.</p></article>
+      <article class="card"><h3>Telefonia</h3><p>Il vostro numero di sempre, inoltrato all’agente quando e come decidete voi.</p></article>
+      <article class="card"><h3>E-commerce e marketplace</h3><p>Stato ordini, spedizioni, resi, per l’assistenza clienti via chat ed e-mail.</p></article>
+      <article class="card"><h3>Documenti e fogli</h3><p>Manuali, procedure, fogli di calcolo: la base delle risposte (vedi <a href="{{URL:cap-knowledge-retrieval}}">knowledge retrieval</a>).</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="band ink">
+  <div class="wrap">
+    <p class="kicker">Come lo facciamo</p>
+    <h2 class="display-2">Connettori Odyra: semplici fuori, rigorosi dentro.</h2>
+    <ol class="steps">
+      <li><h3>Un contratto chiaro</h3><p>Per ogni sistema scriviamo cosa si legge, cosa si scrive, in che formato e con quali permessi. Solo il minimo necessario.</p></li>
+      <li><h3>Operazioni ripetibili senza danni</h3><p>Se una richiesta parte due volte, il risultato resta uno: niente appuntamenti doppi.</p></li>
+      <li><h3>Ritentativi controllati</h3><p>Se il sistema non risponde, il connettore riprova con criterio e, se non basta, segnala.</p></li>
+      <li><h3>Tutto registrato</h3><p>Ogni scambio lascia una traccia consultabile (vedi <a href="{{URL:cap-observability}}">osservabilità</a>). I dati restano in Europa.</p></li>
+    </ol>
+    <p>Se il vostro gestionale non ha ancora un connettore Odyra, lo scriviamo noi. È il cuore del <a href="{{URL:partner}}">programma partner</a> per le software house.</p>
+  </div>
+</section>
+
+<section class="band paper">
+  <div class="wrap">
+    <p class="kicker">Esempio</p>
+    <h2 class="display-2">Una prenotazione, dietro le quinte.</h2>
+    <div class="prose">
+      <p>Una cliente chiama alle nove di sera per spostare un trattamento. L’agente la riconosce dal numero e legge nel gestionale l’appuntamento di domani. Cerca un orario libero con la stessa operatrice, lo propone, lo scrive. Il connettore controlla che lo spostamento sia andato a buon fine, libera l’orario di partenza e fa partire il WhatsApp di conferma. Il mattino dopo, in sede, l’agenda è già giusta e nel pannello c’è il riassunto della chiamata.</p>
+      <p>Dietro ci sono diversi scambi tra sistemi diversi. Se uno fallisce, il sistema lo sa, riprova e, se serve, avvisa una persona. È il lavoro che descriviamo anche in <a href="{{URL:cap-automation-architecture}}">integrazioni e workflow</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="qa paper">
+  <div class="wrap">
+    <h2 class="display-2">Domande frequenti</h2>
+    <div class="qa-list">
+      <details><summary>Il nostro gestionale non ha interfacce di integrazione. Si può fare?</summary><p>Spesso sì, con strade diverse a seconda del caso. Lo valutiamo con voi, ed è uno dei punti dell’<a href="{{URL:cap-audit-infrastruttura}}">audit</a>.</p></details>
+      <details><summary>L’integrazione rallenta il nostro sistema?</summary><p>La progettiamo per non farlo: letture mirate, sincronizzazioni nelle ore tranquille, limiti rispettati.</p></details>
+      <details><summary>Chi la mantiene quando il gestionale si aggiorna?</summary><p>Noi. Sorvegliamo i connettori e li adeguiamo quando cambiano i sistemi collegati.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band ink">
+  <div class="wrap">
+    <h2 class="display-2">Quale gestionale usate?</h2>
+    <p class="sec-lead">Ditecelo: vi spieghiamo come l’agente lavorerebbe sulla vostra agenda.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:demo}}">Prova l’agente</a> <a class="b b-line" href="{{URL:contatti}}">Richiedi una demo</a></p>
+  </div>
+</section>

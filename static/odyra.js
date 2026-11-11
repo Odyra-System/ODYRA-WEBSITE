@@ -10,10 +10,33 @@ const TXT = {
   es: { sede: ' sede', sedi: ' sedes', subject: 'Solicitud desde la web: ' },
 }[LANG]
 
-// Menu su schermi piccoli.
+// Menu su schermi piccoli: pannello a tutto schermo. Esc chiude, il fuoco resta dentro finché è aperto.
 const nav = $('#nav')
 const menu = $('#menu')
-menu?.addEventListener('click', () => menu.setAttribute('aria-expanded', String(nav.classList.toggle('open'))))
+if (nav && menu) {
+  const label = $('.top-menu-label', menu)
+  const small = matchMedia('(max-width: 1120px)')
+  const focusables = () => [menu, ...$$('a, button', nav)]
+  const setOpen = (open, focusBack = false) => {
+    nav.classList.toggle('open', open)
+    menu.setAttribute('aria-expanded', String(open))
+    document.documentElement.classList.toggle('menu-open', open)
+    if (label) label.textContent = open ? menu.dataset.close : menu.dataset.open
+    if (open) $('a', nav)?.focus({ preventScroll: true })
+    else if (focusBack) menu.focus()
+  }
+  menu.addEventListener('click', () => setOpen(!nav.classList.contains('open')))
+  nav.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false) })
+  document.addEventListener('keydown', (e) => {
+    if (!nav.classList.contains('open')) return
+    if (e.key === 'Escape') { setOpen(false, true); return }
+    if (e.key !== 'Tab') return
+    const f = focusables(), first = f[0], last = f[f.length - 1]
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+  })
+  small.addEventListener('change', (m) => { if (!m.matches) setOpen(false) })
+}
 
 // Guilloché: rosette e onde a linee sottili, come nella carta di sicurezza.
 function guilloche(canvas, { rosette = null, waves = null, color = '92, 203, 240', phase = 0 }) {
@@ -119,6 +142,11 @@ window.addEventListener('load', () => {
   if ($('.line')) gsap.fromTo('.line-thread i', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.line', start: 'top 70%', end: 'bottom 60%', scrub: 0.5 } })
   $$('.line li').forEach((li) => {
     ScrollTrigger.create({ trigger: li, start: 'top 68%', onEnter: () => li.classList.add('on'), onLeaveBack: () => li.classList.remove('on') })
+  })
+
+  // Passi numerati: le finestre di filo si accendono una dopo l'altra, una volta sola.
+  $$('.steps').forEach((ol) => {
+    gsap.fromTo($$(':scope > li', ol), { '--drawn': 0 }, { '--drawn': 1, duration: 0.9, ease: 'expo.out', stagger: 0.14, scrollTrigger: { trigger: ol, start: 'top 82%', once: true } })
   })
 
   document.fonts?.ready.then(() => ScrollTrigger.refresh())

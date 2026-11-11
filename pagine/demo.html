@@ -1,0 +1,93 @@
+<!--pagina
+id: demo
+slug: demo
+label: Demo dal vivo
+title: Demo agente AI: prova la voce dal vivo | Odyra
+description: Prova dal vivo l’agente AI di Odyra: parli al microfono, risponde a voce, dice di essere un’AI e può prenotarti una call. Oppure chiedi una demo sul tuo caso.
+type: WebPage
+-->
+<section class="phead ink">
+  <canvas class="hero-guilloche" aria-hidden="true"></canvas>
+  <div class="wrap phead-in">
+    <p class="crumbs"><a href="{{URL:home}}">Home</a> <span aria-hidden="true">/</span> Demo dal vivo</p>
+    <h1 class="display">Prova l’agente AI dal vivo.</h1>
+    <p class="hero-lead">Niente video registrati. Premi il pulsante, consenti il microfono e parla con l’agente vocale di Odyra, lo stesso motore che risponde ai clienti dei nostri partner.</p>
+    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="#richiesta">Preferisci una demo sul tuo caso?</a></p>
+  </div>
+</section>
+
+<section class="band paper">
+  <div class="wrap">
+    <p class="kicker">Cosa succede</p>
+    <h2 class="display-2">Tre cose da sapere prima di iniziare.</h2>
+    <ol class="steps">
+      <li><h3>Il browser chiede il microfono</h3><p>Serve per ascoltarti. La conversazione parte solo quando premi il pulsante e finisce quando la chiudi.</p></li>
+      <li><h3>L’agente dice di essere un’AI</h3><p>Lo fa all’inizio, come farebbe con i tuoi clienti. È una regola dell’AI Act e un nostro principio.</p></li>
+      <li><h3>Puoi chiedergli di prenotare una call</h3><p>Se vuoi parlare con noi, l’agente ti propone un orario e la fissa, come farebbe con l’agenda di un centro.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="band paper-2">
+  <div class="wrap">
+    <p class="kicker">Cosa provare</p>
+    <h2 class="display-2">Mettilo alla prova.</h2>
+    <ul class="checklist">
+      <li>“Che cosa fa Odyra, in due parole?”</li>
+      <li>“Come funzionerebbe nel mio centro estetico con tre sedi?”</li>
+      <li>“Il mio gestionale è questo: vi collegate?”</li>
+      <li>“Cosa succede se un cliente chiede di parlare con una persona?”</li>
+      <li>Interrompilo a metà frase, cambia idea, fai due domande insieme.</li>
+      <li>Parlagli in spagnolo o in inglese.</li>
+      <li>“Mi prenoti una call con il vostro team giovedì pomeriggio?”</li>
+    </ul>
+    <p>Per capire cosa fa l’agente con i tuoi clienti leggi il <a href="{{URL:centralino-ai}}">centralino AI</a> e la <a href="{{URL:segretaria-ai}}">segretaria AI</a>, oppure le pagine per <a href="{{URL:settore-estetica}}">centri estetici</a> e <a href="{{URL:settore-dentale}}">studi dentistici</a>.</p>
+  </div>
+</section>
+
+<section class="band paper" id="richiesta">
+  <div class="wrap">
+    <p class="kicker">In alternativa</p>
+    <h2 class="display-2">Una demo collegata al tuo caso.</h2>
+    <p class="sec-lead">Dicci settore e numero di sedi: ti mostriamo l’agente con servizi e regole simili ai tuoi. Rispondiamo entro un giorno lavorativo.</p>
+    <form class="lead-form" data-lead-form data-source="demo" action="mailto:team@odyrasystemautomation.it" method="post" enctype="text/plain">
+      <label>Nome <input type="text" name="name" autocomplete="name" required></label>
+      <label>Azienda <input type="text" name="company" autocomplete="organization"></label>
+      <label>E-mail <input type="email" name="email" autocomplete="email" required></label>
+      <label>Telefono <input type="tel" name="phone" autocomplete="tel"></label>
+      <input type="hidden" name="need" value="demo">
+      <label>Settore e numero di sedi <textarea name="message" rows="4"></textarea></label>
+      <label class="check"><input type="checkbox" name="privacy" required> Ho letto l’<a href="{{URL:privacy}}">informativa privacy</a></label>
+      <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="b b-cyan" type="submit">Richiedi una demo sul tuo caso</button>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section class="band ink">
+  <div class="wrap">
+    <p class="kicker">Dietro la demo</p>
+    <h2 class="display-2">Lo stesso motore che lavora in produzione.</h2>
+    <p class="sec-lead">È la piattaforma con cui abbiamo costruito GoAgent per la rete di saloni BOSS e l’agente commerciale di Gruppo Colzani. Leggi i <a href="{{URL:lavori}}">casi di successo</a>, scopri le <a href="{{URL:tecnologie}}">tecnologie</a> o, se sviluppi un gestionale, il <a href="{{URL:partner}}">programma partner</a>.</p>
+  </div>
+</section>
+
+<section class="qa paper">
+  <div class="wrap">
+    <h2 class="display-2">Domande frequenti</h2>
+    <div class="qa-list">
+      <details><summary>La demo registra quello che dico?</summary><p>La conversazione della demo è trattata come descritto nell’<a href="{{URL:privacy}}">informativa privacy</a>. Non servono dati personali o sensibili per provarla: puoi inventare nome e richiesta.</p></details>
+      <details><summary>Il microfono non funziona. Cosa faccio?</summary><p>Controlla che il browser abbia il permesso di usare il microfono per questo sito, poi ricarica la pagina. Se non va, usa il modulo qui sopra.</p></details>
+      <details><summary>L’agente dei miei clienti sarà uguale a questo?</summary><p>Stesso motore, ma con la tua voce, il tuo marchio, i tuoi servizi e le tue regole, collegato al tuo gestionale.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band ink">
+  <div class="wrap">
+    <h2 class="display-2">Due minuti al microfono.</h2>
+    <p class="sec-lead">Poi decidi tu se parlarne con una persona.</p>
+    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="{{URL:contatti}}">Scrivici</a></p>
+  </div>
+</section>

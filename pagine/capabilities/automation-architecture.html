@@ -1,0 +1,88 @@
+<!--pagina
+id: cap-automation-architecture
+slug: capabilities/automation-architecture
+label: Integrazioni e workflow
+title: Integrazioni e workflow AI sul gestionale | Odyra
+description: Integrazioni e workflow che collegano l’AI al gestionale: eventi, code, ripetizioni, riconciliazioni e log. Automazioni che reggono quando qualcosa fallisce.
+parent: capabilities
+type: Service
+-->
+<section class="phead ink">
+  <canvas class="hero-guilloche" aria-hidden="true"></canvas>
+  <div class="wrap phead-in">
+    <p class="crumbs"><a href="{{URL:home}}">Home</a> <span aria-hidden="true">/</span> <a href="{{URL:capabilities}}">Agenti</a> <span aria-hidden="true">/</span> Integrazioni e workflow</p>
+    <h1 class="display">Integrazioni e workflow AI sul gestionale.</h1>
+    <p class="hero-lead">Processi che girano da soli tra sistemi che non si parlano, e che continuano a girare anche quando qualcosa si rompe. L’AI conta poco se l’appuntamento non arriva in agenda.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:demo}}">Prova l’agente</a> <a class="b b-line" href="{{URL:contatti}}">Parliamo del vostro flusso</a></p>
+  </div>
+</section>
+
+<section class="band paper">
+  <div class="wrap">
+    <p class="kicker">Il problema</p>
+    <h2 class="display-2">Le automazioni non si rompono quando tutto va bene.</h2>
+    <div class="prose">
+      <p>Si rompono al primo errore che nessuno aveva previsto: il gestionale che risponde lento, un messaggio arrivato due volte, un appuntamento spostato mentre l’agente lo stava confermando. Una catena di automazioni montata in fretta funziona in demo e poi, in produzione, perde dati senza che nessuno se ne accorga.</p>
+      <p>Per questo trattiamo ogni workflow come un pezzo di software: con stati chiari, controlli, test e un registro di tutto quello che succede. È la parte meno visibile di un agente AI, ed è quella che decide se ci si può fidare.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band paper-2">
+  <div class="wrap">
+    <p class="kicker">Per chi</p>
+    <h2 class="display-2">Per chi ha già i suoi sistemi e non vuole cambiarli.</h2>
+    <div class="grid-2">
+      <article class="card"><h3>Software house e gestionali verticali</h3><p>L’agente si aggancia alle vostre interfacce. Ogni cliente della vostra base si attiva con una configurazione, non con un progetto (vedi <a href="{{URL:partner}}">programma partner</a>).</p></article>
+      <article class="card"><h3>Gruppi multi-sede e aziende strutturate</h3><p>Gestionale, CRM, agenda, posta e fogli di calcolo che oggi qualcuno allinea a mano: li facciamo lavorare insieme.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="band paper">
+  <div class="wrap">
+    <p class="kicker">In pratica</p>
+    <h2 class="display-2">Flussi che vediamo ogni settimana.</h2>
+    <div class="grid-3">
+      <article class="card"><h3>Dalla chiamata all’agenda</h3><p>L’agente prenota, il gestionale conferma, il cliente riceve il WhatsApp, lo staff vede l’appuntamento. Se un passaggio fallisce, il sistema riprova e, se serve, avvisa una persona.</p></article>
+      <article class="card"><h3>Sincronizzazione notturna</h3><p>Ogni notte staff, listini e anagrafiche vengono riallineati sede per sede, così l’agente parla sempre con i dati di oggi.</p></article>
+      <article class="card"><h3>Nuova sede, nuovo cliente</h3><p>Account, numero, canali, pannello col marchio giusto: l’attivazione è una sequenza automatica, controllata a ogni passo.</p></article>
+      <article class="card"><h3>Promemoria e disdette</h3><p>I promemoria partono dal gestionale; una disdetta libera subito l’orario e lo propone a chi aspetta (vedi <a href="{{URL:cap-chatbot-assistenti}}">promemoria WhatsApp</a>).</p></article>
+      <article class="card"><h3>Lead dalle campagne</h3><p>Il contatto entra, l’agente scrive e chiama in pochi secondi, l’esito finisce nel CRM. È il flusso di <a href="{{URL:cap-lead-to-sale}}">Lead-to-Sale</a>.</p></article>
+      <article class="card"><h3>Report del mattino</h3><p>Chiamate, appuntamenti, casi passati a una persona: un riassunto per sede e per gruppo, ogni giorno.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="band ink">
+  <div class="wrap">
+    <p class="kicker">Come lo facciamo</p>
+    <h2 class="display-2">Quattro regole che non saltiamo.</h2>
+    <ol class="steps">
+      <li><h3>Ogni evento ha un nome e un formato</h3><p>“Appuntamento creato”, “cliente spostato”, “messaggio non consegnato”: eventi chiari, non campi sparsi.</p></li>
+      <li><h3>Ogni operazione si può ripetere senza danni</h3><p>Se un messaggio arriva due volte, l’appuntamento resta uno. Le ripetizioni sono controllate, non lasciate al caso.</p></li>
+      <li><h3>Ogni errore finisce da qualche parte</h3><p>Niente si perde in silenzio: quello che non va a buon fine resta in coda, viene riprovato e, se non basta, segnalato.</p></li>
+      <li><h3>Ogni sede è separata</h3><p>Configurazioni e dati di ogni sede o cliente restano isolati, sulla stessa piattaforma (vedi <a href="{{URL:cap-multi-tenant-platforms}}">piattaforme multi-tenant</a>).</p></li>
+    </ol>
+    <p>Il tutto gira sulla piattaforma Odyra, ospitata e sorvegliata da noi in Europa. Trovate più dettagli nella pagina <a href="{{URL:tecnologie}}">tecnologie</a>.</p>
+  </div>
+</section>
+
+<section class="qa paper">
+  <div class="wrap">
+    <h2 class="display-2">Domande frequenti</h2>
+    <div class="qa-list">
+      <details><summary>Dobbiamo cambiare gestionale o CRM?</summary><p>No. Lavoriamo sui sistemi che usate già. Se hanno un’interfaccia di integrazione la usiamo; se non ce l’hanno, troviamo con voi la strada più sicura.</p></details>
+      <details><summary>Chi mantiene i flussi dopo il rilascio?</summary><p>Noi. Li sorvegliamo, li aggiorniamo quando cambiano i vostri sistemi e vi diciamo cosa è successo. Vedi <a href="{{URL:cap-supporto-manutenzione}}">supporto e manutenzione</a>.</p></details>
+      <details><summary>Si può partire da un solo flusso?</summary><p>Sì, ed è il modo migliore: un flusso che oggi vi costa tempo, misurato prima e dopo. Poi si allarga.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band ink">
+  <div class="wrap">
+    <h2 class="display-2">Qual è il flusso che vi fa perdere più tempo?</h2>
+    <p class="sec-lead">Raccontatecelo: vi diciamo come lo collegheremmo all’agente e cosa misurare.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:demo}}">Prova l’agente</a> <a class="b b-line" href="{{URL:contatti}}">Richiedi una demo</a></p>
+  </div>
+</section>

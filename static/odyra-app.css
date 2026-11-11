@@ -1,0 +1,83 @@
+/* Odyra: banner cookie e demo vocale (generati da odyra-app.js). Usa i colori di odyra.css, con valori di riserva. */
+.oa-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ───────── banner cookie ───────── */
+.oc-banner { position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; padding: 0 clamp(.75rem, 3vw, 1.5rem) max(clamp(.75rem, 3vw, 1.5rem), env(safe-area-inset-bottom));
+  pointer-events: none; font-family: var(--sans, system-ui, sans-serif); }
+.oc-banner[hidden] { display: none; }
+.oc-in { pointer-events: auto; max-width: 46rem; margin-left: auto; background: var(--ink, #071A3A); color: var(--on-ink, #E7EEF8);
+  border: 1px solid var(--ink-rule, rgba(92, 203, 240, .25)); border-radius: 14px; padding: clamp(1rem, 3vw, 1.5rem);
+  box-shadow: 0 18px 50px rgba(3, 12, 30, .45); max-height: calc(100vh - 2rem); overflow: auto; }
+.oc-in h2 { font-size: 1.1rem; font-weight: 720; margin: 0 0 .4rem; outline: none; }
+.oc-in p { font-size: .92rem; line-height: 1.55; color: var(--on-ink-soft, #B3C5DD); margin: 0; }
+.oc-in a { color: var(--cyan, #5CCBF0); }
+.oc-prefs { border: 0; margin: 1rem 0 0; padding: 0; display: grid; gap: .6rem; }
+.oc-prefs[hidden] { display: none; }
+.oc-row { display: flex; gap: .75rem; align-items: flex-start; padding: .7rem .8rem; border: 1px solid var(--ink-rule, rgba(92, 203, 240, .2)); border-radius: 10px; }
+.oc-row input { width: 1.2rem; height: 1.2rem; margin: .15rem 0 0; accent-color: var(--cyan, #5CCBF0); flex: none; }
+.oc-row label { display: grid; gap: .1rem; font-size: .88rem; color: var(--on-ink-soft, #B3C5DD); cursor: pointer; }
+.oc-row label b { color: var(--on-ink, #E7EEF8); font-size: .95rem; }
+.oc-fixed label { cursor: default; }
+.oc-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; justify-content: flex-end; }
+.oc-b, .ov-b { font: inherit; font-size: .92rem; font-weight: 680; min-height: 2.75rem; padding: .55rem 1.15rem; border-radius: 99px; cursor: pointer;
+  border: 1.5px solid var(--cyan, #5CCBF0); background: var(--cyan, #5CCBF0); color: var(--ink, #071A3A); }
+.oc-b-line, .ov-b-line { background: transparent; color: var(--on-ink, #E7EEF8); border-color: rgba(231, 238, 248, .45); }
+.oc-b[hidden], .ov-b[hidden] { display: none; }
+.oc-b:hover, .ov-b:hover { filter: brightness(1.08); }
+.oc-banner :focus-visible, .ov-panel :focus-visible, .ov-fab:focus-visible { outline: 3px solid var(--cyan-hi, #A8E6F9); outline-offset: 2px; }
+@media (max-width: 30rem) { .oc-actions .oc-b { flex: 1 1 auto; } }
+
+/* collegamento "Preferenze cookie" aggiunto da odyra-app.js solo se la pagina non lo ha */
+.foot-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }
+
+/* ───────── demo vocale: pulsante ───────── */
+.ov-fab { position: fixed; z-index: 50; right: clamp(.75rem, 2.5vw, 1.5rem); bottom: max(clamp(.75rem, 2.5vw, 1.5rem), env(safe-area-inset-bottom));
+  display: inline-flex; align-items: center; gap: .5rem; min-height: 3.25rem; padding: .5rem 1.1rem .5rem .8rem; border-radius: 99px; cursor: pointer;
+  font: 680 .95rem/1 var(--sans, system-ui, sans-serif); color: var(--ink, #071A3A); background: var(--cyan, #5CCBF0);
+  border: 1.5px solid rgba(7, 26, 58, .15); box-shadow: 0 10px 30px rgba(3, 12, 30, .35);
+  transition: transform .25s var(--ease, ease), opacity .25s var(--ease, ease); }
+.ov-fab svg { flex: none; }
+.ov-fab:hover { transform: translateY(-2px); }
+.ov-fab-away, .oc-open .ov-fab, .ov-open .ov-fab { opacity: 0; transform: translateY(1rem); pointer-events: none; visibility: hidden; }
+@media (max-width: 47.99rem) { .ov-fab { padding: 0; width: 3.25rem; justify-content: center; } .ov-fab-t { display: none; } }
+@media print { .ov-fab, .ov-panel, .oc-banner { display: none !important; } }
+
+/* ───────── demo vocale: pannello ───────── */
+.ov-panel { position: fixed; z-index: 70; right: clamp(.75rem, 2.5vw, 1.5rem); bottom: max(clamp(.75rem, 2.5vw, 1.5rem), env(safe-area-inset-bottom));
+  width: min(22rem, calc(100vw - 1.5rem)); max-height: calc(100vh - 1.5rem); overflow: auto; display: flex; flex-direction: column; gap: .8rem;
+  padding: 1.1rem 1.2rem 1.2rem; border-radius: 16px; background: var(--ink, #071A3A); color: var(--on-ink, #E7EEF8);
+  border: 1px solid var(--ink-rule, rgba(92, 203, 240, .25)); box-shadow: 0 24px 60px rgba(3, 12, 30, .5); font-family: var(--sans, system-ui, sans-serif); }
+.ov-panel[hidden] { display: none; }
+@media (max-width: 30rem) { .ov-panel { left: 0; right: 0; bottom: 0; width: auto; border-radius: 16px 16px 0 0; padding-bottom: max(1.2rem, env(safe-area-inset-bottom)); } }
+.ov-h { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; }
+.ov-h h2 { font-size: 1.05rem; font-weight: 720; margin: 0; }
+.ov-x { flex: none; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; margin: -.35rem -.4rem 0 0; border-radius: 99px; border: 0;
+  background: transparent; color: var(--on-ink-soft, #B3C5DD); cursor: pointer; }
+.ov-x:hover { background: rgba(231, 238, 248, .1); color: var(--on-ink, #E7EEF8); }
+.ov-note { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--on-ink-soft, #B3C5DD); }
+.ov-note a, .ov-nav a { color: var(--cyan, #5CCBF0); }
+.ov-stage { display: grid; place-items: center; min-height: 9.5rem; }
+.ov-video { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; background: #000; }
+.ov-video[hidden], .ov-orb[hidden], .ov-nav[hidden] { display: none; }
+.ov-orb { position: relative; width: 7.5rem; height: 7.5rem; }
+.ov-orb span { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--cyan, #5CCBF0); opacity: .25; }
+.ov-orb span:nth-child(2) { inset: 1.1rem; opacity: .45; }
+.ov-orb span:nth-child(3) { inset: 2.3rem; opacity: 1; background: radial-gradient(circle at 35% 30%, var(--cyan-hi, #A8E6F9), var(--cyan-deep, #0F6E99)); border: 0; }
+[data-state=loading] .ov-orb span, [data-state=mic] .ov-orb span, [data-state=connecting] .ov-orb span,
+[data-state=joining] .ov-orb span, [data-state=reconnecting] .ov-orb span { animation: ov-wait 1.6s ease-in-out infinite; }
+[data-state=speaking] .ov-orb span { animation: ov-talk .9s ease-in-out infinite; }
+[data-state=speaking] .ov-orb span:nth-child(2) { animation-delay: .15s; }
+[data-state=speaking] .ov-orb span:nth-child(1) { animation-delay: .3s; }
+[data-state=error] .ov-orb span, [data-state=denied] .ov-orb span, [data-state=ended] .ov-orb span { filter: grayscale(1); opacity: .35; }
+@keyframes ov-wait { 50% { opacity: .1; } }
+@keyframes ov-talk { 50% { transform: scale(1.08); opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { .ov-orb span { animation: none !important; } .ov-fab { transition: none; } }
+.ov-status { margin: 0; text-align: center; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; color: var(--on-ink-soft, #B3C5DD); }
+[data-state=error] .ov-status, [data-state=denied] .ov-status { text-transform: none; letter-spacing: 0; font-size: .9rem; color: #FFC9C9; }
+.ov-nav { margin: 0; font-size: .85rem; text-align: center; color: var(--on-ink, #E7EEF8); }
+.ov-actions { display: flex; justify-content: center; gap: .6rem; }
+.ov-mute { width: 2.75rem; padding: 0; display: grid; place-items: center; }
+.ov-mute[aria-pressed=true] { background: rgba(231, 238, 248, .14); }
+.ov-b:disabled { opacity: .4; cursor: default; filter: none; }
+.ov-end { background: #E25B6A; border-color: #E25B6A; color: #fff; }
+.ov-panel > .ov-b { align-self: center; }

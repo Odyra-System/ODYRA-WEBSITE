@@ -2,49 +2,64 @@
 id: contatti
 slug: contatti
 label: Contatti
-title: Contatti | Odyra
-description: Richiedi una demo di un agente AI Odyra o un workshop dell’Academy.
+title: Contatti: richiedi una demo dell’agente AI | Odyra
+description: Richiedi una demo dell’agente AI Odyra, diventa partner o organizza un workshop dell’Academy. Rispondiamo entro un giorno lavorativo. Italia e Spagna.
 type: ContactPage
 -->
 <section class="phead ink">
   <canvas class="hero-guilloche" aria-hidden="true"></canvas>
   <div class="wrap phead-in">
-    <p class="crumbs"><a href="{{P}}">Home</a> <span aria-hidden="true">/</span> Contatti</p>
-    <h1 class="display">Parliamo del tuo caso.</h1>
-    <p class="hero-lead">Una demo degli agenti, una partnership white-label o un workshop dell’Academy. Rispondiamo entro un giorno lavorativo.</p>
+    <p class="crumbs"><a href="{{URL:home}}">Home</a> <span aria-hidden="true">/</span> Contatti</p>
+    <h1 class="display">Parliamo del vostro caso.</h1>
+    <p class="hero-lead">Una demo dell’agente, una partnership col vostro marchio, un agente per il vostro gruppo o un workshop dell’Academy. Rispondiamo entro un giorno lavorativo.</p>
+    <p class="actions"><button class="b b-cyan" type="button" data-voice-demo>Parla subito con l’agente</button> <a class="b b-line" href="mailto:team@odyrasystemautomation.it">team@odyrasystemautomation.it</a></p>
   </div>
 </section>
 
-<section class="contact paper">
+<section class="contact paper" id="modulo">
   <div class="wrap contact-in">
-    <form class="form" id="form-contatti" novalidate data-ok="Richiesta inviata. Ti rispondiamo entro un giorno lavorativo." data-err="Invio non riuscito. Scrivici a team@odyrasystemautomation.it." data-mail="Si è aperto il tuo programma di posta con la richiesta già scritta: premi Invia.">
-      <div class="f2"><label for="f-nome">Nome e cognome<input id="f-nome" name="nome" autocomplete="name" required></label><label for="f-azienda">Azienda<input id="f-azienda" name="azienda" autocomplete="organization"></label></div>
-      <div class="f2"><label for="f-email">E-mail<input id="f-email" name="email" type="email" autocomplete="email" required></label><label for="f-tel">Telefono<input id="f-tel" name="telefono" type="tel" autocomplete="tel"></label></div>
-      <fieldset class="chips-field"><legend>Chi sei?</legend>
-        <label><input type="radio" name="interesse" value="software-house" checked><span>Software house</span></label>
-        <label><input type="radio" name="interesse" value="grande-azienda"><span>Grande azienda</span></label>
-        <label><input type="radio" name="interesse" value="franchising"><span>Franchising o rete</span></label>
-        <label><input type="radio" name="interesse" value="agenzia"><span>Agenzia o integratore</span></label>
-        <label><input type="radio" name="interesse" value="academy"><span>Odyra Academy</span></label>
-        <label><input type="radio" name="interesse" value="altro"><span>Altro</span></label>
-      </fieldset>
-      <label for="f-msg">Cosa vorresti automatizzare?<textarea id="f-msg" name="messaggio" rows="5" required></textarea></label>
-      <label class="check" for="f-privacy"><input id="f-privacy" type="checkbox" name="privacy" required><span>Ho letto l’<a href="{{URL:privacy}}">informativa privacy</a> e acconsento a essere ricontattato.</span></label>
-      <p><button class="b b-ink" type="submit">Invia la richiesta</button></p>
-      <p class="form-msg" id="form-msg" role="status" aria-live="polite"></p>
+    <form class="lead-form" data-lead-form data-source="contatti" action="mailto:team@odyrasystemautomation.it" method="post" enctype="text/plain">
+      <p class="field"><label for="lf-name">Nome e cognome</label><input id="lf-name" name="name" autocomplete="name" required></p>
+      <p class="field"><label for="lf-company">Azienda</label><input id="lf-company" name="company" autocomplete="organization"></p>
+      <p class="field"><label for="lf-email">E-mail</label><input id="lf-email" name="email" type="email" autocomplete="email" required></p>
+      <p class="field"><label for="lf-phone">Telefono</label><input id="lf-phone" name="phone" type="tel" autocomplete="tel"></p>
+      <p class="field"><label for="lf-need">Di cosa avete bisogno?</label><select id="lf-need" name="need" data-param="interesse">
+        <option value="demo">Demo dell’agente</option>
+        <option value="partner">Diventare partner (software house)</option>
+        <option value="gruppo">Agente per il mio gruppo multi-sede</option>
+        <option value="progetto">Progetto su misura</option>
+        <option value="academy">Academy e formazione</option>
+        <option value="altro">Altro</option>
+      </select></p>
+      <p class="field"><label for="lf-message">Messaggio</label><textarea id="lf-message" name="message" rows="5" placeholder="Quante sedi o clienti avete, che gestionale usate, cosa vorreste che facesse l’agente."></textarea></p>
+      <label class="check"><input type="checkbox" name="privacy" required> Ho letto l’<a href="{{URL:privacy}}">informativa privacy</a></label>
+      <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="b b-cyan" type="submit">Invia la richiesta</button>
+      <p class="form-status" role="status" aria-live="polite"></p>
     </form>
     <aside class="contact-side">
       <h2>Cosa succede dopo.</h2>
       <ol class="mini-steps">
-        <li><b>Ti rispondiamo</b>Entro un giorno lavorativo.</li>
-        <li><b>Prima chiamata</b>Capiamo il tuo caso e cosa vuoi ottenere.</li>
-        <li><b>Demo o programma</b>Ti mostriamo l’agente al lavoro, o il programma dell’Academy.</li>
+        <li><b>Vi rispondiamo</b>Entro un giorno lavorativo.</li>
+        <li><b>Prima call</b>Capiamo il vostro caso e cosa volete ottenere.</li>
+        <li><b>Demo o programma</b>Vi mostriamo l’agente al lavoro sul vostro caso, o il programma dell’Academy.</li>
       </ol>
+      <h2>Non volete aspettare?</h2>
+      <p>Parlate subito con l’agente dal browser: risponde a voce, come farebbe con i vostri clienti.</p>
+      <p class="actions"><button class="b b-ink" type="button" data-voice-demo>Parla con l’agente</button></p>
       <dl class="case-facts">
         <div><dt>E-mail</dt><dd><a href="mailto:team@odyrasystemautomation.it">team@odyrasystemautomation.it</a></dd></div>
         <div><dt>Sede</dt><dd>Viale Papiniano 8, 20123 Milano</dd></div>
         <div><dt>Mercati</dt><dd>Italia e Spagna</dd></div>
       </dl>
     </aside>
+  </div>
+</section>
+
+<section class="cta-band ink">
+  <div class="wrap">
+    <h2 class="display-2">Prima di scriverci, provate l’agente.</h2>
+    <p class="sec-lead">Nella pagina della demo potete sentirlo rispondere e prenotare come farebbe con i vostri clienti.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:demo}}">Prova l’agente</a> <a class="b b-line" href="{{URL:soluzioni}}">Le soluzioni</a></p>
   </div>
 </section>

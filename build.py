@@ -67,13 +67,13 @@ GENERATED = {
         'domande': dict(slug='domande', label='Domande frequenti', title='Domande frequenti su Odyra System e gli agenti AI',
                         description='Risposte su Odyra System: agenti AI di settore, canali, software supportati, white-label, GDPR, AI Act e WhatsApp Business.', type='FAQPage'),
         'privacy': dict(slug='privacy', label='Privacy', title='Informativa privacy | Odyra System',
-                        description='Informativa sul trattamento dei dati personali del sito Odyra System.'),
+                        description='Informativa privacy di Odyra System (Verypos S.r.l.): dati del modulo contatti, demo vocale, cookie, finalità, conservazione e diritti.'),
     },
     'es': {
         'domande': dict(slug='preguntas', label='Preguntas frecuentes', title='Preguntas frecuentes sobre Odyra System y los agentes IA',
                         description='Respuestas sobre Odyra System: agentes IA sectoriales, canales, software compatible, white-label, RGPD, AI Act y WhatsApp Business.', type='FAQPage'),
         'privacy': dict(slug='privacidad', label='Privacidad', title='Política de privacidad | Odyra System',
-                        description='Política de tratamiento de datos personales del sitio Odyra System.'),
+                        description='Política de privacidad de Odyra System (Verypos S.r.l.): datos del formulario, demo de voz, cookies, finalidades, conservación y derechos.'),
     },
 }
 NOINDEX_GENERATED = ()
@@ -324,19 +324,50 @@ def body_domande(lang):
 
 
 def body_privacy(lang):
+    """Informativa privacy (it/es), coerente con ciò che il sito fa davvero: modulo contatti, demo vocale,
+    cookie tecnici, statistica e marketing solo con consenso. Testo da far rivedere a un legale."""
     u = UI[lang]
-    # Bozza: da far rivedere a un legale prima di considerarla definitiva.
+    mail = f'<a href="mailto:{EMAIL}">{EMAIL}</a>'
+    cookie = path('cookie', 'it') if has('cookie', lang) or has('cookie', 'it') else '#'
+    city = t('Milano', 'Milán')
+    prefs = t('<button type="button" class="b b-line" data-cookie-prefs>Preferenze cookie</button>',
+              '<button type="button" class="b b-line" data-cookie-prefs>Preferencias de cookies</button>')
+    sections = [
+        (t('Titolare del trattamento', 'Responsable del tratamiento'), [
+            t(f'{COMPANY["legal"]}, {COMPANY["street"]}, {COMPANY["zip"]} {city}, {u["vat"]} {COMPANY["vat"]} (di seguito «Odyra»). Per ogni domanda sui tuoi dati scrivi a {mail}.',
+              f'{COMPANY["legal"]}, {COMPANY["street"]}, {COMPANY["zip"]} {city} (Italia), {u["vat"]} {COMPANY["vat"]} (en adelante, «Odyra»). Para cualquier pregunta sobre tus datos escribe a {mail}.')]),
+        (t('Modulo contatti', 'Formulario de contacto'), [
+            t('Quando ci scrivi dal modulo raccogliamo nome, e-mail, azienda, telefono, l’esigenza e il messaggio che inserisci, la pagina da cui scrivi e, se arrivi da un annuncio, i parametri della campagna (per esempio la sorgente e l’identificativo del clic). Ti mandiamo un’e-mail di conferma all’indirizzo che hai indicato.',
+              'Cuando nos escribes desde el formulario recogemos nombre, correo, empresa, teléfono, la necesidad y el mensaje que introduces, la página desde la que escribes y, si llegas desde un anuncio, los parámetros de la campaña (por ejemplo, la fuente y el identificador del clic). Te enviamos un correo de confirmación a la dirección indicada.'),
+            t('Finalità: rispondere alla richiesta e, se lo chiedi, preparare una proposta. Base giuridica: misure precontrattuali su tua richiesta e legittimo interesse a capire quali canali ci portano i contatti (art. 6.1 b e f GDPR). Conserviamo i dati per il tempo necessario a gestire la richiesta e comunque non oltre 24 mesi dall’ultimo contatto, salvo che ne nasca un rapporto contrattuale.',
+              'Finalidad: responder a la solicitud y, si lo pides, preparar una propuesta. Base jurídica: medidas precontractuales a petición tuya e interés legítimo en saber qué canales nos traen los contactos (art. 6.1 b y f RGPD). Conservamos los datos el tiempo necesario para gestionar la solicitud y en todo caso no más de 24 meses desde el último contacto, salvo que surja una relación contractual.')]),
+        (t('Demo vocale', 'Demo de voz'), [
+            t('La demo vocale è facoltativa: parte solo quando premi il pulsante e autorizzi il microfono, e termina quando chiudi il pannello. Parli con un’intelligenza artificiale, non con una persona. L’audio del microfono è elaborato in tempo reale per capire cosa dici e generare la risposta. Non usiamo la conversazione per identificarti né per profilarti; ti chiediamo di non comunicare dati personali o informazioni sensibili durante la demo.',
+              'La demo de voz es opcional: empieza solo cuando pulsas el botón y autorizas el micrófono, y termina cuando cierras el panel. Hablas con una inteligencia artificial, no con una persona. El audio del micrófono se procesa en tiempo real para entender lo que dices y generar la respuesta. No usamos la conversación para identificarte ni para perfilarte; te pedimos que no comuniques datos personales ni información sensible durante la demo.'),
+            t('Per collegarti, il servizio tratta dati tecnici (indirizzo IP, orario e durata della sessione, lingua della pagina), conservati per il tempo necessario a garantire sicurezza e funzionamento. Base giuridica: la tua richiesta di provare il servizio e il nostro legittimo interesse alla sicurezza (art. 6.1 b e f GDPR).',
+              'Para conectarte, el servicio trata datos técnicos (dirección IP, hora y duración de la sesión, idioma de la página), conservados el tiempo necesario para garantizar seguridad y funcionamiento. Base jurídica: tu solicitud de probar el servicio y nuestro interés legítimo en la seguridad (art. 6.1 b y f RGPD).')]),
+        (t('Navigazione, cookie e misurazione', 'Navegación, cookies y medición'), [
+            t('Il server registra dati tecnici di navigazione (indirizzo IP, pagina richiesta, browser) per sicurezza e per prevenire abusi, con conservazione breve. Caratteri e librerie del sito sono ospitati sul nostro server.',
+              'El servidor registra datos técnicos de navegación (dirección IP, página solicitada, navegador) por seguridad y para prevenir abusos, con conservación breve. Las fuentes y librerías del sitio están alojadas en nuestro servidor.'),
+            t(f'Usiamo cookie tecnici e, solo con il tuo consenso, cookie di statistica e di marketing. Senza consenso, il tag pubblicitario invia solo segnali senza cookie e senza identificatori, utili a una misura aggregata. Il dettaglio dei cookie e dei servizi usati è nella <a href="{cookie}">cookie policy</a>; puoi cambiare scelta in ogni momento.',
+              f'Usamos cookies técnicas y, solo con tu consentimiento, cookies de estadística y de marketing. Sin consentimiento, la etiqueta publicitaria solo envía señales sin cookies y sin identificadores, útiles para una medición agregada. El detalle de las cookies y servicios usados está en la <a href="{cookie}">política de cookies</a> (en italiano); puedes cambiar tu elección en cualquier momento.'),
+            prefs]),
+        (t('A chi comunichiamo i dati', 'A quién comunicamos los datos'), [
+            t('I dati sono trattati dal personale autorizzato di Odyra e da fornitori che ci aiutano a gestire il sito: ospitalità e infrastruttura, invio delle e-mail, infrastruttura della demo vocale, misurazione e pubblicità (solo con consenso). Agiscono come responsabili del trattamento con un accordo scritto. Non vendiamo i dati a nessuno.',
+              'Los datos los trata el personal autorizado de Odyra y proveedores que nos ayudan a gestionar el sitio: alojamiento e infraestructura, envío de correos, infraestructura de la demo de voz, medición y publicidad (solo con consentimiento). Actúan como encargados del tratamiento con un acuerdo por escrito. No vendemos los datos a nadie.'),
+            t('Alcuni fornitori possono trattare dati fuori dallo Spazio economico europeo: in quel caso il trasferimento avviene sulla base di una decisione di adeguatezza della Commissione europea o delle clausole contrattuali standard.',
+              'Algunos proveedores pueden tratar datos fuera del Espacio Económico Europeo: en ese caso la transferencia se basa en una decisión de adecuación de la Comisión Europea o en las cláusulas contractuales tipo.')]),
+        (t('I tuoi diritti', 'Tus derechos'), [
+            t(f'Puoi chiedere l’accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione, la portabilità e opporti al trattamento basato sul legittimo interesse (artt. 15-22 GDPR), scrivendo a {mail}. Puoi revocare il consenso ai cookie in ogni momento. Hai diritto di presentare reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).',
+              f'Puedes pedir el acceso a tus datos, su rectificación, supresión, limitación y portabilidad, y oponerte al tratamiento basado en el interés legítimo (arts. 15-22 RGPD), escribiendo a {mail}. Puedes retirar el consentimiento a las cookies en cualquier momento. Tienes derecho a presentar una reclamación ante la autoridad de control: en Italia el Garante per la protezione dei dati personali, en España la Agencia Española de Protección de Datos (aepd.es).')]),
+        (t('Aggiornamenti', 'Actualizaciones'), [
+            t(f'Possiamo aggiornare questa informativa quando cambia il sito o la normativa. Ultimo aggiornamento: {UPDATED}.',
+              f'Podemos actualizar esta política cuando cambien el sitio o la normativa. Última actualización: {UPDATED}.')]),
+    ]
+    inner = ''.join(f'\n    <h2>{h}</h2>' + ''.join(f'\n    {p}' if p.startswith('<button') else f'\n    <p>{p}</p>' for p in ps) for h, ps in sections)
     return phead(lang, TEXT[lang]['privacy'][1], u['privacy_h1'], u['privacy_lead']) + f'''
-<section class="paper">
-  <div class="wrap prose">
-    <h2>{t('Titolare del trattamento', 'Responsable del tratamiento')}</h2>
-    <p>{COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {t('Milano', 'Milán')}. {u['vat']} {COMPANY['vat']}. <a href="mailto:{EMAIL}">{EMAIL}</a></p>
-    <h2>{t('Dati raccolti', 'Datos recogidos')}</h2>
-    <p>{t('Con il modulo contatti raccogliamo nome, azienda, e-mail, telefono e messaggio, al solo scopo di rispondere alla tua richiesta. Li conserviamo per il tempo necessario a gestirla.', 'Con el formulario de contacto recogemos nombre, empresa, correo, teléfono y mensaje, solo para responder a tu solicitud. Los conservamos el tiempo necesario para gestionarla.')}</p>
-    <h2>{t('Cookie e servizi esterni', 'Cookies y servicios externos')}</h2>
-    <p>{t('Il sito non usa cookie di profilazione né strumenti di tracciamento. Caratteri e librerie sono ospitati sul nostro server: nessun dato viene inviato a servizi di terzi per visualizzare le pagine.', 'El sitio no usa cookies de perfilado ni herramientas de seguimiento. Las fuentes y librerías están alojadas en nuestro servidor: no se envía ningún dato a terceros para mostrar las páginas.')}</p>
-    <h2>{t('I tuoi diritti', 'Tus derechos')}</h2>
-    <p>{t(f'Puoi chiedere accesso, rettifica, cancellazione e opposizione scrivendo a <a href="mailto:{EMAIL}">{EMAIL}</a>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali.', f'Puedes pedir acceso, rectificación, supresión y oposición escribiendo a <a href="mailto:{EMAIL}">{EMAIL}</a>. También puedes presentar una reclamación ante la autoridad de protección de datos.')}</p>
+<section class="band paper">
+  <div class="wrap prose">{inner}
   </div>
 </section>'''
 
@@ -379,26 +410,31 @@ def bodies(lang):
 # ───────── testata, piede, <head> ─────────
 def header(lang, current):
     u = UI[lang]
-    links = ''.join(f'<a href="{path(k, lang)}"{" aria-current=\"page\"" if k == current else ""}>{TEXT[lang][k][1]}</a>' for k in nav_items(lang))
+    links = ''.join(f'<li><a href="{path(k, lang)}"{" aria-current=\"page\"" if k == current else ""}>{TEXT[lang][k][1]}</a></li>' for k in nav_items(lang))
     other = 'es' if lang == 'it' else 'it'
     switch = path(current, other) if current and has(current, other) else base(other)
+    close = 'Chiudi' if lang == 'it' else 'Cerrar'
     return f'''<header class="top">
   <a class="top-brand" href="{base(lang)}"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40"></a>
   <nav class="top-nav" id="nav" aria-label="{u['nav']}">
-    {links}
-    <a href="{switch}" hreflang="{other}" lang="{other}" title="{u['other_name']}">{u['other']}</a>
-    <a class="b b-cyan" href="{path('contatti', lang)}">{u['demo']}</a>
+    <ul class="top-links">{links}</ul>
+    <div class="top-side">
+      <a class="top-lang" href="{switch}" hreflang="{other}" lang="{other}"><span aria-hidden="true">{u['other']}</span><span class="sr">{u['other_name']}</span></a>
+      <a class="b b-cyan top-cta" href="{path('contatti', lang)}">{u['demo']}</a>
+    </div>
   </nav>
-  <button class="top-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav">{u['menu']}</button>
+  <button class="top-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" data-open="{u['menu']}" data-close="{close}"><span class="top-menu-icon" aria-hidden="true"><i></i><i></i></span><span class="top-menu-label">{u['menu']}</span></button>
 </header>'''
 
 
 # Colonne del piede: (titolo it, titolo es, [id di pagina o (etichetta, indirizzo)]). Le pagine mancanti in una lingua si saltano.
+# Le pagine legali (privacy, cookie, termini) stanno nella riga in fondo, accanto alle preferenze cookie.
 FOOTER = [
     ('Soluzioni', 'Soluciones', ['soluzioni', 'centralino-ai', 'segretaria-ai', 'settore-estetica', 'settore-dentale', 'partner']),
     ('Odyra', 'Odyra', ['capabilities', 'tecnologie', 'processo', 'lavori', 'eventi', 'studio', 'team']),
-    ('Risorse', 'Recursos', ['demo', 'contatti', 'domande', 'privacy', 'cookie', 'termini']),
+    ('Risorse', 'Recursos', ['demo', 'contatti', 'domande']),
 ]
+FOOTER_LEGAL = ['privacy', 'cookie', 'termini']
 
 
 def footer(lang):
@@ -413,15 +449,27 @@ def footer(lang):
             elif has(k, lang):
                 out.append((TEXT[lang][k][1], path(k, lang)))
         return out
-    col = lambda title, its: f'<div><h2>{title}</h2><ul>' + ''.join(f'<li><a href="{h}">{l}</a></li>' for l, h in its) + '</ul></div>'
-    cols = ''.join(col(ti if lang == 'it' else te, items(ids + ([(EMAIL, f'mailto:{EMAIL}'), (u['other_name'], base(other))] if ti == 'Risorse' else []))) for ti, te, ids in FOOTER)
+    col = lambda title, its: (f'<div class="foot-col"><h2>{title}</h2><ul>' + ''.join(f'<li><a href="{h}">{l}</a></li>' for l, h in its) + '</ul></div>') if its else ''
+    cols = ''.join(col(ti if lang == 'it' else te, items(ids)) for ti, te, ids in FOOTER)
+    legal = ''.join(f'<li><a href="{h}">{l}</a></li>' for l, h in items(FOOTER_LEGAL))
+    prefs = 'Preferenze cookie' if lang == 'it' else 'Preferencias de cookies'
+    claim = 'Un solo cervello, mille sedi, il vostro nome sopra.' if lang == 'it' else 'Un solo cerebro, mil sedes, vuestro nombre encima.'
+    city = 'Milano' if lang == 'it' else 'Milán'
     return f'''<footer class="foot ink">
   <div class="wrap">
+    <p class="foot-claim">{claim}</p>
     <div class="foot-cols">
-      <div class="foot-about"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40" loading="lazy"><p>{u['about']}</p></div>
+      <div class="foot-about">
+        <img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40" loading="lazy">
+        <p>{u['about']}</p>
+        <p class="foot-contact"><a href="mailto:{EMAIL}">{EMAIL}</a><br>{COMPANY['street']}, {COMPANY['zip']} {city}</p>
+      </div>
       {cols}
     </div>
-    <p class="foot-legal">© 2026 Odyra System, {COMPANY['legal']}, {COMPANY['street']}, {COMPANY['zip']} {t('Milano', 'Milán')}. {u['vat']} {COMPANY['vat']}, REA {COMPANY['rea']}.</p>
+    <div class="foot-base">
+      <p class="foot-legal">© 2026 Odyra System, {COMPANY['legal']}, {u['vat']} {COMPANY['vat']}, REA {COMPANY['rea']}.</p>
+      <ul class="foot-meta">{legal}<li><button type="button" class="foot-link" data-cookie-prefs>{prefs}</button></li><li><a href="{base(other)}" hreflang="{other}" lang="{other}">{u['other_name']}</a></li></ul>
+    </div>
   </div>
 </footer>'''
 
@@ -465,6 +513,13 @@ def jsonld(lang, key, body):
     return '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': nodes}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>'
 
 
+def voice_nav(lang):
+    """Pagine verso cui l'agente della demo vocale può portare il visitatore (vedi static/odyra-app.js)."""
+    pick = lambda *ids: next((path(k, lang) for k in ids if has(k, lang) or has(k, 'it')), base(lang))
+    return json.dumps({'home': base(lang), 'contatti': pick('contatti'), 'case': pick('case-boss', 'lavori'), 'lavori': pick('lavori')},
+                      separators=(',', ':'))
+
+
 def layout(lang, key, body, title=None, desc=None, not_found=False):
     _, _, page_title, page_desc = TEXT[lang][key]
     title, desc = title or page_title, desc or page_desc
@@ -491,7 +546,7 @@ def layout(lang, key, body, title=None, desc=None, not_found=False):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<script>document.documentElement.classList.add('js')</script>
+<script src="/odyra-app.js?v={ASSET_V}" data-v="{ASSET_V}" data-voice-nav="{e(voice_nav(lang))}"></script>
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 {seo}
@@ -500,6 +555,7 @@ def layout(lang, key, body, title=None, desc=None, not_found=False):
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/odyra.css?v={ASSET_V}">
+<link rel="stylesheet" href="/odyra-app.css?v={ASSET_V}">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
@@ -698,6 +754,7 @@ ROBOTS = f'''# Odyra System. Tutti i contenuti pubblici sono aperti ai motori di
 
 User-agent: *
 Allow: /
+Disallow: /api/
 
 # Assistenti e motori di ricerca AI: accesso esplicito.
 User-agent: GPTBot
@@ -722,6 +779,7 @@ User-agent: Amazonbot
 User-agent: cohere-ai
 User-agent: CCBot
 Allow: /
+Disallow: /api/
 
 Sitemap: {SITE}/sitemap.xml
 '''
@@ -737,7 +795,7 @@ def main():
     if os.path.exists(DIST):
         shutil.rmtree(DIST)
     shutil.copytree(STATIC, DIST)
-    ASSET_V = asset_version('odyra.css', 'odyra.js')
+    ASSET_V = asset_version('odyra.css', 'odyra.js', 'odyra-app.css', 'odyra-app.js', 'assets/vendor/rtc-client.min.js')
     load_registry()
     mds = {}
     for lang in LANGS:
