@@ -167,7 +167,7 @@ window.addEventListener('load', () => {
   $$('.count').forEach((el) => {
     const to = +el.dataset.to, o = { v: 0 }
     gsap.to(o, { v: to, duration: 1.6, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-      onUpdate: () => { el.textContent = Math.round(o.v).toLocaleString(LOCALE) } })
+      onUpdate: () => { el.textContent = String(Math.round(o.v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') } })  // punto delle migliaia anche sotto 10.000 (it ed es)
   })
   if ($('.partners')) gsap.from('.partners li', { opacity: 0, y: 18, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.partners', start: 'top 85%', once: true } })
 })
