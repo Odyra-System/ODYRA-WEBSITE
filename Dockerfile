@@ -5,6 +5,7 @@ COPY build.py ./
 COPY pagine ./pagine
 COPY static ./static
 COPY server ./server
+COPY agente ./agente
 RUN python3 build.py && python3 -m unittest discover -s server
 
 # 2) nginx serve il sito e passa /api/ al server Python su 127.0.0.1:8090. PORT arriva da Railway.
@@ -24,6 +25,8 @@ ENV PORT=8080 \
 COPY nginx.conf /etc/nginx/templates/odyra.conf.template
 COPY server/odyra-headers.conf /etc/nginx/odyra-headers.conf
 COPY server/odyra_server.py server/entrypoint.sh /app/server/
+# Conoscenza condivisa dell'assistente (chat e voce): il server la legge da /app/agente.
+COPY agente /app/agente
 COPY --from=build /src/dist /usr/share/nginx/html
 USER nginx
 EXPOSE 8080

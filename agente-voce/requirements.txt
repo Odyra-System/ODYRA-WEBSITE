@@ -1,0 +1,21 @@
+# Agente vocale del sito (odyra_web). Versioni FISSATE.
+# livekit-agents e plugin restano a 1.6.1, come i worker in produzione: con 1.6.5 il plugin
+# della voce Inworld apriva il contesto ma non emetteva audio (agente muto). Aggiornare solo
+# dopo una prova vocale reale (vedi README, "Aggiornare le versioni").
+livekit-agents==1.6.1
+livekit-plugins-deepgram==1.6.1
+livekit-plugins-openai==1.6.1
+livekit-plugins-anthropic==1.6.1
+livekit-plugins-inworld==1.6.1
+livekit-plugins-cartesia==1.6.1
+livekit-plugins-silero==1.6.1
+livekit-plugins-tavus==1.6.1
+# SDK sotto i plugin: senza pin pip prende anthropic 2.x (usa httpx2 e il plugin anthropic 1.6.1
+# fallisce con TypeError all'avvio) e openai 3.x (major non provata con i plugin 1.6.1).
+anthropic==0.125.0
+openai==2.54.0
+httpx==0.28.1
+aiohttp==3.12.15
+python-dotenv==1.1.1
+# Errori e latenze (facoltativo: senza SENTRY_DSN non fa nulla)
+sentry-sdk==2.73.0

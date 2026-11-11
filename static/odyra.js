@@ -82,8 +82,6 @@ const art = [
   [$('.hero-guilloche'), (p) => ({ phase: p, rosette: { x: 0.78, y: 0.5, r: 0.62, lobes: 24, rings: 30, depth: 0.12, alpha: 0.09 } })],
   [$('.note-guilloche'), () => ({ phase: 0.6, rosette: { x: 0.24, y: 0.52, r: 0.42, lobes: 16, rings: 34, depth: 0.2, alpha: 0.32 }, waves: { lines: 22, amp: 0.035, freq: 2.5, alpha: 0.13, top: 0.1, bottom: 0.9 } })],
   [$('.close-guilloche'), (p) => ({ phase: p, waves: { lines: 34, amp: 0.06, freq: 2, alpha: 0.08, top: -0.05, bottom: 1.05 } })],
-  // L'attestato dell'Academy: carta chiara, inchiostro blu.
-  ...$$('.cert-guilloche').map((cv) => [cv, () => ({ color: '15, 110, 153', phase: 1.2, rosette: { x: 0.5, y: 0.5, r: 0.62, lobes: 20, rings: 28, depth: 0.14, alpha: 0.13 }, waves: { lines: 16, amp: 0.025, freq: 3, alpha: 0.07, top: 0.06, bottom: 0.94 } })]),
 ]
 let phase = 0
 const drawAll = () => art.forEach(([cv, opts]) => cv && guilloche(cv, opts(phase)))
@@ -258,7 +256,7 @@ if (vp) {
 }
 
 // Il modulo contatti è gestito da odyra-app.js (invio al server, con ripiego sulla posta).
-// Qui solo la preselezione da indirizzo: /contatti?interesse=academy sceglie la voce "academy".
+// Qui solo la preselezione da indirizzo: /contatti?interesse=partner sceglie la voce "partner".
 for (const sel of document.querySelectorAll('select[data-param]')) {
   const v = new URLSearchParams(location.search).get(sel.dataset.param)
   if (v && [...sel.options].some(o => o.value === v)) sel.value = v
@@ -353,14 +351,6 @@ if (!reduce && matchMedia('(hover: hover)').matches) $$('.agent .screen, .format
   el.addEventListener('pointerleave', () => { el.style.transform = '' })
 })
 
-window.addEventListener('load', () => {
-  if (!window.gsap || reduce) return
-  // Academy: la linea del percorso si disegna e accende le settimane.
-  if ($('.journey-line')) {
-    gsap.fromTo('.journey-line i', { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '.journey-track', start: 'top 75%', end: 'bottom 55%', scrub: 0.5,
-      onUpdate: (s) => $$('.journey-steps li').forEach((li, i) => li.classList.toggle('on', s.progress >= i / 3 - 0.02)) } })
-  }
-})
 
 // Sigilli: ogni anello si disegna quando la sua voce entra nello schermo, uno dopo l'altro.
 const seals = $$('.seals div')
@@ -376,30 +366,6 @@ if (seals.length) {
     seals.forEach((s) => io.observe(s))
   }
 }
-
-// Academy: il nome dell'azienda sull'attestato lo scrive chi visita.
-const certName = $('#cert-name')
-certName?.addEventListener('focus', () => { if (certName.value === certName.dataset.default) certName.select() })
-
-// Il sigillo si imprime sull'attestato come un timbro, una volta, quando l'attestato entra nello schermo.
-$$('.cert-seal').forEach((seal) => {
-  if (reduce || !('IntersectionObserver' in window)) return
-  seal.classList.add('stamp-ready')
-  const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { seal.classList.add('stamped'); io.disconnect() } }, { threshold: 0.6 })
-  io.observe(seal)
-})
-
-// Programma dell'Academy: scelto il pubblico, restano accesi i formati e i temi che lo riguardano.
-const audButtons = $$('.aud button')
-audButtons.forEach((btn) => btn.addEventListener('click', () => {
-  const aud = btn.dataset.aud
-  audButtons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
-  $$('.prog-list li').forEach((li) => {
-    const match = aud === 'tutti' || li.dataset.aud.split(' ').includes(aud)
-    li.classList.toggle('off', !match)
-    li.classList.toggle('hit', match && aud !== 'tutti')
-  })
-}))
 
 // Video: la copertina disegnata copre il player; al clic parte il video. I comandi stanno
 // sotto l'immagine, così non coprono mai i sottotitoli già impressi nel video.

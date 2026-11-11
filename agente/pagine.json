@@ -1,0 +1,11 @@
+{
+  "_nota": "Pagine che l'assistente (chat e voce) può aprire con mostra_pagina. Chiave → percorso in italiano e in spagnolo. Se manca la versione spagnola si usa quella italiana. Deve combaciare con la whitelist di static/odyra-app.js.",
+  "home": {"it": "/", "es": "/es/"},
+  "prezzi": {"it": "/prezzi", "es": "/prezzi"},
+  "partner": {"it": "/partner", "es": "/es/socios"},
+  "prenota": {"it": "/prenota", "es": "/prenota"},
+  "casi": {"it": "/lavori", "es": "/es/casos"},
+  "boss": {"it": "/case/boss-italia", "es": "/case/boss-italia"},
+  "tecnologie": {"it": "/tecnologie", "es": "/es/plataforma"},
+  "contatti": {"it": "/contatti", "es": "/es/contacto"}
+}

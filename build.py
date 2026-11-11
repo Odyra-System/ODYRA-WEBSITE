@@ -443,12 +443,21 @@ def header(lang, current):
     other = 'es' if lang == 'it' else 'it'
     switch = path(current, other) if current and has(current, other) else base(other)
     close = 'Chiudi' if lang == 'it' else 'Cerrar'
+    # Accesso alla console Odyra: link discreto con lucchetto, a sinistra del pulsante principale (nel menu su mobile).
+    access = ''
+    if has('console', lang) or has('console', 'it'):
+        cur = ' aria-current="page"' if current == 'console' else ''
+        access = (f'<a class="top-access" href="{path("console", lang)}"{cur}><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false">'
+                  '<rect x="4" y="9" width="12" height="8.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>'
+                  '<path d="M7 9V6.6a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
+                  f'<span>{t("Accesso piattaforma", "Acceso plataforma")}</span></a>')
     return f'''<header class="top">
   <a class="top-brand" href="{base(lang)}"><img src="/assets/logos/odyra-system.webp" alt="Odyra System" width="150" height="40"></a>
   <nav class="top-nav" id="nav" aria-label="{u['nav']}">
     <ul class="top-links">{links}</ul>
     <div class="top-side">
       <a class="top-lang" href="{switch}" hreflang="{other}" lang="{other}"><span aria-hidden="true">{u['other']}</span><span class="sr">{u['other_name']}</span></a>
+      {access}
       <a class="b b-cyan top-cta" href="{path('prenota' if has('prenota', lang) or has('prenota', 'it') else 'contatti', lang)}">{t('Prenota una call', 'Reserva una llamada')}</a>
     </div>
   </nav>
@@ -460,8 +469,8 @@ def header(lang, current):
 # Le pagine legali (privacy, cookie, termini) stanno nella riga in fondo, accanto alle preferenze cookie.
 FOOTER = [
     ('Soluzioni', 'Soluciones', ['soluzioni', 'centralino-ai', 'segretaria-ai', 'settore-estetica', 'settore-dentale', 'partner']),
-    ('Odyra', 'Odyra', ['capabilities', 'tecnologie', 'processo', 'lavori', 'eventi', 'studio', 'team']),
-    ('Risorse', 'Recursos', ['demo', 'contatti', 'domande']),
+    ('Odyra', 'Odyra', ['prezzi', 'tecnologie', 'processo', 'lavori', 'studio', 'team']),
+    ('Risorse', 'Recursos', ['demo', 'contatti', 'domande', 'console']),
 ]
 FOOTER_LEGAL = ['privacy', 'cookie', 'termini']
 
@@ -753,7 +762,8 @@ def llms_txt(mds, full=False):
            '- Modello wholesale per le software house: licenza per centro al mese (voce, WhatsApp o combo, taglie S, M, L), da 19 € all’ingrosso con scaglioni di volume su tutte le licenze (da 20–49 a 800–999; da 1.000 licenze prezzo da trattare); il partner rivende col proprio marchio e decide il prezzo al centro. Integrazione con le API del gestionale e dashboard white-label incluse, a carico di Odyra. Beta gratuita fino a 5 centri per 60 giorni. Costi WhatsApp inclusi nei pacchetti WhatsApp e Combo. Prezzi IVA esclusa.',
            '- Secondo pubblico: gruppi multi-sede e aziende con molte chiamate, che acquistano gli stessi pacchetti direttamente a un prezzo unico per sede: la voce da 0,18 € al minuto (54 € al mese), WhatsApp da 29 €, attivazione 99 €, dalla 20ª sede gli scaglioni del listino partner; progetti su misura per le grandi aziende.',
            '- L’agente dice sempre di essere un’AI (AI Act); dati isolati per cliente, conforme al GDPR.',
-           '- Altri prodotti e servizi: HAKO, software proprietario per le portinerie dei condomini (https://hakocondomini.com); progetti su misura (es. Gruppo Colzani); Odyra Academy, consulenza e formazione sull’AI.',
+           '- Altri prodotti e servizi: HAKO, software proprietario per le portinerie dei condomini (https://hakocondomini.com); progetti su misura (es. Gruppo Colzani).',
+           '- In arrivo: la console Odyra (Accesso piattaforma), dove partner e aziende scrivono e versionano le istruzioni dell’agente, scelgono voce, lingua e canali, collegano il gestionale e vedono chiamate, conversazioni e KPI. Oggi la configurazione la fa Odyra.',
            f'- Contatti: {EMAIL}, {COMPANY["street"]}, {COMPANY["zip"]} {COMPANY["city"]}, Italia.', '',
            'Ogni pagina ha una versione Markdown allo stesso indirizzo con estensione .md. Il testo completo è in /llms-full.txt.', '']
     for lg, title in (('it', '## Pagine (italiano)'), ('es', '## Páginas (español)')):
