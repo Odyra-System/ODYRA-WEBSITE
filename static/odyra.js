@@ -40,7 +40,7 @@ if (nav && menu) {
 
 // Guilloché: rosette e onde a linee sottili, come nella carta di sicurezza.
 function guilloche(canvas, { rosette = null, waves = null, color = '92, 203, 240', phase = 0 }) {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2)
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5)  // oltre 1,5 la differenza non si vede, il costo sì
   const w = canvas.clientWidth, h = canvas.clientHeight
   if (!w || !h) return
   if (canvas.width !== Math.round(w * dpr)) { canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr) }
@@ -54,8 +54,8 @@ function guilloche(canvas, { rosette = null, waves = null, color = '92, 203, 240
     for (let k = 0; k < rings; k++) {
       c.strokeStyle = `rgba(${color}, ${alpha * (0.45 + 0.55 * Math.sin((k / rings) * Math.PI))})`
       c.beginPath()
-      for (let i = 0; i <= 720; i++) {
-        const t = (i / 720) * Math.PI * 2
+      for (let i = 0; i <= 360; i++) {
+        const t = (i / 360) * Math.PI * 2
         const rr = R * (0.55 + 0.45 * (k / rings)) * (1 + depth * Math.sin(lobes * t + phase + k * 0.21))
         const px = cx + rr * Math.cos(t), py = cy + rr * Math.sin(t)
         i ? c.lineTo(px, py) : c.moveTo(px, py)
@@ -88,7 +88,13 @@ const art = [
 let phase = 0
 const drawAll = () => art.forEach(([cv, opts]) => cv && guilloche(cv, opts(phase)))
 drawAll()
-new ResizeObserver(drawAll).observe(document.body)
+// Ridisegna solo quando cambia davvero la larghezza della finestra, e non più di una volta ogni 200 ms.
+let lastW = window.innerWidth, redrawT
+window.addEventListener('resize', () => {
+  if (window.innerWidth === lastW) return
+  lastW = window.innerWidth
+  clearTimeout(redrawT); redrawT = setTimeout(drawAll, 200)
+}, { passive: true })
 
 // Il marchio sulla banconota: lo scrive chi visita.
 const brand = $('#brand')
@@ -133,10 +139,7 @@ window.addEventListener('load', () => {
     }
   }
 
-  // Il fondo guilloché respira piano mentre l'apertura è visibile.
-  let running = !!$('.hero-guilloche')
-  if ($('.hero, .phead')) ScrollTrigger.create({ trigger: '.hero, .phead', start: 'top bottom', end: 'bottom top', onToggle: (s) => { running = s.isActive } })
-  gsap.ticker.add(() => { if (running) { phase += 0.004; guilloche(art[0][0], art[0][1](phase)) } })
+  // Il fondo guilloché si disegna una volta sola (ridisegnarlo a ogni fotogramma rallentava tutto il sito).
 
   // Il filo di sicurezza si srotola lungo i passaggi della fabbrica.
   if ($('.line')) gsap.fromTo('.line-thread i', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.line', start: 'top 70%', end: 'bottom 60%', scrub: 0.5 } })
