@@ -1,4 +1,4 @@
-/* Odyra: banner cookie e demo vocale (generati da odyra-app.js). Usa i colori di odyra.css, con valori di riserva. */
+/* Odyra: banner cookie e demo dell'agente, voce e chat (generati da odyra-app.js). Usa i colori di odyra.css, con valori di riserva. */
 .oa-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ───────── banner cookie ───────── */
@@ -24,7 +24,7 @@
 .oc-b-line, .ov-b-line { background: transparent; color: var(--on-ink, #E7EEF8); border-color: rgba(231, 238, 248, .45); }
 .oc-b[hidden], .ov-b[hidden] { display: none; }
 .oc-b:hover, .ov-b:hover { filter: brightness(1.08); }
-.oc-banner :focus-visible, .ov-panel :focus-visible, .ov-fab:focus-visible { outline: 3px solid var(--cyan-hi, #A8E6F9); outline-offset: 2px; }
+.oc-banner :focus-visible, .ov-fab:focus-visible { outline: 3px solid var(--cyan-hi, #A8E6F9); outline-offset: 2px; }
 @media (max-width: 30rem) {
   /* su telefono il banner resta compatto: testo piccolo, tre pulsanti sulla stessa riga */
   .oc-banner { padding: 0 .5rem max(.5rem, env(safe-area-inset-bottom)); }
@@ -50,23 +50,46 @@
 @media (max-width: 47.99rem) { .ov-fab { padding: 0; width: 3.25rem; justify-content: center; } .ov-fab-t { display: none; } }
 @media print { .ov-fab, .ov-panel, .oc-banner { display: none !important; } }
 
-/* ───────── demo vocale: pannello ───────── */
+/* ───────── "Prova l'agente": pannello con le schede Parla e Scrivi ───────── */
 .ov-panel { position: fixed; z-index: 70; right: clamp(.75rem, 2.5vw, 1.5rem); bottom: max(clamp(.75rem, 2.5vw, 1.5rem), env(safe-area-inset-bottom));
-  width: min(22rem, calc(100vw - 1.5rem)); max-height: calc(100vh - 1.5rem); overflow: auto; display: flex; flex-direction: column; gap: .8rem;
-  padding: 1.1rem 1.2rem 1.2rem; border-radius: 16px; background: var(--ink, #071A3A); color: var(--on-ink, #E7EEF8);
-  border: 1px solid var(--ink-rule, rgba(92, 203, 240, .25)); box-shadow: 0 24px 60px rgba(3, 12, 30, .5); font-family: var(--sans, system-ui, sans-serif); }
+  width: min(25rem, calc(100vw - 1.5rem)); max-height: calc(100vh - 1.5rem); display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 18px; color: var(--on-ink, #E7EEF8); font-family: var(--sans, system-ui, sans-serif);
+  background: radial-gradient(120% 60% at 100% 0%, rgba(92, 203, 240, .14), transparent 60%), var(--ink, #071A3A);
+  border: 1px solid var(--ink-rule, rgba(92, 203, 240, .25)); box-shadow: 0 28px 70px rgba(3, 12, 30, .55), 0 0 0 1px rgba(255, 255, 255, .03) inset; }
 .ov-panel[hidden] { display: none; }
-@media (max-width: 30rem) { .ov-panel { left: 0; right: 0; bottom: 0; width: auto; border-radius: 16px 16px 0 0; padding-bottom: max(1.2rem, env(safe-area-inset-bottom)); } }
-.ov-h { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; }
-.ov-h h2 { font-size: 1.05rem; font-weight: 720; margin: 0; }
-.ov-x { flex: none; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; margin: -.35rem -.4rem 0 0; border-radius: 99px; border: 0;
+.ov-panel[data-tab=chat] { height: min(41rem, calc(100vh - 3rem)); }
+.ov-panel a { color: var(--cyan, #5CCBF0); }
+
+.ov-h { display: flex; align-items: center; gap: .75rem; padding: 1rem 1rem .75rem 1.1rem; }
+.ov-ht { flex: 1; min-width: 0; }
+.ov-h h2 { font-size: 1.02rem; font-weight: 720; margin: 0; line-height: 1.2; }
+.ov-sub { margin: .15rem 0 0; font-size: .76rem; color: var(--on-ink-soft, #B3C5DD); }
+.ov-avatar { flex: none; position: relative; width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 1.5px solid rgba(92, 203, 240, .45);
+  display: grid; place-items: center; }
+.ov-avatar span { width: 1.35rem; height: 1.35rem; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--cyan-hi, #A8E6F9), var(--cyan-deep, #0F6E99)); }
+.ov-avatar::after { content: ""; position: absolute; right: -1px; bottom: -1px; width: .6rem; height: .6rem; border-radius: 50%;
+  background: #3DDC97; border: 2px solid var(--ink, #071A3A); }
+.ov-x { flex: none; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 99px; border: 0;
   background: transparent; color: var(--on-ink-soft, #B3C5DD); cursor: pointer; }
 .ov-x:hover { background: rgba(231, 238, 248, .1); color: var(--on-ink, #E7EEF8); }
+
+.ov-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem; margin: 0 1rem; padding: .25rem; border-radius: 99px;
+  background: rgba(231, 238, 248, .07); border: 1px solid rgba(231, 238, 248, .08); }
+.ov-tab { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-height: 2.5rem; border: 0; border-radius: 99px;
+  font: 680 .9rem/1 var(--sans, system-ui, sans-serif); color: var(--on-ink-soft, #B3C5DD); background: transparent; cursor: pointer;
+  transition: background-color .2s, color .2s; }
+.ov-tab svg { width: 18px; height: 18px; }
+.ov-tab:hover { color: var(--on-ink, #E7EEF8); }
+.ov-tab[aria-selected=true] { background: var(--cyan, #5CCBF0); color: var(--ink, #071A3A); }
+.ov-pane { flex: 1; min-height: 0; display: flex; flex-direction: column; outline: none; }
+.ov-pane[hidden] { display: none; }
+
+/* scheda Parla */
+.ov-pane-voice { gap: .8rem; padding: 1rem 1.2rem 1.2rem; overflow: auto; }
 .ov-note { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--on-ink-soft, #B3C5DD); }
-.ov-note a, .ov-nav a { color: var(--cyan, #5CCBF0); }
 .ov-stage { display: grid; place-items: center; min-height: 9.5rem; }
 .ov-video { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; background: #000; }
-.ov-video[hidden], .ov-orb[hidden], .ov-nav[hidden] { display: none; }
+.ov-video[hidden], .ov-orb[hidden], .ov-nav[hidden], .ov-off[hidden] { display: none; }
 .ov-orb { position: relative; width: 7.5rem; height: 7.5rem; }
 .ov-orb span { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--cyan, #5CCBF0); opacity: .25; }
 .ov-orb span:nth-child(2) { inset: 1.1rem; opacity: .45; }
@@ -76,19 +99,83 @@
 [data-state=speaking] .ov-orb span { animation: ov-talk .9s ease-in-out infinite; }
 [data-state=speaking] .ov-orb span:nth-child(2) { animation-delay: .15s; }
 [data-state=speaking] .ov-orb span:nth-child(1) { animation-delay: .3s; }
-[data-state=error] .ov-orb span, [data-state=denied] .ov-orb span, [data-state=ended] .ov-orb span { filter: grayscale(1); opacity: .35; }
+[data-state=error] .ov-orb span, [data-state=denied] .ov-orb span, [data-state=ended] .ov-orb span, [data-state=off] .ov-orb span { filter: grayscale(1); opacity: .35; }
 @keyframes ov-wait { 50% { opacity: .1; } }
 @keyframes ov-talk { 50% { transform: scale(1.08); opacity: .9; } }
-@media (prefers-reduced-motion: reduce) { .ov-orb span { animation: none !important; } .ov-fab { transition: none; } }
 .ov-status { margin: 0; text-align: center; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; color: var(--on-ink-soft, #B3C5DD); }
+.ov-status:empty { display: none; }
 [data-state=error] .ov-status, [data-state=denied] .ov-status { text-transform: none; letter-spacing: 0; font-size: .9rem; color: #FFC9C9; }
+.ov-off { text-align: center; display: grid; gap: .75rem; justify-items: center; }
+.ov-off p { margin: 0; font-size: .92rem; line-height: 1.5; }
 .ov-nav { margin: 0; font-size: .85rem; text-align: center; color: var(--on-ink, #E7EEF8); }
 .ov-actions { display: flex; justify-content: center; gap: .6rem; }
+.ov-start { display: inline-flex; align-items: center; gap: .35rem; }
 .ov-mute { width: 2.75rem; padding: 0; display: grid; place-items: center; }
 .ov-mute[aria-pressed=true] { background: rgba(231, 238, 248, .14); }
 .ov-b:disabled { opacity: .4; cursor: default; filter: none; }
 .ov-end { background: #E25B6A; border-color: #E25B6A; color: #fff; }
-.ov-panel > .ov-b { align-self: center; }
+.ov-pane > .ov-b { align-self: center; }
+a.ov-b { display: inline-flex; align-items: center; text-decoration: none; }
+
+/* scheda Scrivi */
+.ov-pane-chat { padding-top: .75rem; }
+.ch-log { flex: 1; min-height: 8rem; overflow-y: auto; overscroll-behavior: contain; padding: .25rem 1rem .75rem; display: flex; flex-direction: column; gap: .6rem;
+  scrollbar-width: thin; scrollbar-color: rgba(231, 238, 248, .2) transparent; outline: none; }
+.ch-msg { max-width: 88%; padding: .65rem .85rem; border-radius: 16px; font-size: .92rem; line-height: 1.5; overflow-wrap: anywhere; }
+.ch-msg p { margin: 0; }
+.ch-msg p + p, .ch-msg p + ul, .ch-msg ul + p { margin-top: .5rem; }
+.ch-msg ul { margin: 0; padding-left: 1.1rem; }
+.ch-msg li + li { margin-top: .2rem; }
+.ch-msg strong { font-weight: 720; color: #fff; }
+.ch-agent { align-self: flex-start; background: rgba(231, 238, 248, .07); border: 1px solid rgba(231, 238, 248, .1); border-bottom-left-radius: 6px; }
+.ch-user { align-self: flex-end; background: var(--cyan, #5CCBF0); color: var(--ink, #071A3A); border-bottom-right-radius: 6px; font-weight: 520; }
+.ch-link { color: var(--cyan-hi, #A8E6F9) !important; font-weight: 640; text-decoration: underline; text-underline-offset: .18em; }
+.ch-sys { align-self: center; margin: .1rem 0; max-width: 92%; text-align: center; font-size: .78rem; color: var(--on-ink-soft, #B3C5DD); }
+.ch-retry { font: inherit; font-weight: 680; color: var(--cyan, #5CCBF0); background: none; border: 0; padding: .1rem .2rem; cursor: pointer; text-decoration: underline; }
+.ch-typing { display: inline-flex; gap: .3rem; padding: .8rem .9rem; }
+.ch-typing span { width: .45rem; height: .45rem; border-radius: 50%; background: var(--on-ink-soft, #B3C5DD); opacity: .35; animation: ch-dot 1.2s ease-in-out infinite; }
+.ch-typing span:nth-child(2) { animation-delay: .15s; }
+.ch-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes ch-dot { 30% { opacity: 1; transform: translateY(-2px); } }
+.ch-sugg { display: flex; flex-wrap: wrap; gap: .4rem; padding: 0 1rem .7rem; }
+.ch-sugg[hidden] { display: none; }
+.ch-chip { font: 600 .82rem/1.2 var(--sans, system-ui, sans-serif); color: var(--on-ink, #E7EEF8); background: rgba(92, 203, 240, .08);
+  border: 1px solid rgba(92, 203, 240, .38); border-radius: 99px; padding: .5rem .8rem; min-height: 2.25rem; cursor: pointer; text-align: left;
+  transition: background-color .2s, border-color .2s; }
+.ch-chip:hover { background: rgba(92, 203, 240, .18); border-color: var(--cyan, #5CCBF0); }
+.ch-form { display: flex; align-items: flex-end; gap: .5rem; margin: 0 1rem; padding: .35rem .35rem .35rem .9rem; border-radius: 22px;
+  background: rgba(231, 238, 248, .07); border: 1px solid rgba(231, 238, 248, .16); }
+.ch-form[hidden] { display: none; }
+.ch-form:focus-within { border-color: var(--cyan, #5CCBF0); }
+.ch-input { flex: 1; min-width: 0; resize: none; border: 0; background: transparent; color: var(--on-ink, #E7EEF8); font: 400 1rem/1.4 var(--sans, system-ui, sans-serif);
+  padding: .5rem 0; max-height: 8rem; outline: none; }
+.ch-input::placeholder { color: rgba(179, 197, 221, .75); }
+.ch-send { flex: none; display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--cyan, #5CCBF0); color: var(--ink, #071A3A); transition: filter .2s; }
+.ch-send:hover { filter: brightness(1.08); }
+.ch-send:disabled { opacity: .45; cursor: default; }
+.ch-note { margin: 0; padding: .55rem 1rem .85rem; font-size: .72rem; line-height: 1.45; color: var(--on-ink-soft, #B3C5DD); }
+.ch-reset { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }
+.ch-off { margin: auto 1rem 1rem; padding: 1rem; border-radius: 14px; border: 1px solid rgba(231, 238, 248, .14); display: grid; gap: .75rem; justify-items: start; }
+.ch-off[hidden] { display: none; }
+.ch-off p { margin: 0; font-size: .92rem; line-height: 1.5; }
+.ov-panel :focus-visible { outline: 3px solid var(--cyan-hi, #A8E6F9); outline-offset: 2px; }
+.ch-input:focus-visible { outline: none; }
+
+/* telefono: la voce in basso, la chat a tutto schermo */
+@media (max-width: 30rem) {
+  .ov-panel { left: 0; right: 0; bottom: 0; width: auto; border-radius: 18px 18px 0 0; }
+  .ov-pane-voice { padding-bottom: max(1.2rem, env(safe-area-inset-bottom)); }
+  .ov-panel[data-tab=chat] { top: 0; height: 100vh; height: 100dvh; max-height: none; border-radius: 0; border: 0; }
+  .ov-chat-open.ov-open body { overflow: hidden; }
+  .ch-note { padding-bottom: max(.85rem, env(safe-area-inset-bottom)); }
+  .ch-msg { max-width: 92%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ov-orb span, .ch-typing span { animation: none !important; }
+  .ch-typing span { opacity: .7; }
+  .ov-fab, .ov-tab, .ch-chip, .ch-send { transition: none; }
+}
 
 /* ───────── prenotazione (pagina /prenota) ───────── */
 .booking-frame { margin-top: 1.25rem; border: 1px solid rgba(7, 26, 58, .14); border-radius: 14px; overflow: hidden; background: #fff; }

@@ -1,4 +1,4 @@
-/* Odyra: consenso cookie, misurazione, modulo contatti, demo vocale.
+/* Odyra: consenso cookie, misurazione, modulo contatti, demo dell'agente (voce e chat).
  * Caricato in <head> senza defer (è piccolo): imposta subito la classe "js" e il consenso predefinito,
  * prima che parta qualunque tag di misurazione. Il resto si attiva a DOM pronto.
  * Nessuno script in linea nelle pagine: la Content-Security-Policy non ammette 'unsafe-inline'. */
@@ -43,7 +43,20 @@
       vMute: 'Disattiva il microfono', vUnmute: 'Riattiva il microfono', vMuted: 'Microfono disattivato',
       vEnd: 'Termina', vRetry: 'Riprova', vClose: 'Chiudi e termina la conversazione',
       vAudio: 'Tocca per attivare l’audio', vNav: 'L’agente ti ha portato a: ', vOpen: 'Apri la pagina',
-      vNavFail: 'Non sono riuscito ad aprire la pagina qui.'
+      vNavFail: 'Non sono riuscito ad aprire la pagina qui.',
+      aTitle: 'Prova l’agente Odyra', aSub: 'Assistente AI · a voce o per iscritto', aTabVoice: 'Parla', aTabChat: 'Scrivi',
+      vStart: 'Inizia a parlare',
+      vSoon: 'La demo a voce arriva a breve. Nel frattempo scrivi all’agente: stessa conoscenza, stesse risposte.',
+      vSoonGo: 'Scrivi all’agente', vSoonNote: 'La demo a voce arriva a breve: intanto puoi scrivermi qui.',
+      chLog: 'Conversazione con l’agente', chSuggLabel: 'Domande suggerite',
+      chSugg: ['Quanto costa?', 'Come funziona per una software house?', 'Si integra col mio gestionale?', 'Prenota una call'],
+      chPlaceholder: 'Scrivi una domanda…', chSend: 'Invia', chReset: 'Nuova conversazione',
+      chOff: 'La chat non è disponibile in questo momento. Prenota una call: ti rispondiamo noi.', chBook: 'Prenota una call',
+      chNote: 'Stai scrivendo a un’intelligenza artificiale: può sbagliare. Non inserire dati sensibili.',
+      chYou: 'Tu: ', chAgent: 'Agente: ',
+      chWelcome: 'Ciao, sono l’assistente AI di Odyra. Ti spiego come funzionano i nostri agenti vocali e WhatsApp, i prezzi e il modello white-label per le software house. Sei una software house o un’azienda?',
+      chBusy: 'Troppi messaggi ravvicinati: riprova tra qualche minuto.', chErr: 'Non riesco a rispondere in questo momento.',
+      chSee: 'Guarda la pagina'
     },
     es: {
       cTitle: 'Cookies y medición',
@@ -71,7 +84,20 @@
       vMute: 'Silenciar el micrófono', vUnmute: 'Activar el micrófono', vMuted: 'Micrófono silenciado',
       vEnd: 'Terminar', vRetry: 'Reintentar', vClose: 'Cerrar y terminar la conversación',
       vAudio: 'Toca para activar el audio', vNav: 'El agente te ha llevado a: ', vOpen: 'Abrir la página',
-      vNavFail: 'No he podido abrir la página aquí.'
+      vNavFail: 'No he podido abrir la página aquí.',
+      aTitle: 'Prueba el agente Odyra', aSub: 'Asistente IA · por voz o por escrito', aTabVoice: 'Hablar', aTabChat: 'Escribir',
+      vStart: 'Empezar a hablar',
+      vSoon: 'La demo por voz llega muy pronto. Mientras tanto, escribe al agente: mismo conocimiento, mismas respuestas.',
+      vSoonGo: 'Escribir al agente', vSoonNote: 'La demo por voz llega muy pronto: mientras tanto puedes escribirme aquí.',
+      chLog: 'Conversación con el agente', chSuggLabel: 'Preguntas sugeridas',
+      chSugg: ['¿Cuánto cuesta?', '¿Cómo funciona para una empresa de software?', '¿Se integra con mi software de gestión?', 'Reservar una llamada'],
+      chPlaceholder: 'Escribe una pregunta…', chSend: 'Enviar', chReset: 'Nueva conversación',
+      chOff: 'El chat no está disponible en este momento. Reserva una llamada y te respondemos.', chBook: 'Reservar una llamada',
+      chNote: 'Estás escribiendo a una inteligencia artificial: puede equivocarse. No incluyas datos sensibles.',
+      chYou: 'Tú: ', chAgent: 'Agente: ',
+      chWelcome: 'Hola, soy el asistente IA de Odyra. Te explico cómo funcionan nuestros agentes de voz y WhatsApp, los precios y el modelo white-label para empresas de software. ¿Eres una empresa de software o una empresa con sedes?',
+      chBusy: 'Demasiados mensajes seguidos: inténtalo dentro de unos minutos.', chErr: 'No puedo responder en este momento.',
+      chSee: 'Ver la página'
     }
   }[LANG]
 
@@ -169,6 +195,8 @@
   var ICON = {
     mic: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-5a3.5 3.5 0 1 0-7 0v5A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.91V20H8.5a1 1 0 1 0 0 2h7a1 1 0 1 0 0-2H13v-2.59a6 6 0 0 0 5-5.91Z"/></svg>',
     micOff: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3.7 2.3a1 1 0 0 0-1.4 1.4l18 18a1 1 0 0 0 1.4-1.4l-4.1-4.1A6 6 0 0 0 18 11.5a1 1 0 1 0-2 0c0 .7-.2 1.4-.5 2l-1.2-1.2c.1-.3.2-.5.2-.8v-5a3.5 3.5 0 0 0-6.9-.8L3.7 2.3ZM8.5 11.4v.1a3.5 3.5 0 0 0 4.6 3.3l-4.6-4.6v1.2ZM6 11.5a1 1 0 1 0-2 0 6 6 0 0 0 7 5.91V20H8.5a1 1 0 1 0 0 2h7a1 1 0 1 0 0-2H13v-2.1l-1.9-1.9A4 4 0 0 1 6 11.5Z"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M5 4h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-6.6l-4.2 3.3A1 1 0 0 1 6.6 20.5V18H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Zm3 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/></svg>',
+    send: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3.4 20.4a1 1 0 0 1-1.3-1.2L4.3 12 2.1 4.8a1 1 0 0 1 1.3-1.2l18 7.5a1 1 0 0 1 0 1.8l-18 7.5ZM6 13l-1.4 4.7L17.4 12 4.6 6.3 6 11h6a1 1 0 1 1 0 2H6Z"/></svg>',
     close: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.7 5.3a1 1 0 0 0-1.4 1.4L10.6 12l-5.3 5.3a1 1 0 1 0 1.4 1.4l5.3-5.3 5.3 5.3a1 1 0 0 0 1.4-1.4L13.4 12l5.3-5.3a1 1 0 0 0-1.4-1.4L12 10.6 6.7 5.3Z"/></svg>'
   }
 
@@ -243,9 +271,8 @@
 
     // ───────── clic verso contatti e demo ─────────
     d.addEventListener('click', function (e) {
-      var a = e.target.closest && e.target.closest('a[href], [data-voice-demo]')
-      if (!a) return
-      if (a.hasAttribute('data-voice-demo')) return track('click_demo', { link_text: (a.textContent || '').trim().slice(0, 80), kind: 'voice' })
+      var a = e.target.closest && e.target.closest('a[href]')
+      if (!a || a.hasAttribute('data-voice-demo') || a.hasAttribute('data-chat-demo')) return  // i pulsanti della demo li conta il loro gestore
       var u
       try { u = new URL(a.href, location.href) } catch (x) { return }
       if (u.origin === location.origin && /^\/(es\/)?(contatti|contacto|demo|prenota)(\/|$)/.test(u.pathname))
