@@ -458,14 +458,16 @@ $$('.reel').forEach((reel) => {
 // ───────── prezzi ─────────
 // Listino: interruttore tra i due pubblici, scala degli scaglioni, calcolatore di margine.
 // Tutte le cifre sono già nell'HTML (attributi data-w e data-r): qui si ricalcolano soltanto.
+// L'ultimo scaglione (1.000+) non ha prezzo: si tratta, e la pagina invita a prenotare una call.
 {
   const list = $('#listino')
   if (list) {
-    const TIER_N = [20, 50, 100, 200]
-    const TIER_T = ['20–49', '50–99', '100–199', '200+']
-    const ACT = [69, 59, 49, 0]
+    const TIER_N = [20, 50, 100, 200, 400, 600, 800]
+    const TIER_T = ['20–49', '50–99', '100–199', '200–399', '400–599', '600–799', '800–999', '1.000+']
+    const DEAL = TIER_N.length
+    const ACT = [69, 59, 49, 0, 0, 0, 0]
     const ACT_REC = 99
-    const tierOf = (n) => (n < 50 ? 0 : n < 100 ? 1 : n < 200 ? 2 : 3)
+    const tierOf = (n) => { const i = TIER_N.findIndex((lo) => n < lo); return i === -1 ? (n < 1000 ? DEAL - 1 : DEAL) : i - 1 }
     // Euro all'italiana: punto per le migliaia (anche a quattro cifre), virgola per i decimali.
     const num = (v) => {
       const neg = v < 0, a = Math.abs(Math.round(v * 100) / 100)
@@ -511,38 +513,89 @@ $$('.reel').forEach((reel) => {
       const fromHash = /aziend/.test(location.hash) ? $('#tab-aziende') : tabs[0]
       choose(fromHash || tabs[0])
       if (fromHash && fromHash !== tabs[0]) list.scrollIntoView()
+      // Collegamenti interni alla pagina (#per-aziende, #per-partner): cambiano pannello senza ricaricare.
+      addEventListener('hashchange', () => {
+        const t = /^#per-aziend/.test(location.hash) ? $('#tab-aziende') : /^#per-partner/.test(location.hash) ? $('#tab-partner') : null
+        if (t) { choose(t); list.scrollIntoView() }
+      })
     }
 
+    // Listino completo: chiuso di base, si apre da solo se l'indirizzo punta dentro.
+    const more = $('.pz-more')
+    const openMore = () => {
+      if (!more || location.hash.length < 2) return
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)))
+      if (target && (more.contains(target) || target.id === 'listino-completo')) {
+        more.open = true
+        if (more.contains(target)) target.scrollIntoView()
+      }
+    }
+    openMore()
+    addEventListener('hashchange', openMore)
+
     // Scala degli scaglioni: aggiorna prezzo wholesale, margine ed esempio annuo di ogni taglia.
+    const cards = $('.pz-cards', list)
     const tierNote = $('[data-pz="tier-text"]', list), tierAct = $('[data-pz="act"]', list)
+    const tierStd = $('[data-pz="tier-std"]', list), tierDeal = $('[data-pz="tier-deal"]', list)
+    const scroller = $('.pz-tier-scroll', list)
     const applyTier = (ti) => {
+      const deal = ti === DEAL
+      if (cards) cards.classList.toggle('is-deal', deal)
       $$('.pz-row', list).forEach((row) => {
+        if (deal) { set($('[data-pz="w"]', row), 'Da trattare'); return }
         const w = ints(row.dataset.w)[ti], r = ints(row.dataset.r)[0], m = r - w
         set($('[data-pz="w"]', row), eur(w))
         set($('[data-pz="m"]', row), '+' + eur(m))
         set($('[data-pz="n"]', row), String(TIER_N[ti]))
         set($('[data-pz="y"]', row), eur(m * TIER_N[ti] * 12))
       })
-      if (tierNote) tierNote.textContent = `Prezzi per ${TIER_T[ti]} licenze.`
-      if (tierAct) set(tierAct, ACT[ti] ? eur(ACT[ti]) : 'gratis')
+      if (tierNote) tierNote.textContent = deal ? 'Da 1.000 licenze in su.' : `Prezzi per ${TIER_T[ti]} licenze.`
+      if (tierStd) tierStd.hidden = deal
+      if (tierDeal) tierDeal.hidden = !deal
+      if (tierAct && !deal) set(tierAct, ACT[ti] ? eur(ACT[ti]) : 'gratis')
     }
-    $$('input[name="pz-tier"]', list).forEach((r) => r.addEventListener('change', () => applyTier(Number(r.value))))
+    $$('input[name="pz-tier"]', list).forEach((r) => r.addEventListener('change', () => {
+      applyTier(Number(r.value))
+      // Su schermi stretti la scala scorre: tiene in vista la voce scelta.
+      const lab = r.closest('.pz-tier')
+      if (scroller && lab && scroller.scrollWidth > scroller.clientWidth + 1) {
+        const left = lab.offsetLeft - (scroller.clientWidth - lab.offsetWidth) / 2
+        scroller.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' })
+      }
+    }))
     const checked = $('input[name="pz-tier"]:checked', list)
     if (checked && checked.value !== '0') applyTier(Number(checked.value))
 
-    // Calcolatore di margine.
+    // Calcolatore di margine. Da 1.000 centri non c'è un prezzo a listino: niente conto, un invito.
     const form = $('#pz-form')
     if (form) {
       const inN = $('#pz-n'), inLic = $('#pz-lic'), inP = $('#pz-p'), hint = $('#pz-hint')
+      const calcBox = $('.pz-calc')
       const out = (k) => $(`[data-pc="${k}"]`)
       const opt = () => inLic.options[inLic.selectedIndex]
       const recText = () => { const [a, b] = ints(opt().dataset.r); return `Prezzo consigliato per questa licenza: ${a}–${b} €.` }
+      const kind = out('kind'), big = out('year')
+      const KIND = kind.textContent
       const calc = () => {
         const o = opt()
         let n = Math.floor(Number(inN.value))
         const fewer = !(n >= 20)
         if (fewer) n = 20
         const ti = tierOf(n)
+        const deal = ti === DEAL
+        calcBox.classList.toggle('is-deal', deal)
+        set(out('n'), String(n))
+        set(out('lic'), o.textContent)
+        set(out('tier'), TIER_T[ti])
+        if (deal) {
+          kind.textContent = 'Da 1.000 centri in su'
+          set(big, 'Da trattare')
+          big.classList.remove('neg')
+          hint.textContent = 'Oltre i 999 centri il prezzo non è a listino: lo definiamo insieme in una call.'
+          hint.classList.remove('warn')
+          return
+        }
+        kind.textContent = KIND
         const w = ints(o.dataset.w)[ti]
         let p = Number(String(inP.value).replace(',', '.'))
         if (inP.value === '' || !(p >= 0)) p = ints(o.dataset.r)[0]
@@ -551,12 +604,9 @@ $$('.reel').forEach((reel) => {
         set(out('m'), eur(m))
         set(out('rev'), eur(p * n))
         set(out('mon'), eur(m * n))
-        set(out('year'), eur(m * n * 12))
+        set(big, eur(m * n * 12))
         set(out('act'), eur((ACT_REC - ACT[ti]) * n))
         set(out('actw'), ACT[ti] ? eur(ACT[ti]) : '0 € (gratis)')
-        set(out('n'), String(n))
-        set(out('lic'), o.textContent)
-        set(out('tier'), TIER_T[ti])
         ;['m', 'mon', 'year'].forEach((k) => out(k)?.classList.toggle('neg', m < 0))
         let msg = recText(), warn = false
         if (fewer) { msg = 'L’impegno minimo dopo la beta è di 20 licenze: calcoliamo su 20 centri.'; warn = true }
