@@ -5,7 +5,9 @@ set -eu
 export PORT
 
 # nginx.conf è un modello: si sostituisce solo ${PORT}, le variabili di nginx ($uri, $host...) restano.
-envsubst '${PORT}' < /etc/nginx/templates/odyra.conf.template > /etc/nginx/conf.d/default.conf
+# Tutto ciò che nginx scrive sta in /tmp: il container funziona con qualunque utente senza privilegi.
+mkdir -p /tmp/nginx
+envsubst '${PORT}' < /etc/nginx/templates/odyra.conf.template > /tmp/nginx/odyra.conf
 nginx -t -q
 
 # Supervisione semplice: se il server delle API si ferma, riparte dopo 2 secondi.
