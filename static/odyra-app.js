@@ -138,11 +138,22 @@
     ATTR.forEach(function (k) { var v = p.get(k); if (v) { fresh[k] = san(v); n++ } })
     if (!n) return
     fresh.landing_page = san(location.pathname)
-    if (d.referrer) fresh.referrer = san(d.referrer)
+    // Solo origine e percorso del sito di provenienza: la query di un altro sito può contenere dati personali.
+    if (d.referrer) { try { var ru = new URL(d.referrer); fresh.referrer = san(ru.origin + ru.pathname) } catch (x) { } }
     fresh.first_seen_at = new Date().toISOString()
     setJSON('sessionStorage', ATTR_KEY, fresh)
   })()
-  function attribution() { return getJSON('sessionStorage', ATTR_KEY) || {} }
+  function attribution() {
+    var a = getJSON('sessionStorage', ATTR_KEY), out = {}
+    if (!a || typeof a !== 'object') return out
+    // Solo chiavi note e stringhe corte: lo storage può essere stato scritto da altri script della stessa origine.
+    ATTR.concat(['landing_page', 'referrer', 'first_seen_at']).forEach(function (k) { if (typeof a[k] === 'string') out[k] = san(a[k]) })
+    return out
+  }
+  function sameOriginPath(u) {
+    // Percorso dello stesso sito o null. Con URL() anche "/\evil.com" e "//evil.com" risultano di un'altra origine.
+    try { var x = new URL(u, location.href); return x.origin === location.origin ? x.pathname + x.search + x.hash : null } catch (e) { return null }
+  }
 
   // ───────── utilità DOM ─────────
   function el(tag, attrs, kids) {
@@ -292,8 +303,8 @@
           done()
           if (r.ok) {
             track('generate_lead', { form: data.source })
-            var to = f.getAttribute('data-redirect')
-            if (to && /^\/(?!\/)/.test(to)) { setTimeout(function () { location.href = to }, 250); return }
+            var to = sameOriginPath(f.getAttribute('data-redirect') || '')
+            if (to) { setTimeout(function () { location.href = to }, 250); return }
             f.reset(); say(f.getAttribute('data-ok') || T.fOk)
           } else if (r.status === 400 || r.status === 413 || r.status === 415) say(T.fBad, true)
           else if (r.status === 429) say(T.fMany, true)
@@ -501,8 +512,11 @@
       try { abs = new URL(url, location.href) } catch (x) { return }
       if (abs.origin !== location.origin) return
       if (push && abs.pathname === location.pathname) { w.scrollTo({ top: 0, behavior: 'smooth' }); return }
-      fetch(abs.pathname, { credentials: 'same-origin', headers: { Accept: 'text/html' } }).then(function (r) {
+      fetch(abs.pathname, { credentials: 'same-origin', redirect: 'follow', headers: { Accept: 'text/html' } }).then(function (r) {
         if (!r.ok) throw new Error(String(r.status))
+        // Dopo eventuali redirect la pagina deve essere ancora del nostro sito ed essere HTML.
+        if (r.url && new URL(r.url).origin !== location.origin) throw new Error('origin')
+        if (!/^text\/html\b/i.test(r.headers.get('Content-Type') || '')) throw new Error('type')
         return r.text()
       }).then(function (html) {
         var doc = new DOMParser().parseFromString(html, 'text/html')

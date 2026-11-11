@@ -796,10 +796,10 @@ a[href^="mailto:"] { overflow-wrap: anywhere; }
 .top-menu[aria-expanded="true"] .top-menu-icon i { top: calc(50% - 1px); }
 .top-menu[aria-expanded="true"] .top-menu-icon i:first-child { transform: rotate(45deg); }
 .top-menu[aria-expanded="true"] .top-menu-icon i:last-child { transform: rotate(-45deg); }
-@media (max-width: 1180px) and (min-width: 1121px) { .top-links { gap: .9rem; } .top-links a { font-size: .92rem; } .top-nav { gap: 1rem; } }
+@media (max-width: 1380px) and (min-width: 1241px) { .top-links { gap: .9rem; } .top-links a { font-size: .92rem; } .top-nav { gap: 1rem; } }
 
-/* Menu a tutto schermo sotto i 1120px (con JavaScript; senza, le voci vanno a capo). */
-@media (max-width: 1120px) {
+/* Menu a tutto schermo sotto i 1240px (con JavaScript; senza, le voci vanno a capo). */
+@media (max-width: 1240px) {
   html:not(.js) .top { height: auto; flex-wrap: wrap; padding-block: .75rem; }
   html:not(.js) .top-nav, html:not(.js) .top-links { flex-wrap: wrap; }
   .js .top-menu { display: inline-flex; }

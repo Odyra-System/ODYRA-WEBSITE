@@ -30,13 +30,15 @@ Le chiavi vanno solo nelle variabili del servizio, mai nel repository.
 | `LEAD_WEBHOOK_URL` | facoltativo: POST JSON del lead (`source: "odyra_website_form"`) | |
 | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | demo vocale nel browser | senza, la demo risponde "non disponibile" |
 | `VOICE_AGENT_NAME` | facoltativo: nome dell'agente vocale | predefinito `odyra_web` |
-| `ALLOWED_ORIGINS` | facoltativo: origini ammesse per le API, separate da virgola, ammesso `https://*.dominio` | predefinito: il dominio con e senza `www` e `https://*.up.railway.app` |
+| `ALLOWED_ORIGINS` | facoltativo: origini ammesse per le API, separate da virgola, ammesso `https://*.dominio` | predefinito: il dominio con e senza `www`, `https://$RAILWAY_PUBLIC_DOMAIN` (lo imposta Railway) e l'origine uguale all'host della richiesta; `*.up.railway.app` NON è ammesso (dominio condiviso) |
+| `CONTACT_MAX_PER_HOUR` | facoltativo: tetto globale di invii del modulo all'ora | predefinito 30; la conferma al visitatore non ripete il messaggio, massimo 2 conferme al giorno per indirizzo |
+| `VOICE_MAX_PER_HOUR` | facoltativo: tetto globale di token vocali all'ora | predefinito 60; per IP 5 ogni 10 minuti e 20 al giorno |
 
 `GET /api/salute` dice cosa è configurato, senza valori: `{"ok":true,"contatto":true,"email":"api"|"smtp"|null,"webhook":false,"voce":true}`.
 
 ## API
-- `POST /api/contatto` (JSON, massimo 16 KB, solo dalle origini ammesse, 5 richieste ogni 10 minuti per indirizzo IP): `name`, `email`, `company`, `phone`, `need`, `message`, `source`, `page`, `privacy: true`, `website` (campo trappola per i bot: se è pieno la risposta è 200 ma non parte nulla), `attribution` (parametri delle campagne). Invia l'e-mail al team (con la provenienza in fondo) e la conferma al visitatore, e il webhook se c'è. Risposte: 200 se almeno un canale ha funzionato, 400 dati non validi, 403 origine, 413, 415, 429, 502 se tutti i canali falliscono, 503 se non c'è nessun canale configurato (il sito allora apre la posta con la richiesta già scritta).
-- `POST /api/voce/token` (`{"lang":"it"}`; lingue it, en, es, fr, de, pl, ro): token di 15 minuti per una stanza nuova, con l'agente vocale già assegnato. 5 richieste ogni 10 minuti per IP.
+- `POST /api/contatto` (JSON, massimo 16 KB, solo dalle origini ammesse, 5 richieste ogni 10 minuti per indirizzo IP, IP letto solo da X-Real-IP impostato dal proxy di Railway): `name`, `email`, `company`, `phone`, `need`, `message`, `source`, `page`, `privacy: true`, `website` (campo trappola per i bot: se è pieno la risposta è 200 ma non parte nulla), `attribution` (parametri delle campagne). Invia l'e-mail al team (con la provenienza in fondo) e la conferma al visitatore, e il webhook se c'è. Risposte: 200 se almeno un canale ha funzionato, 400 dati non validi, 403 origine, 413, 415, 429, 502 se tutti i canali falliscono, 503 se non c'è nessun canale configurato (il sito allora apre la posta con la richiesta già scritta).
+- `POST /api/voce/token` (`{"lang":"it"}`; lingue it, en, es, fr, de, pl, ro): token di 10 minuti per una stanza nuova e usa e getta, con l'agente vocale già assegnato. 5 richieste ogni 10 minuti per IP.
 - Nei log del server solo esito e canale, mai dati personali.
 
 ## Modulo contatti (contratto per le pagine)

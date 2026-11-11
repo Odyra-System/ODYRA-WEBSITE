@@ -3,3 +3,11 @@
 dist
 **/__pycache__
 *.pyc
+# mai segreti o file locali nel contesto di build (il Dockerfile copia solo ciò che serve, questa è una seconda rete)
+.env
+.env.*
+**/*.pem
+**/*.key
+**/*.log
+.claude
+node_modules

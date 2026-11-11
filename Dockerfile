@@ -11,6 +11,7 @@ RUN python3 build.py && python3 -m unittest discover -s server
 FROM nginx:1.27-alpine
 RUN apk add --no-cache python3 \
  && rm -f /etc/nginx/conf.d/default.conf \
+ && rm -rf /usr/share/nginx/html/* \
  && sed -i -e '/^user /d' -e 's#^pid .*#pid /tmp/nginx.pid;#' /etc/nginx/nginx.conf \
  && mkdir -p /app/server \
  && chown -R nginx:nginx /var/cache/nginx /etc/nginx/conf.d

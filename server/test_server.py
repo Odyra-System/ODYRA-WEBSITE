@@ -19,7 +19,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import odyra_server as S  # noqa: E402
 
 ENV_KEYS = ('RESEND_API_KEY', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASSWORD', 'MAIL_FROM', 'MAIL_TO', 'LEAD_WEBHOOK_URL',
-            'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'VOICE_AGENT_NAME', 'ALLOWED_ORIGINS')
+            'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'VOICE_AGENT_NAME', 'ALLOWED_ORIGINS',
+            'RAILWAY_PUBLIC_DOMAIN', 'VOICE_MAX_PER_HOUR', 'CONTACT_MAX_PER_HOUR')
 ORIGIN = 'https://odyrasystemautomation.it'
 
 
@@ -98,13 +99,13 @@ class Base(unittest.TestCase):
         self.env.start()
         for k in ENV_KEYS:
             os.environ.pop(k, None)
-        S.LIMIT_CONTACT.reset(); S.LIMIT_VOICE.reset()
+        S.reset_limits()
 
     def tearDown(self):
         self.env.stop()
 
     def req(self, method, path, body=None, headers=None, ip='203.0.113.7', raw=None):
-        h = {'Content-Type': 'application/json', 'Origin': ORIGIN, 'X-Forwarded-For': ip}
+        h = {'Content-Type': 'application/json', 'Origin': ORIGIN, 'X-Real-IP': ip}
         h.update(headers or {})
         h = {k: v for k, v in h.items() if v is not None}
         c = http.client.HTTPConnection('127.0.0.1', self.port, timeout=15)
@@ -156,8 +157,11 @@ class TestContactRequest(Base):
         # senza Origin vale il Referer
         st, _ = self.req('POST', '/api/contatto', lead(), headers={'Origin': None, 'Referer': ORIGIN + '/contatti'})
         self.assertEqual(st, 503)
-        # sottodominio Railway ammesso dal default, ma non un dominio che finisce allo stesso modo
+        # *.up.railway.app non è ammesso di default (dominio condiviso): solo il dominio del servizio
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': 'https://odyra-production.up.railway.app'})[0], 403)
+        os.environ['RAILWAY_PUBLIC_DOMAIN'] = 'odyra-production.up.railway.app'
         self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': 'https://odyra-production.up.railway.app'})[0], 503)
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': 'https://evil.up.railway.app'})[0], 403)
         self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': 'https://evilup.railway.app'})[0], 403)
         self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': 'http://odyrasystemautomation.it'})[0], 403)
 
@@ -229,7 +233,7 @@ class TestValidation(unittest.TestCase):
         self.assertIn('--- Provenienza ---', text)
         self.assertIn('gclid', body)
         _, _, vbody = S.visitor_email(self.ok())
-        self.assertIn('&lt;b&gt;subito', vbody)
+        self.assertNotIn('subito', vbody)  # la conferma non ripete il messaggio
         self.assertIn('odyra-mark.png', vbody)
         self.assertNotIn('resend', (body + vbody).lower())
 
@@ -340,13 +344,21 @@ class TestVoice(Base):
         c = json.loads(b64d(p))
         self.assertEqual(c['iss'], 'APIkey')
         self.assertRegex(c['sub'], r'^visitor-[0-9a-f]{8}$')
-        self.assertEqual(c['exp'] - c['iat'], 900)
+        self.assertEqual(c['exp'] - c['iat'], 600)
         self.assertLessEqual(abs(c['iat'] - time.time()), 5)
         self.assertEqual(c['name'], 'Visitatore')
         self.assertRegex(c['video']['room'], r'^odyra-web-[0-9a-f-]{36}$')
         self.assertEqual(c['video']['room'], b['room'])
         self.assertEqual({k: v for k, v in c['video'].items() if k != 'room'},
-                         {'roomJoin': True, 'canPublish': True, 'canSubscribe': True, 'canPublishData': True})
+                         {'roomJoin': True, 'canPublish': True, 'canPublishSources': ['microphone'], 'canSubscribe': True,
+                          'canPublishData': False, 'canUpdateOwnMetadata': False})
+        # nessun permesso di amministrazione, creazione, elenco, registrazione, SIP; niente metadati del partecipante
+        for k in ('roomAdmin', 'roomCreate', 'roomList', 'roomRecord', 'ingressAdmin', 'hidden', 'destinationRoom'):
+            self.assertNotIn(k, c['video'])
+        for k in ('sip', 'metadata', 'attributes'):
+            self.assertNotIn(k, c)
+        self.assertEqual(c['roomConfig']['maxParticipants'], 3)
+        self.assertLessEqual(c['roomConfig']['emptyTimeout'], 60)
         self.assertEqual(c['roomConfig']['agents'][0]['agentName'], 'odyra_web')
         self.assertEqual(json.loads(c['roomConfig']['agents'][0]['metadata']), {'lang': 'es'})
 
@@ -364,6 +376,238 @@ class TestVoice(Base):
         for _ in range(5):
             self.assertEqual(self.req('POST', '/api/voce/token', {})[0], 200)
         self.assertEqual(self.req('POST', '/api/voce/token', {})[0], 429)
+
+
+
+class TestSecurity(Base):
+    """Scenari d'attacco: IP falsificati, limiti, corpi anomali, metodi, errori, intestazioni."""
+
+    def raw(self, data, timeout=5):
+        """Manda byte grezzi e restituisce la risposta grezza (o b'' se il server chiude)."""
+        s = socket.create_connection(('127.0.0.1', self.port), timeout=timeout)
+        try:
+            s.sendall(data)
+            out = b''
+            while True:
+                chunk = s.recv(65536)
+                if not chunk:
+                    break
+                out += chunk
+            return out
+        finally:
+            s.close()
+
+    def test_rate_limit_ignores_x_forwarded_for(self):
+        # il client cambia X-Forwarded-For a ogni richiesta, ma X-Real-IP (scritto da nginx) resta lo stesso
+        for i in range(5):
+            st, _ = self.req('POST', '/api/contatto', lead(), headers={'X-Forwarded-For': f'10.0.0.{i}'})
+            self.assertEqual(st, 503)
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'X-Forwarded-For': '10.9.9.9'})[0], 429)
+
+    def test_ip_key(self):
+        self.assertEqual(S.ip_key('203.0.113.7', '127.0.0.1'), '203.0.113.7')
+        # IPv6: stessa /64 = stessa chiave
+        self.assertEqual(S.ip_key('2001:db8:1:2::1', '127.0.0.1'), S.ip_key('2001:db8:1:2:ffff::9', '127.0.0.1'))
+        self.assertNotEqual(S.ip_key('2001:db8:1:2::1', '127.0.0.1'), S.ip_key('2001:db8:1:3::1', '127.0.0.1'))
+        self.assertEqual(S.ip_key('::ffff:198.51.100.4', '127.0.0.1'), '198.51.100.4')
+        # valori non validi o enormi: indirizzo della connessione (chiavi sempre corte e ben formate)
+        self.assertEqual(S.ip_key('x' * 5000, '127.0.0.1'), '127.0.0.1')
+        self.assertEqual(S.ip_key('1.2.3.4, 5.6.7.8', '127.0.0.1'), '127.0.0.1')
+        self.assertEqual(S.ip_key(None, '127.0.0.1'), '127.0.0.1')
+
+    def test_ipv6_rotation_limited(self):
+        for i in range(5):
+            self.assertEqual(self.req('POST', '/api/contatto', lead(), ip=f'2001:db8:aa:bb::{i + 1}')[0], 503)
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), ip='2001:db8:aa:bb::99')[0], 429)
+
+    def test_rate_limiter_memory_bounded(self):
+        rl = S.RateLimiter(5, 600, max_keys=100)
+        for i in range(10000):
+            rl.allow(f'k{i}', now=1.0)
+        self.assertLessEqual(len(rl.hits), 100)
+        # le chiavi scadute si liberano da sole
+        rl.allow('nuova', now=1000.0)
+        self.assertEqual(list(rl.hits), ['nuova'])
+
+    def test_rate_limiter_is_fast_with_many_keys(self):
+        rl = S.RateLimiter(5, 600, max_keys=20000)
+        t = time.perf_counter()
+        for i in range(60000):
+            rl.allow(f'k{i}', now=1.0 + i / 1e6)
+        self.assertLess(time.perf_counter() - t, 5)
+        self.assertLessEqual(len(rl.hits), 20000)
+
+    def test_global_cap_voice(self):
+        os.environ.update(LIVEKIT_URL='wss://demo.example.cloud', LIVEKIT_API_KEY='k', LIVEKIT_API_SECRET='s',
+                          VOICE_MAX_PER_HOUR='3')
+        for i in range(3):
+            self.assertEqual(self.req('POST', '/api/voce/token', {}, ip=f'198.51.100.{i}')[0], 200)
+        self.assertEqual(self.req('POST', '/api/voce/token', {}, ip='198.51.100.50')[0], 429)
+
+    def test_voice_daily_cap_per_ip(self):
+        os.environ.update(LIVEKIT_URL='wss://x.example', LIVEKIT_API_KEY='k', LIVEKIT_API_SECRET='s')
+        S.LIMIT_VOICE.limit = 1000
+        try:
+            codes = [self.req('POST', '/api/voce/token', {})[0] for _ in range(21)]
+        finally:
+            S.LIMIT_VOICE.limit = 5
+        self.assertEqual(codes[:20], [200] * 20)
+        self.assertEqual(codes[20], 429)
+
+    def test_voice_rooms_unique_and_metadata_fixed(self):
+        os.environ.update(LIVEKIT_URL='wss://x.example', LIVEKIT_API_KEY='k', LIVEKIT_API_SECRET='s')
+        a = self.req('POST', '/api/voce/token', {'lang': 'it', 'metadata': '{"admin":true}', 'room': 'altra'})[1]
+        b = self.req('POST', '/api/voce/token', {'lang': 'it"}'})[1]
+        self.assertNotEqual(a['room'], b['room'])
+        for t in (a, b):
+            c = json.loads(b64d(t['token'].split('.')[1]))
+            self.assertEqual(json.loads(c['roomConfig']['agents'][0]['metadata']), {'lang': 'it'})
+            self.assertTrue(c['video']['room'].startswith('odyra-web-'))
+
+    def test_contact_global_cap(self):
+        os.environ['CONTACT_MAX_PER_HOUR'] = '2'
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), ip='192.0.2.1')[0], 503)
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), ip='192.0.2.2')[0], 503)
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), ip='192.0.2.3')[0], 429)
+
+    def test_confirmation_limited_per_recipient(self):
+        os.environ['RESEND_API_KEY'] = 'k'
+        with mock.patch.object(S, 'send_api') as sa:
+            for i in range(4):
+                self.assertEqual(self.req('POST', '/api/contatto', lead(email='Vittima@example.com'), ip=f'192.0.2.{i}')[0], 200)
+        to = [c.args[0] for c in sa.call_args_list]
+        self.assertEqual(to.count('team@odyrasystemautomation.it'), 4)
+        self.assertEqual(to.count('Vittima@example.com'), 2)
+
+    def test_confirmation_does_not_relay_content(self):
+        v = S.validate_lead(lead(name='Visita http://spam.example ora', message='Compra qui: http://spam.example'))
+        subject, text, body = S.visitor_email(v)
+        self.assertNotIn('spam.example', text + body + subject)
+        self.assertTrue(text.startswith('Ciao Visita,'))
+        v = S.validate_lead(lead(name='http://spam.example'))
+        self.assertTrue(S.visitor_email(v)[1].startswith('Ciao,'))
+        self.assertEqual(S.greeting_name("D'Angelo Rossi"), "D'Angelo")
+        self.assertEqual(S.greeting_name('José'), 'José')
+        self.assertEqual(S.greeting_name('<b>x</b>'), '')
+
+    def test_header_injection_unicode(self):
+        for evil in ('Mario\x85Bcc: x@y.z', 'Mario\rBcc: x@y.z', 'Mario\tRossi'):
+            with self.assertRaises(S.Invalid, msg=repr(evil)):
+                S.validate_lead(lead(name=evil))
+        # separatori di riga Unicode, invisibili e controlli bidi tolti: nessuna interruzione di riga possibile
+        self.assertEqual(S.validate_lead(lead(name='Mario\u2028Bcc: x@y.z'))['name'], 'MarioBcc: x@y.z')
+        v = S.validate_lead(lead(name='Ma\u202erio\u200b', company='Ro\x00ssi\x9b'))
+        self.assertEqual((v['name'], v['company']), ('Mario', 'Rossi'))
+        for evil in ('a@b.it\nBcc: x@y.z', 'a@b.it, c@d.it', '"x"@b.it', 'Nome <a@b.it>', '.a@b.it', 'a..b@c.it',
+                     'a' * 65 + '@b.it'):
+            with self.assertRaises(S.Invalid, msg=repr(evil)):
+                S.validate_lead(lead(email=evil))
+
+    def test_smtp_headers_not_injectable(self):
+        v = S.validate_lead(lead(name='Mario Rossi', company='ACME'))
+        subject, text, body = S.team_email(v)
+        self.assertNotIn('\n', subject)
+        self.assertNotIn('\r', subject)
+
+    def test_html_injection_everywhere(self):
+        v = S.validate_lead(lead(company='"><img src=x onerror=alert(1)>', need='<a href="http://x">y</a>',
+                                 attribution={'utm_source': '<script>alert(1)</script>', 'referrer': '"><svg/onload=1>'}))
+        _, _, body = S.team_email(v)
+        for bad in ('<img src=x', '<a href="http://x"', '<script>alert', '<svg/onload'):
+            self.assertNotIn(bad, body)
+
+    def test_deep_json_is_400_not_crash(self):
+        st, b = self.req('POST', '/api/contatto', raw=b'[' * 8000 + b']' * 8000)
+        self.assertEqual(st, 400)
+        body = json.dumps(lead()).encode()
+        with mock.patch.object(S.json, 'loads', side_effect=RecursionError):
+            r = self.raw(b'POST /api/contatto HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nOrigin: ' + ORIGIN.encode() +
+                         b'\r\nConnection: close\r\nContent-Length: ' + str(len(body)).encode() + b'\r\n\r\n' + body)
+        self.assertIn(b' 400 ', r.split(b'\r\n')[0])
+        self.assertTrue(r.endswith(b'{"error": "json"}'), r[-60:])
+        self.assertEqual(self.req('GET', '/api/salute')[0], 200)  # server ancora vivo
+
+    def test_content_length_missing_or_bad(self):
+        r = self.raw(b'POST /api/contatto HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nOrigin: ' +
+                     ORIGIN.encode() + b'\r\nConnection: close\r\n\r\n{}')
+        self.assertIn(b' 411 ', r.split(b'\r\n')[0])
+        r = self.raw(b'POST /api/contatto HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nContent-Length: abc\r\n'
+                     b'Connection: close\r\n\r\n{}')
+        self.assertIn(b' 411 ', r.split(b'\r\n')[0])
+        r = self.raw(b'POST /api/contatto HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nContent-Length: 99999999999\r\n'
+                     b'Connection: close\r\n\r\n{}')
+        self.assertIn(b' 413 ', r.split(b'\r\n')[0])
+        r = self.raw(b'POST /api/contatto HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n'
+                     b'Connection: close\r\n\r\n2\r\n{}\r\n0\r\n\r\n')
+        self.assertIn(b' 411 ', r.split(b'\r\n')[0])
+
+    def test_slow_client_times_out(self):
+        # dichiara 100 byte e ne manda 2: il server non resta appeso per sempre
+        with mock.patch.object(S.Handler, 'timeout', 1):
+            t = time.monotonic()
+            r = self.raw(b'POST /api/contatto HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nContent-Length: 100\r\n'
+                         b'Origin: ' + ORIGIN.encode() + b'\r\n\r\n{}', timeout=10)
+            self.assertLess(time.monotonic() - t, 5)
+        self.assertTrue(r == b'' or b' 408 ' in r.split(b'\r\n')[0], r[:80])
+        # e una connessione che non manda nemmeno la riga di richiesta viene chiusa
+        with mock.patch.object(S.Handler, 'timeout', 1):
+            s = socket.create_connection(('127.0.0.1', self.port), timeout=10)
+            t = time.monotonic()
+            self.assertEqual(s.recv(10), b'')
+            self.assertLess(time.monotonic() - t, 5)
+            s.close()
+
+    def test_methods(self):
+        for m in ('PUT', 'DELETE', 'PATCH', 'OPTIONS', 'TRACE'):
+            st, b = self.req(m, '/api/contatto', {})
+            self.assertEqual((st, b), (405, {'error': 'metodo'}), m)
+        st, b = self.req('GET', '/api/contatto')
+        self.assertEqual(st, 405)
+        r = self.raw(b'FOO /api/contatto HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n')
+        self.assertIn(b'application/json', r)
+        self.assertNotIn(b'<html', r.lower())
+
+    def test_path_variants_not_routed(self):
+        os.environ.update(LIVEKIT_URL='wss://x.example', LIVEKIT_API_KEY='k', LIVEKIT_API_SECRET='s')
+        for path in ('/api/voce/token/', '/api/voce/../voce/token', '/API/voce/token', '/api/voce/token%00'):
+            self.assertEqual(self.req('POST', path, {})[0], 404, path)
+
+    def test_no_stack_in_responses(self):
+        with mock.patch.object(S, 'validate_lead', side_effect=KeyError('segreto')):
+            st, b = self.req('POST', '/api/contatto', lead())
+        self.assertEqual((st, b), (500, {'error': 'errore_interno'}))
+        with mock.patch.object(S, 'voice_token', side_effect=ValueError('LIVEKIT_API_SECRET=xyz')):
+            os.environ.update(LIVEKIT_URL='wss://x.example', LIVEKIT_API_KEY='k', LIVEKIT_API_SECRET='s')
+            st, b = self.req('POST', '/api/voce/token', {})
+        self.assertEqual((st, b), (500, {'error': 'errore_interno'}))
+
+    def test_api_headers(self):
+        c = http.client.HTTPConnection('127.0.0.1', self.port, timeout=5)
+        c.request('GET', '/api/salute')
+        r = c.getresponse(); r.read(); c.close()
+        self.assertEqual(r.getheader('Cache-Control'), 'no-store')
+        self.assertEqual(r.getheader('X-Content-Type-Options'), 'nosniff')
+        self.assertTrue(r.getheader('Content-Type').startswith('application/json'))
+        self.assertEqual(r.getheader('Server'), 'odyra-api')  # nessuna versione di Python
+
+    def test_origin_same_host_and_referer(self):
+        # stessa origine dell'Host (sito servito da un dominio non in elenco)
+        st, _ = self.req('POST', '/api/contatto', lead(), headers={'Origin': 'https://anteprima.example', 'Host': 'anteprima.example'})
+        self.assertEqual(st, 503)
+        # stesso host ma http (non localhost): rifiutato
+        st, _ = self.req('POST', '/api/contatto', lead(), headers={'Origin': 'http://anteprima.example', 'Host': 'anteprima.example'})
+        self.assertEqual(st, 403)
+        # Referer di un altro sito, Origin "null" (iframe sandbox, file://)
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': 'null', 'Referer': 'https://evil.example/x'})[0], 403)
+        self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': 'null'})[0], 403)
+        # host che contiene quello ammesso
+        for o in ('https://odyrasystemautomation.it.evil.example', 'https://evilodyrasystemautomation.it',
+                  'https://odyrasystemautomation.it@evil.example'):
+            self.assertEqual(self.req('POST', '/api/contatto', lead(), headers={'Origin': o})[0], 403, o)
+
+    def test_webhook_scheme(self):
+        os.environ['LEAD_WEBHOOK_URL'] = 'file:///etc/passwd'
+        self.assertEqual(self.req('POST', '/api/contatto', lead())[0], 502)
 
 
 if __name__ == '__main__':

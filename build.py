@@ -23,7 +23,7 @@ PAGINE = os.path.join(ROOT, 'pagine')
 
 SITE = 'https://odyrasystemautomation.it'
 EMAIL = 'team@odyrasystemautomation.it'
-UPDATED = '2026-10-22'  # data dell'ultimo aggiornamento dei contenuti (sitemap, JSON-LD)
+UPDATED = '2026-11-11'  # data dell'ultimo aggiornamento dei contenuti (sitemap, JSON-LD)
 LINK_HAKO = 'https://hakocondomini.com'
 COMPANY = {
     'legal': 'Verypos S.r.l.',
@@ -65,15 +65,15 @@ def e(s):
 GENERATED = {
     'it': {
         'domande': dict(slug='domande', label='Domande frequenti', title='Domande frequenti su Odyra System e gli agenti AI',
-                        description='Risposte su Odyra System: agenti AI di settore, canali, software supportati, white-label, GDPR, AI Act e WhatsApp Business.', type='FAQPage'),
+                        description='Domande frequenti sugli agenti AI di Odyra System: come funzionano, canali, gestionali supportati, white-label, GDPR, AI Act e WhatsApp Business.', type='FAQPage'),
         'privacy': dict(slug='privacy', label='Privacy', title='Informativa privacy | Odyra System',
-                        description='Informativa privacy di Odyra System (Verypos S.r.l.): dati del modulo contatti, demo vocale, cookie, finalità, conservazione e diritti.'),
+                        description='Informativa privacy di Odyra System (Verypos S.r.l.): quali dati raccogliamo dal modulo contatti e dalla demo vocale, cookie, finalità, conservazione e diritti.'),
     },
     'es': {
         'domande': dict(slug='preguntas', label='Preguntas frecuentes', title='Preguntas frecuentes sobre Odyra System y los agentes IA',
-                        description='Respuestas sobre Odyra System: agentes IA sectoriales, canales, software compatible, white-label, RGPD, AI Act y WhatsApp Business.', type='FAQPage'),
+                        description='Preguntas frecuentes sobre los agentes IA de Odyra System: cómo funcionan, canales, software compatible, white-label, RGPD, AI Act y WhatsApp Business.', type='FAQPage'),
         'privacy': dict(slug='privacidad', label='Privacidad', title='Política de privacidad | Odyra System',
-                        description='Política de privacidad de Odyra System (Verypos S.r.l.): datos del formulario, demo de voz, cookies, finalidades, conservación y derechos.'),
+                        description='Política de privacidad de Odyra System (Verypos S.r.l.): qué datos recogemos del formulario y de la demo de voz, cookies, finalidades, conservación y derechos.'),
     },
 }
 NOINDEX_GENERATED = ()
@@ -215,7 +215,7 @@ def faq_home():
            'Por teléfono, con voz en tiempo real, y por WhatsApp Business. Es el mismo agente en los dos canales, las 24 horas.')),
         (t('Dove è già in uso?', '¿Dónde se usa ya?'),
          t('Nel settore beauty: GoAgent è il servizio AI di BOSS per i saloni che usano il gestionale GoWeb, una rete di oltre 1.500 saloni in Italia. È in produzione da giugno 2026.',
-           'En el sector beauty: GoAgent es el servicio IA de BOSS para los salones que usan el software GoWeb, una red de más de 1.500 salones en Italia. Está en producción desde junio de 2026.')),
+           'En el sector de la belleza: GoAgent es el servicio IA de BOSS para los salones que usan el software GoWeb, una red de más de 1.500 salones en Italia. Está en producción desde junio de 2026.')),
     ]
 
 
@@ -225,7 +225,7 @@ def faq_partner():
          t('Dare accesso alle API essenziali: ricerca del cliente, disponibilità, creazione e cancellazione degli appuntamenti. Il connettore lo scrive Odyra, senza toccare il cuore del software.',
            'Dar acceso a las API esenciales: búsqueda de cliente, disponibilidad, creación y cancelación de citas. El conector lo escribe Odyra, sin tocar el núcleo del software.')),
         (t('Come guadagna il partner?', '¿Cómo gana el socio?'),
-         t('Con un canone ricorrente da ogni cliente che attiva l’agente, con revenue condivisa con Odyra. La formula si definisce insieme.',
+         t('Con un canone ricorrente da ogni cliente che attiva l’agente, con ricavi condivisi con Odyra. La formula si definisce insieme.',
            'Con una cuota recurrente de cada cliente que activa el agente, con ingresos compartidos con Odyra. La fórmula se define juntos.')),
         (t('Con quale marchio arriva ai clienti?', '¿Con qué marca llega a los clientes?'),
          t('Con quello del partner: interfacce, messaggi e dashboard portano il suo nome e il suo logo.', 'Con la del socio: interfaces, mensajes y paneles llevan su nombre y su logo.')),
@@ -248,8 +248,8 @@ def faq_all():
          t('Passa la conversazione a una persona, anche durante una chiamata. Su WhatsApp il titolare può prendere in carico la conversazione e restituirla all’AI quando vuole.',
            'Pasa la conversación a una persona, incluso durante una llamada. En WhatsApp el titular puede tomar la conversación y devolvérsela a la IA cuando quiera.')),
         (t('Come vengono trattati i dati?', '¿Cómo se tratan los datos?'),
-         t('Ogni azienda ha un agente con dati e configurazione isolati. Il trattamento è conforme al GDPR e progettato nel perimetro dell’AI Act.',
-           'Cada empresa tiene un agente con datos y configuración aislados. El tratamiento cumple el RGPD y está diseñado dentro del perímetro del AI Act.')),
+         t('Ogni azienda ha un agente con dati e configurazione isolati. Il trattamento è conforme al GDPR e progettato nel rispetto dell’AI Act.',
+           'Cada empresa tiene un agente con datos y configuración aislados. El tratamiento cumple el RGPD y está diseñado respetando el AI Act.')),
         (t('Di chi è il numero WhatsApp Business?', '¿De quién es el número de WhatsApp Business?'),
          t('Del cliente. Odyra attiva il numero sul canale ufficiale WhatsApp Business e gestisce template e conversazioni, ma la titolarità dell’account resta al cliente.',
            'Del cliente. Odyra activa el número en el canal oficial de WhatsApp Business y gestiona plantillas y conversaciones, pero la titularidad de la cuenta sigue siendo del cliente.')),
@@ -495,6 +495,11 @@ def jsonld(lang, key, body):
         if parent and has(parent, lang):
             trail.append((TEXT[lang][parent][1], SITE + path(parent, lang)))
         trail.append((label, page_url))
+        # nomi uguali alle briciole visibili nella pagina, se ci sono e hanno gli stessi livelli
+        m = re.search(r'<p class="crumbs"[^>]*>(.*?)</p>', body, re.S)
+        shown = [strip(x).strip() for x in m.group(1).split('<span aria-hidden="true">/</span>')] if m else []
+        if len(shown) == len(trail) and all(shown):
+            trail = [(n, it) for n, (_, it) in zip(shown, trail)]
         page['breadcrumb'] = {'@type': 'BreadcrumbList', 'itemListElement': [
             {'@type': 'ListItem', 'position': i + 1, 'name': n, 'item': it} for i, (n, it) in enumerate(trail)]}
     nodes = [org_node(),
@@ -508,7 +513,7 @@ def jsonld(lang, key, body):
         else:
             nodes.append({'@type': 'FAQPage', '@id': page_url + '#faq', 'url': page_url, 'mainEntity': main})
     if ptype == 'Service':
-        nodes.append({'@type': 'Service', '@id': page_url + '#service', 'name': label, 'description': desc, 'url': page_url,
+        nodes.append({'@type': 'Service', '@id': page_url + '#service', 'name': re.sub(r'\s*\|[^|]*$', '', title), 'description': desc, 'url': page_url,
                       'provider': {'@id': f'{SITE}/#org'}, 'areaServed': ['IT', 'ES'], 'serviceType': label})
     return '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': nodes}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>'
 
@@ -794,7 +799,7 @@ def main():
     global L, ASSET_V
     if os.path.exists(DIST):
         shutil.rmtree(DIST)
-    shutil.copytree(STATIC, DIST)
+    shutil.copytree(STATIC, DIST, ignore=shutil.ignore_patterns('.*'))  # niente file nascosti (.gitkeep) nel sito
     ASSET_V = asset_version('odyra.css', 'odyra.js', 'odyra-app.css', 'odyra-app.js', 'assets/vendor/rtc-client.min.js')
     load_registry()
     mds = {}

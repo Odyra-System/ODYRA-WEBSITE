@@ -25,7 +25,15 @@
 .oc-b[hidden], .ov-b[hidden] { display: none; }
 .oc-b:hover, .ov-b:hover { filter: brightness(1.08); }
 .oc-banner :focus-visible, .ov-panel :focus-visible, .ov-fab:focus-visible { outline: 3px solid var(--cyan-hi, #A8E6F9); outline-offset: 2px; }
-@media (max-width: 30rem) { .oc-actions .oc-b { flex: 1 1 auto; } }
+@media (max-width: 30rem) {
+  /* su telefono il banner resta compatto: testo piccolo, tre pulsanti sulla stessa riga */
+  .oc-banner { padding: 0 .5rem max(.5rem, env(safe-area-inset-bottom)); }
+  .oc-in { padding: .85rem .9rem; border-radius: 12px; max-height: 70vh; }
+  .oc-in h2 { font-size: .95rem; margin-bottom: .25rem; }
+  .oc-in p { font-size: .8rem; line-height: 1.45; }
+  .oc-actions { flex-wrap: nowrap; gap: .4rem; margin-top: .7rem; }
+  .oc-actions .oc-b { flex: 1 1 0; min-width: 0; font-size: .78rem; padding: .45rem .5rem; min-height: 2.5rem; white-space: nowrap; }
+}
 
 /* collegamento "Preferenze cookie" aggiunto da odyra-app.js solo se la pagina non lo ha */
 .foot-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }

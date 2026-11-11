@@ -15,7 +15,7 @@ const nav = $('#nav')
 const menu = $('#menu')
 if (nav && menu) {
   const label = $('.top-menu-label', menu)
-  const small = matchMedia('(max-width: 1120px)')
+  const small = matchMedia('(max-width: 1240px)')
   const focusables = () => [menu, ...$$('a, button', nav)]
   const setOpen = (open, focusBack = false) => {
     nav.classList.toggle('open', open)
@@ -254,31 +254,11 @@ if (vp) {
   update()
 }
 
-// Modulo contatti: finché FORM_ENDPOINT è vuoto apre la posta con la richiesta già scritta.
-const FORM_ENDPOINT = ''
-const form = $('#form-contatti')
-if (form) {
-  const msg = $('#form-msg')
-  const q = new URLSearchParams(location.search).get('interesse')
-  const pre = q && form.querySelector(`input[name=interesse][value="${CSS.escape(q)}"]`)
-  if (pre) pre.checked = true
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    msg.classList.remove('err')
-    if (!form.checkValidity()) { form.reportValidity(); return }
-    const data = Object.fromEntries(new FormData(form))
-    if (!FORM_ENDPOINT) {
-      const body = Object.entries(data).filter(([k]) => k !== 'privacy').map(([k, v]) => `${k}: ${v}`).join('\n')
-      location.href = `mailto:team@odyrasystemautomation.it?subject=${encodeURIComponent(TXT.subject + data.interesse)}&body=${encodeURIComponent(body)}`
-      msg.textContent = form.dataset.mail
-      return
-    }
-    try {
-      const r = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
-      if (!r.ok) throw new Error(String(r.status))
-      form.reset(); msg.textContent = form.dataset.ok
-    } catch { msg.classList.add('err'); msg.textContent = form.dataset.err }
-  })
+// Il modulo contatti è gestito da odyra-app.js (invio al server, con ripiego sulla posta).
+// Qui solo la preselezione da indirizzo: /contatti?interesse=academy sceglie la voce "academy".
+for (const sel of document.querySelectorAll('select[data-param]')) {
+  const v = new URLSearchParams(location.search).get(sel.dataset.param)
+  if (v && [...sel.options].some(o => o.value === v)) sel.value = v
 }
 
 // Da una sede a mille: il cursore accende le sedi, le voci "resta uguale" non cambiano.
