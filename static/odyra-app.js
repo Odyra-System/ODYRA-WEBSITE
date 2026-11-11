@@ -312,41 +312,154 @@
         }, function () { done(); mail() })
     }, true)
 
-    // ───────── demo vocale ─────────
-    var NAV = {}
-    try { NAV = JSON.parse((me && me.getAttribute('data-voice-nav')) || '{}') } catch (x) { NAV = {} }
-    var fab = el('button', { type: 'button', 'class': 'ov-fab', 'data-voice-demo': '', 'aria-haspopup': 'dialog', 'aria-label': T.vFabAria })
+    // ───────── "Prova l'agente": pannello con due schede, Parla (voce) e Scrivi (chat) ─────────
+    // Pagine che l'agente (voce o chat) può aprire: stessa whitelist di agente/pagine.json.
+    var PAGES = {
+      home: { it: '/', es: '/es/' }, prezzi: { it: '/prezzi' }, partner: { it: '/partner', es: '/es/socios' },
+      prenota: { it: '/prenota' }, casi: { it: '/lavori', es: '/es/casos' }, boss: { it: '/case/boss-italia' },
+      tecnologie: { it: '/tecnologie', es: '/es/plataforma' }, contatti: { it: '/contatti', es: '/es/contacto' }
+    }
+    var PATH_KEY = {}
+    Object.keys(PAGES).forEach(function (k) { PATH_KEY[PAGES[k].it] = k; if (PAGES[k].es) PATH_KEY[PAGES[k].es] = k })
+    PATH_KEY['/#contatti'] = 'contatti'; PATH_KEY['/es'] = 'home'  // compatibilità con l'agente vocale precedente
+    function pagePath(k) { var p = PAGES[k]; return (LANG === 'es' && p.es) || p.it }
+    // Percorso o chiave → percorso ammesso nella lingua della pagina, oppure null.
+    function allowedPath(p) {
+      if (typeof p !== 'string') return null
+      if (Object.prototype.hasOwnProperty.call(PAGES, p)) return pagePath(p)
+      var q = p.length > 1 && p !== '/es/' ? p.replace(/\/+$/, '') : p
+      if (Object.prototype.hasOwnProperty.call(PATH_KEY, q)) return pagePath(PATH_KEY[q])
+      return null
+    }
+
+    var fab = el('button', { type: 'button', 'class': 'ov-fab', 'aria-haspopup': 'dialog', 'aria-label': T.vFabAria })
     fab.innerHTML = ICON.mic
     fab.appendChild(el('span', { 'class': 'ov-fab-t', 'aria-hidden': 'true', text: T.vFab }))
     body.appendChild(fab)
 
-    var panel, stEl, orb, bMute, bEnd, bRetry, bAudio, navP, video
-    var room = null, LK = null, state = 'idle', muted = false, lastOpener = null, session = 0
+    // Stato dei servizi (voce e chat), chiesto una volta e tenuto 5 minuti nella sessione.
+    var HEALTH = null
+    function health() {
+      if (HEALTH) return Promise.resolve(HEALTH)
+      var c = getJSON('sessionStorage', 'odyra-health')
+      if (c && typeof c.t === 'number' && Date.now() - c.t < 300000) { HEALTH = c; applyHealth(); return Promise.resolve(c) }
+      var timeout = new Promise(function (res) { setTimeout(function () { res(null) }, 2000) })
+      var req = fetch('/api/salute', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null }, function () { return null })
+      return Promise.race([req, timeout]).then(function (h) {
+        if (!h || typeof h !== 'object') return { voce: true, chat: true }  // ignoto: si prova, gli errori si gestiscono dopo
+        HEALTH = { t: Date.now(), voce: h.voce !== false, chat: h.chat !== false }
+        setJSON('sessionStorage', 'odyra-health', HEALTH)
+        applyHealth()
+        return HEALTH
+      })
+    }
+    function applyHealth() {
+      if (!HEALTH) return
+      if (!HEALTH.voce && HEALTH.chat) { fab.innerHTML = ICON.chat; fab.appendChild(el('span', { 'class': 'ov-fab-t', 'aria-hidden': 'true', text: T.vFab })) }
+      if (panel) refreshAvailability()
+    }
+    var idle = w.requestIdleCallback || function (fn) { return setTimeout(fn, 1500) }
+    setTimeout(function () { idle(function () { health() }) }, 1200)
+
+    var panel, stEl, orb, bMute, bEnd, bRetry, bStart, bAudio, navP, video, offP, tabV, tabC, paneV, paneC
+    var room = null, LK = null, state = 'idle', muted = false, lastOpener = null, session = 0, tab = 'voice'
     function buildPanel() {
-      var title = el('h2', { id: 'ov-title', text: T.vTitle })
+      var title = el('h2', { id: 'ov-title', text: T.aTitle })
       var bClose = el('button', { type: 'button', 'class': 'ov-x', 'aria-label': T.vClose }); bClose.innerHTML = ICON.close
+      var avatar = el('span', { 'class': 'ov-avatar', 'aria-hidden': 'true' }, [el('span')])
+      tabV = el('button', { type: 'button', role: 'tab', id: 'ov-tab-voice', 'aria-controls': 'ov-pane-voice', 'class': 'ov-tab' })
+      tabV.innerHTML = ICON.mic; tabV.appendChild(el('span', { text: T.aTabVoice }))
+      tabC = el('button', { type: 'button', role: 'tab', id: 'ov-tab-chat', 'aria-controls': 'ov-pane-chat', 'class': 'ov-tab' })
+      tabC.innerHTML = ICON.chat; tabC.appendChild(el('span', { text: T.aTabChat }))
+      var tabs = el('div', { role: 'tablist', 'class': 'ov-tabs', 'aria-label': T.aTitle }, [tabV, tabC])
+
+      // scheda Parla: la demo vocale di sempre
       stEl = el('p', { 'class': 'ov-status', role: 'status', 'aria-live': 'polite', text: T.vIdle })
       orb = el('div', { 'class': 'ov-orb', 'aria-hidden': 'true' }, [el('span'), el('span'), el('span')])
       video = el('video', { 'class': 'ov-video', playsinline: '', muted: '', autoplay: '', hidden: true })
       video.muted = true
       bAudio = el('button', { type: 'button', 'class': 'ov-b ov-b-line', hidden: true, text: T.vAudio })
       navP = el('p', { 'class': 'ov-nav', hidden: true })
-      bMute = el('button', { type: 'button', 'class': 'ov-b ov-b-line ov-mute', 'aria-pressed': 'false', disabled: 'disabled' })
-      bEnd = el('button', { type: 'button', 'class': 'ov-b ov-end', text: T.vEnd })
+      offP = el('div', { 'class': 'ov-off', hidden: true }, [el('p', { text: T.vSoon }),
+        el('button', { type: 'button', 'class': 'ov-b', 'data-go-chat': '', text: T.vSoonGo })])
+      bStart = el('button', { type: 'button', 'class': 'ov-b ov-start', hidden: true })
+      bStart.innerHTML = ICON.mic; bStart.appendChild(d.createTextNode(' ' + T.vStart))
+      bMute = el('button', { type: 'button', 'class': 'ov-b ov-b-line ov-mute', 'aria-pressed': 'false', disabled: 'disabled', hidden: true })
+      bEnd = el('button', { type: 'button', 'class': 'ov-b ov-end', hidden: true, text: T.vEnd })
       bRetry = el('button', { type: 'button', 'class': 'ov-b', hidden: true, text: T.vRetry })
-      panel = el('section', { 'class': 'ov-panel', role: 'dialog', 'aria-modal': 'false', 'aria-labelledby': 'ov-title', hidden: true }, [
-        el('header', { 'class': 'ov-h' }, [title, bClose]),
+      paneV = el('div', { role: 'tabpanel', id: 'ov-pane-voice', 'aria-labelledby': 'ov-tab-voice', 'class': 'ov-pane ov-pane-voice', tabindex: '-1' }, [
         el('p', { 'class': 'ov-note' }, [T.vNote + ' ', el('a', { href: T.vPrivacyHref, text: T.vPrivacy })]),
-        el('div', { 'class': 'ov-stage' }, [orb, video]), stEl, bAudio, navP,
-        el('div', { 'class': 'ov-actions' }, [bMute, bRetry, bEnd])])
+        el('div', { 'class': 'ov-stage' }, [orb, video]), stEl, offP, bAudio, navP,
+        el('div', { 'class': 'ov-actions' }, [bStart, bMute, bRetry, bEnd])])
+      paneC = el('div', { role: 'tabpanel', id: 'ov-pane-chat', 'aria-labelledby': 'ov-tab-chat', 'class': 'ov-pane ov-pane-chat', hidden: true }, buildChat())
+
+      panel = el('section', { 'class': 'ov-panel', role: 'dialog', 'aria-modal': 'false', 'aria-labelledby': 'ov-title', hidden: true }, [
+        el('header', { 'class': 'ov-h' }, [avatar, el('div', { 'class': 'ov-ht' }, [title, el('p', { 'class': 'ov-sub', text: T.aSub })]), bClose]),
+        tabs, paneV, paneC])
       setMuteLabel()
       bClose.addEventListener('click', closePanel)
-      bEnd.addEventListener('click', function () { if (room || state === 'connecting' || state === 'loading') hangup(T.vEnded); else closePanel() })
+      bEnd.addEventListener('click', function () { hangup(T.vEnded) })
       bRetry.addEventListener('click', start)
+      bStart.addEventListener('click', start)
       bMute.addEventListener('click', toggleMute)
+      offP.querySelector('[data-go-chat]').addEventListener('click', function () { selectTab('chat', true) })
       bAudio.addEventListener('click', function () { if (room) room.startAudio().then(function () { bAudio.hidden = room.canPlaybackAudio }, function () { }) })
+      ;[tabV, tabC].forEach(function (t) {
+        t.addEventListener('click', function () { selectTab(t === tabV ? 'voice' : 'chat', true) })
+        t.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End') {
+            e.preventDefault(); var next = (e.key === 'Home') ? 'voice' : (e.key === 'End') ? 'chat' : (tab === 'voice' ? 'chat' : 'voice')
+            selectTab(next, false); (next === 'voice' ? tabV : tabC).focus()
+          }
+        })
+      })
       panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); closePanel() } })
       body.appendChild(panel)
+      setState('idle')
+      refreshAvailability()
+    }
+    function refreshAvailability() {
+      var vOff = !!(HEALTH && !HEALTH.voce), cOff = !!(HEALTH && !HEALTH.chat)
+      offP.hidden = !vOff
+      offP.querySelector('[data-go-chat]').hidden = cOff
+      panel.classList.toggle('ov-voice-off', vOff)
+      if (!room && state === 'idle') setState('idle')
+      chatOff(cOff)
+    }
+    function selectTab(t, focus, opts) {
+      opts = opts || {}
+      tab = t
+      setJSON('sessionStorage', 'odyra-agent-tab', t)
+      var v = t === 'voice'
+      tabV.setAttribute('aria-selected', String(v)); tabC.setAttribute('aria-selected', String(!v))
+      tabV.tabIndex = v ? 0 : -1; tabC.tabIndex = v ? -1 : 0
+      paneV.hidden = !v; paneC.hidden = v
+      panel.setAttribute('data-tab', t)
+      root.classList.toggle('ov-chat-open', !v)
+      if (!v) {
+        if (room || state === 'connecting' || state === 'loading' || state === 'mic') hangup(T.vEnded)
+        openChat(focus, opts)
+      } else {
+        if (opts.autostart && !(HEALTH && !HEALTH.voce) && !room && /^(idle|ended|error|denied)$/.test(state)) start()
+        else if (focus) (bStart.hidden ? paneV : bStart).focus()
+      }
+    }
+    function openPanel(t, from, opts) {
+      if (!panel) buildPanel()
+      lastOpener = from || fab
+      panel.hidden = false
+      root.classList.add('ov-open')
+      fab.setAttribute('aria-expanded', 'true')
+      selectTab(t, true, opts)
+      if (t === 'voice' && !(opts && opts.autostart)) panel.querySelector('.ov-x').focus()
+    }
+    function closePanel() {
+      if (room || state === 'connecting' || state === 'loading' || state === 'mic') hangup()
+      if (!panel) return
+      panel.hidden = true
+      root.classList.remove('ov-open', 'ov-chat-open')
+      fab.setAttribute('aria-expanded', 'false')
+      if (lastOpener && d.contains(lastOpener) && lastOpener !== fab) lastOpener.focus(); else fab.focus()
     }
     function setMuteLabel() {
       bMute.innerHTML = muted ? ICON.micOff : ICON.mic
@@ -355,33 +468,19 @@
     }
     function setState(s, msg) {
       state = s
-      panel.setAttribute('data-state', s)
-      stEl.textContent = msg || {
+      var vOff = !!(HEALTH && !HEALTH.voce)
+      paneV.setAttribute('data-state', vOff && s === 'idle' ? 'off' : s)
+      stEl.textContent = vOff && s === 'idle' ? '' : (msg || {
         idle: T.vIdle, loading: T.vLoading, mic: T.vMicAsk, connecting: T.vConnecting, joining: T.vJoining, listening: muted ? T.vMuted : T.vListening,
         speaking: T.vSpeaking, reconnecting: T.vReconnecting, ended: T.vEnded, error: T.vError, denied: T.vMicDenied
-      }[s] || ''
+      }[s] || '')
       var active = s === 'joining' || s === 'listening' || s === 'speaking' || s === 'reconnecting'
-      bMute.disabled = !active
-      bRetry.hidden = !(s === 'error' || s === 'denied' || s === 'ended')
-      bEnd.textContent = (active || s === 'connecting' || s === 'loading' || s === 'mic') ? T.vEnd : T.vClose.split(' ')[0]
+      var busy = active || s === 'connecting' || s === 'loading' || s === 'mic'
+      bMute.disabled = !active; bMute.hidden = !busy
+      bStart.hidden = !(s === 'idle') || vOff
+      bRetry.hidden = !(s === 'error' || s === 'denied' || s === 'ended') || vOff
+      bEnd.hidden = !busy
       root.classList.toggle('ov-live', active)
-    }
-    function openPanel(from) {
-      if (!panel) buildPanel()
-      lastOpener = from || fab
-      panel.hidden = false
-      root.classList.add('ov-open')
-      fab.setAttribute('aria-expanded', 'true')
-      panel.querySelector('.ov-x').focus()
-      if (!room && state !== 'connecting' && state !== 'loading' && state !== 'mic') start()
-    }
-    function closePanel() {
-      if (room || state === 'connecting' || state === 'loading' || state === 'mic') hangup()
-      if (!panel) return
-      panel.hidden = true
-      root.classList.remove('ov-open')
-      fab.setAttribute('aria-expanded', 'false')
-      if (lastOpener && d.contains(lastOpener)) lastOpener.focus(); else fab.focus()
     }
     function loadLib() {
       if (w.LivekitClient) return Promise.resolve(w.LivekitClient)
@@ -472,7 +571,7 @@
         if (topic !== 'ui') return
         try {
           var msg = JSON.parse(new TextDecoder().decode(payload))
-          if (msg && msg.action === 'navigate' && typeof msg.path === 'string') agentNavigate(msg.path)
+          if (msg && msg.action === 'navigate') agentNavigate(typeof msg.path === 'string' ? msg.path : msg.page)
         } catch (x) { /* messaggio non valido: ignorato */ }
       })
       return r.connect(data.url, data.token).then(function () {
@@ -492,14 +591,12 @@
       }, function () { })
     }
 
-    // Navigazione chiesta dall'agente: si cambia solo il contenuto di <main>, così la chiamata non cade.
-    var MAP = { '/': 'home', '/#contatti': 'contatti', '/case/boss-italia': 'case' }
+    // Navigazione chiesta dall'agente: si cambia solo il contenuto di <main>, così chiamata e chat restano aperte.
     function agentNavigate(p) {
-      if (!Object.prototype.hasOwnProperty.call(MAP, p) && !/^\/case\/[a-z0-9-]+$/.test(p)) return
-      var target = NAV[MAP[p] || 'lavori'] || ({ home: '/', contatti: '/contatti', case: '/case/boss-italia' }[MAP[p]] || '/lavori')
-      softNavigate(target, true)
+      var target = allowedPath(p)
+      if (target) softNavigate(target, true, showNavLink)
     }
-    function showNavLink(url, title, ok) {
+    function showNavLink(ok, title, url) {
       if (!navP) return
       navP.textContent = ''
       if (ok) navP.appendChild(d.createTextNode(T.vNav + title))
@@ -507,11 +604,15 @@
       navP.hidden = false
     }
     var softDone = false
-    function softNavigate(url, push) {
+    function softNavigate(url, push, done) {
       var abs
+      done = done || function () { }
       try { abs = new URL(url, location.href) } catch (x) { return }
       if (abs.origin !== location.origin) return
-      if (push && abs.pathname === location.pathname) { w.scrollTo({ top: 0, behavior: 'smooth' }); return }
+      if (push && abs.pathname === location.pathname) {
+        w.scrollTo({ top: 0, behavior: 'smooth' })
+        var h = d.querySelector('main h1'); done(true, h ? h.textContent.trim() : d.title, abs.pathname); return
+      }
       fetch(abs.pathname, { credentials: 'same-origin', redirect: 'follow', headers: { Accept: 'text/html' } }).then(function (r) {
         if (!r.ok) throw new Error(String(r.status))
         // Dopo eventuali redirect la pagina deve essere ancora del nostro sito ed essere HTML.
@@ -532,24 +633,228 @@
         softDone = true
         w.scrollTo(0, 0)
         var h1 = cur.querySelector('h1'); var name = h1 ? h1.textContent.trim() : doc.title
-        showNavLink(abs.pathname, name, true)
+        done(true, name, abs.pathname)
         announce(T.vNav + name)
         d.dispatchEvent(new CustomEvent('odyra:navigated', { detail: { path: abs.pathname } }))
         try { gtag('event', 'page_view', { page_location: location.href, page_title: d.title }) } catch (x) { }
-      }).catch(function () { showNavLink(abs.pathname, '', false) })
+      }).catch(function () { done(false, '', abs.pathname) })
     }
     w.addEventListener('popstate', function () {
       if (!softDone) return
-      if (room) softNavigate(location.pathname, false)
+      if (room || (panel && !panel.hidden)) softNavigate(location.pathname, false)
       else location.reload()
     })
 
+    // ───────── scheda Scrivi: chat con l'agente ─────────
+    var CHAT_KEY = 'odyra-chat', MAX_SEND = 20
+    var chatLog, chatForm, chatInput, chatSend, chatSugg, chatOffP, typingEl = null, chatBusy = false
+    var chat = { v: 1, msgs: [], started: false }
+    ;(function loadChat() {
+      var c = getJSON('sessionStorage', CHAT_KEY)
+      if (!c || c.v !== 1 || !Array.isArray(c.msgs)) return
+      chat.msgs = c.msgs.filter(function (m) {
+        return m && typeof m.content === 'string' && (m.role === 'user' || m.role === 'assistant' || m.role === 'note') && m.content.length < 4000
+      }).slice(-40)
+      chat.started = !!c.started
+    })()
+    function saveChat() { setJSON('sessionStorage', CHAT_KEY, { v: 1, msgs: chat.msgs.slice(-40), started: chat.started }) }
+    function buildChat() {
+      chatLog = el('div', { 'class': 'ch-log', role: 'log', 'aria-live': 'polite', 'aria-label': T.chLog, tabindex: '0' })
+      chatSugg = el('div', { 'class': 'ch-sugg', role: 'group', 'aria-label': T.chSuggLabel }, T.chSugg.map(function (q) {
+        var b = el('button', { type: 'button', 'class': 'ch-chip', text: q })
+        b.addEventListener('click', function () { send(q) })
+        return b
+      }))
+      chatInput = el('textarea', { id: 'ch-input', 'class': 'ch-input', rows: '1', maxlength: '800', placeholder: T.chPlaceholder, autocomplete: 'off', enterkeyhint: 'send' })
+      chatSend = el('button', { type: 'submit', 'class': 'ch-send', 'aria-label': T.chSend }); chatSend.innerHTML = ICON.send
+      chatForm = el('form', { 'class': 'ch-form', novalidate: '' }, [el('label', { 'for': 'ch-input', 'class': 'oa-sr', text: T.chPlaceholder }), chatInput, chatSend])
+      var reset = el('button', { type: 'button', 'class': 'ch-reset', text: T.chReset })
+      chatOffP = el('div', { 'class': 'ch-off', hidden: true }, [el('p', { text: T.chOff }), el('a', { 'class': 'ov-b', href: pagePath('prenota'), text: T.chBook })])
+      chatForm.addEventListener('submit', function (e) { e.preventDefault(); send(chatInput.value) })
+      chatInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(chatInput.value) }
+      })
+      chatInput.addEventListener('input', grow)
+      reset.addEventListener('click', function () {
+        chat.msgs = []; chat.started = false; saveChat(); chatLog.textContent = ''; renderAll(); chatInput.focus()
+      })
+      chatLog.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[data-soft]')
+        if (!a) return
+        e.preventDefault()
+        softNavigate(a.getAttribute('href'), true, function (ok) {
+          if (!ok) { location.href = a.getAttribute('href'); return }
+          if (isFull()) closePanel()
+        })
+      })
+      return [chatLog, chatOffP, chatSugg, chatForm,
+        el('p', { 'class': 'ch-note' }, [T.chNote + ' ', el('a', { href: T.vPrivacyHref, text: T.vPrivacy }), ' · ', reset])]
+    }
+    function isFull() { return w.matchMedia('(max-width: 30rem)').matches }
+    function grow() { chatInput.style.height = 'auto'; chatInput.style.height = Math.min(chatInput.scrollHeight, 128) + 'px' }
+    function chatOff(off) {
+      if (!chatForm) return
+      chatOffP.hidden = !off; chatForm.hidden = off
+      if (off) chatSugg.hidden = true
+      else chatSugg.hidden = chat.msgs.some(function (m) { return m.role === 'user' })
+    }
+    var chatRendered = false
+    function openChat(focus, opts) {
+      if (!chatRendered) { renderAll(); chatRendered = true }
+      if (opts.notice) addNote(opts.notice)
+      if (opts.ask) send(opts.ask)
+      scrollEnd(false)
+      if (focus && !(HEALTH && !HEALTH.chat)) {
+        // su telefono la tastiera coprirebbe i suggerimenti: il fuoco va al registro, non al campo
+        if (w.matchMedia('(pointer: coarse)').matches) chatLog.focus({ preventScroll: true }); else chatInput.focus()
+      }
+    }
+    function renderAll() {
+      chatLog.textContent = ''
+      if (!chat.msgs.length) { chat.msgs.push({ role: 'assistant', content: T.chWelcome }); saveChat() }
+      chat.msgs.forEach(renderMsg)
+      chatOff(!!(HEALTH && !HEALTH.chat))
+    }
+    function renderMsg(m) {
+      if (m.role === 'note') { chatLog.appendChild(el('p', { 'class': 'ch-sys', text: m.content })); return }
+      var b = el('div', { 'class': 'ch-msg ' + (m.role === 'user' ? 'ch-user' : 'ch-agent') })
+      b.appendChild(el('span', { 'class': 'oa-sr', text: m.role === 'user' ? T.chYou : T.chAgent }))
+      if (m.role === 'user') b.appendChild(el('p', { text: m.content }))
+      else richText(b, m.content)
+      chatLog.appendChild(b)
+    }
+    function addNote(text, node) {
+      chat.msgs.push({ role: 'note', content: text }); saveChat()
+      var p = el('p', { 'class': 'ch-sys', text: text })
+      if (node) { p.appendChild(d.createTextNode(' ')); p.appendChild(node) }
+      chatLog.appendChild(p); scrollEnd(true)
+    }
+    function scrollEnd(smooth) {
+      var reduce = w.matchMedia('(prefers-reduced-motion: reduce)').matches
+      try { chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: smooth && !reduce ? 'smooth' : 'auto' }) } catch (x) { chatLog.scrollTop = chatLog.scrollHeight }
+    }
+    // Testo del modello → DOM, solo con nodi di testo: paragrafi, elenchi "- ", **grassetto** e link ai soli
+    // percorsi interni ammessi. Mai innerHTML con contenuti del modello.
+    var INLINE = /\*\*([^*\n]{1,200})\*\*|\[([^\]\n]{1,80})\]\(([^)\s]{1,200})\)|(^|[\s(«"“'])(\/[a-z0-9][a-z0-9\-\/]*)/gi
+    function inline(parent, text) {
+      var last = 0, m
+      INLINE.lastIndex = 0
+      while ((m = INLINE.exec(text))) {
+        var pre = m[4] || ''
+        var startText = m.index + pre.length
+        var node = null
+        if (m[1]) node = el('strong', { text: m[1] })
+        else if (m[2]) { var p = allowedPath(m[3]); node = p ? link(p, m[2]) : d.createTextNode(m[2]) }
+        else if (m[5]) { var q = allowedPath(m[5]); if (q) node = link(q, m[5]) }
+        if (!node) continue
+        parent.appendChild(d.createTextNode(text.slice(last, m[1] || m[2] ? m.index : startText)))
+        parent.appendChild(node)
+        last = m.index + m[0].length
+      }
+      parent.appendChild(d.createTextNode(text.slice(last)))
+    }
+    function link(path, label) { return el('a', { href: path, 'data-soft': '', 'class': 'ch-link', text: label }) }
+    function richText(box, text) {
+      String(text).replace(/\r/g, '').split(/\n{2,}/).forEach(function (block) {
+        var lines = block.split('\n').filter(function (l) { return l.trim() })
+        if (!lines.length) return
+        var items = lines.every(function (l) { return /^\s*([-•*]|\d+[.)])\s+/.test(l) })
+        if (items) {
+          var ul = el('ul')
+          lines.forEach(function (l) { var li = el('li'); inline(li, l.replace(/^\s*([-•*]|\d+[.)])\s+/, '')); ul.appendChild(li) })
+          box.appendChild(ul)
+        } else {
+          var p = el('p')
+          lines.forEach(function (l, i) { if (i) p.appendChild(el('br')); inline(p, l.replace(/^#+\s*/, '')) })
+          box.appendChild(p)
+        }
+      })
+    }
+    function typing(on) {
+      if (on && !typingEl) {
+        typingEl = el('div', { 'class': 'ch-msg ch-agent ch-typing', 'aria-hidden': 'true' }, [el('span'), el('span'), el('span')])
+        chatLog.appendChild(typingEl); scrollEnd(true)
+        chatLog.setAttribute('aria-busy', 'true')
+      } else if (!on && typingEl) { typingEl.remove(); typingEl = null; chatLog.removeAttribute('aria-busy') }
+    }
+    function send(raw) {
+      var text = String(raw || '').replace(/\s+$/, '').replace(/^\s+/, '').slice(0, 800)
+      if (!text || chatBusy) return
+      chatInput.value = ''; grow()
+      var m = { role: 'user', content: text }
+      chat.msgs.push(m); renderMsg(m); chatSugg.hidden = true
+      if (!chat.started) { chat.started = true; track('chat_demo_start', { page: location.pathname, language: LANG }) }
+      saveChat(); scrollEnd(true)
+      ask()
+    }
+    function ask() {
+      chatBusy = true; chatSend.disabled = true; typing(true)
+      var hist = chat.msgs.filter(function (m) { return m.role === 'user' || m.role === 'assistant' }).slice(-MAX_SEND)
+        .map(function (m) { return { role: m.role, content: m.content.slice(0, m.role === 'user' ? 800 : 1500) } })
+      var ctl = 'AbortController' in w ? new AbortController() : null
+      var to = setTimeout(function () { if (ctl) ctl.abort() }, 45000)
+      fetch('/api/chat', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', signal: ctl ? ctl.signal : undefined,
+        body: JSON.stringify({ messages: hist, lang: LANG, page: location.pathname })
+      }).then(function (r) {
+        return r.json().then(function (j) { return { s: r.status, j: j } }, function () { return { s: r.status, j: null } })
+      }).then(function (res) {
+        clearTimeout(to); done()
+        if (res.s === 200 && res.j && typeof res.j.reply === 'string') {
+          var a = { role: 'assistant', content: res.j.reply.slice(0, 3000) }
+          chat.msgs.push(a); saveChat(); renderMsg(a); scrollEnd(true)
+          ;(Array.isArray(res.j.actions) ? res.j.actions : []).forEach(action)
+        } else if (res.s === 429) addNote(T.chBusy)
+        else if (res.s === 503 && res.j && res.j.error === 'non_configurato') {
+          HEALTH = { t: Date.now(), voce: HEALTH ? HEALTH.voce : true, chat: false }; setJSON('sessionStorage', 'odyra-health', HEALTH); chatOff(true)
+        } else if (res.s === 413) { chat.msgs = chat.msgs.slice(-6); saveChat(); failed() }
+        else failed()
+      }, function () { clearTimeout(to); done(); failed() })
+    }
+    function done() { chatBusy = false; chatSend.disabled = false; typing(false) }
+    function failed() {
+      var b = el('button', { type: 'button', 'class': 'ch-retry', text: T.vRetry })
+      b.addEventListener('click', function () {
+        var n = b.parentNode; if (n) n.remove()
+        var i = chat.msgs.lastIndexOf(chat.msgs.filter(function (m) { return m.role === 'note' }).pop()); if (i >= 0) chat.msgs.splice(i, 1)
+        if (!chatBusy) ask()
+      })
+      addNote(T.chErr, b)
+    }
+    function action(a) {
+      if (!a || typeof a !== 'object') return
+      if (a.lead === true) track('generate_lead', { form: 'chat' })
+      var p = allowedPath(a.navigate)
+      if (!p) return
+      softNavigate(p, true, function (ok, name, url) {
+        if (!ok) { addNote(T.vNavFail, el('a', { href: url, text: T.vOpen })); return }
+        var see = null
+        if (isFull()) { see = el('button', { type: 'button', 'class': 'ch-retry', text: T.chSee }); see.addEventListener('click', closePanel) }
+        addNote(T.vNav + name, see)
+      })
+    }
+
+    // ───────── aperture ─────────
     d.addEventListener('click', function (e) {
-      var t = e.target.closest && e.target.closest('[data-voice-demo]')
+      var t = e.target.closest && e.target.closest('[data-voice-demo], [data-chat-demo]')
+      if (!t && e.target.closest && e.target.closest('.ov-fab')) t = fab
       if (!t) return
       e.preventDefault()
-      if (panel && !panel.hidden) { panel.querySelector('.ov-x').focus(); return }
-      openPanel(t)
+      var isChat = t.hasAttribute('data-chat-demo'), isFab = t === fab
+      track('click_demo', { link_text: (t.textContent || '').trim().slice(0, 80), kind: isFab ? 'fab' : isChat ? 'chat' : 'voice' })
+      var go = function (h) {
+        var vOff = h && h.voce === false, cOff = h && h.chat === false
+        if (isChat) return openPanel('chat', t, { ask: (t.getAttribute('data-chat-demo') || '').trim().slice(0, 300) })
+        if (isFab) {
+          var last = getJSON('sessionStorage', 'odyra-agent-tab')
+          return openPanel(vOff && !cOff ? 'chat' : (last === 'chat' ? 'chat' : 'voice'), t)
+        }
+        // pulsanti "Parla con l'agente": se la voce non c'è ancora, si apre la chat con un avviso
+        if (vOff && !cOff) return openPanel('chat', t, { notice: T.vSoonNote })
+        openPanel('voice', t, { autostart: true })
+      }
+      if (panel && !panel.hidden && !isChat && !(t.hasAttribute('data-voice-demo') && tab !== 'voice')) { panel.querySelector('.ov-x').focus(); return }
+      if (HEALTH) go(HEALTH); else health().then(go)
     })
 
     // Su schermi piccoli il pulsante si nasconde quando in basso ci sono altri pulsanti, moduli o il piede.
