@@ -782,19 +782,19 @@
     }
     function link(path, label) { return el('a', { href: path, 'data-soft': '', 'class': 'ch-link', text: label }) }
     function richText(box, text) {
+      var ITEM = /^\s*([-•*]|\d+[.)])\s+/
       String(text).replace(/\r/g, '').split(/\n{2,}/).forEach(function (block) {
-        var lines = block.split('\n').filter(function (l) { return l.trim() })
-        if (!lines.length) return
-        var items = lines.every(function (l) { return /^\s*([-•*]|\d+[.)])\s+/.test(l) })
-        if (items) {
-          var ul = el('ul')
-          lines.forEach(function (l) { var li = el('li'); inline(li, l.replace(/^\s*([-•*]|\d+[.)])\s+/, '')); ul.appendChild(li) })
-          box.appendChild(ul)
-        } else {
-          var p = el('p')
-          lines.forEach(function (l, i) { if (i) p.appendChild(el('br')); inline(p, l.replace(/^#+\s*/, '')) })
-          box.appendChild(p)
-        }
+        var cur = null  // righe consecutive dello stesso tipo: paragrafo o elenco
+        block.split('\n').forEach(function (l) {
+          if (!l.trim()) return
+          if (ITEM.test(l)) {
+            if (!cur || cur.tagName !== 'UL') { cur = el('ul'); box.appendChild(cur) }
+            var li = el('li'); inline(li, l.replace(ITEM, '')); cur.appendChild(li)
+          } else {
+            if (!cur || cur.tagName !== 'P') { cur = el('p'); box.appendChild(cur) } else cur.appendChild(el('br'))
+            inline(cur, l.replace(/^#+\s*/, ''))
+          }
+        })
       })
     }
     function typing(on) {

@@ -871,6 +871,14 @@ class TestChat(ChatBase):
         self.assertEqual(b['actions'], [])
         self.assertEqual(json.loads(FakeLLM.requests[1]['body']['messages'][-1]['content'])['errore'], 'non_disponibile')
 
+    def test_language_reminder(self):
+        self.chat(conv('¿Cuánto cuesta para una cadena de 30 centros?'))
+        last = FakeLLM.requests[0]['body']['messages'][-1]
+        self.assertEqual(last['role'], 'system')
+        self.assertIn('spagnolo', last['content'])
+        self.chat(conv('Quanto costa?'))
+        self.assertEqual(FakeLLM.requests[1]['body']['messages'][-1]['role'], 'user')
+
     def test_reply_cleaned(self):
         FakeLLM.queue = [text_reply('Ciao‮<script>x</script>\x00')]
         st, b = self.chat()

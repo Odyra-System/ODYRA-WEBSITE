@@ -53,27 +53,27 @@ Usa solo questi fatti. Prezzi in euro, IVA esclusa.
 - Vantaggi per il partner: margine su ogni licenza, un prodotto AI col proprio marchio senza un team AI interno, integrazione a carico di Odyra, clienti più fedeli (un gestionale che risponde al telefono e riempie l'agenda è più difficile da sostituire), assistenza e qualità gestite da Odyra.
 
 ### Listino wholesale partner (prezzo per centro al mese)
-Scaglioni sul totale delle licenze: 20–49 / 50–99 / 100–199 / 200–399 / 400–599 / 600–799 / 800–999. Da 1.000 licenze: prezzo da trattare (in call). Ultimo valore = prezzo consigliato al centro.
+Scaglioni sul totale delle licenze: 20–49, 50–99, 100–199, 200–399, 400–599, 600–799, 800–999. Da 1.000 licenze: prezzo da trattare (in call). Leggi sempre la cifra accanto allo scaglione giusto.
 
 Voce inbound (risponde al numero del centro):
-- S, 300 minuti: 49 / 45 / 42 / 39 / 38 / 37 / 35 € — consigliato al centro 79–89 €
-- M, 600 minuti: 79 / 73 / 68 / 63 / 61 / 59 / 57 € — consigliato 119–139 €
-- L, 1.200 minuti: 139 / 128 / 120 / 111 / 108 / 104 / 101 € — consigliato 209–239 €
+- S, 300 minuti: 20–49 licenze 49 € · 50–99 licenze 45 € · 100–199 licenze 42 € · 200–399 licenze 39 € · 400–599 licenze 38 € · 600–799 licenze 37 € · 800–999 licenze 35 € — consigliato al centro 79–89 €
+- M, 600 minuti: 20–49 licenze 79 € · 50–99 licenze 73 € · 100–199 licenze 68 € · 200–399 licenze 63 € · 400–599 licenze 61 € · 600–799 licenze 59 € · 800–999 licenze 57 € — consigliato al centro 119–139 €
+- L, 1.200 minuti: 20–49 licenze 139 € · 50–99 licenze 128 € · 100–199 licenze 120 € · 200–399 licenze 111 € · 400–599 licenze 108 € · 600–799 licenze 104 € · 800–999 licenze 101 € — consigliato al centro 209–239 €
 
 Voce outbound (richiami):
-- S, 300 minuti: 55 / 51 / 47 / 44 / 43 / 41 / 40 € — consigliato 89–99 €
-- M, 600 minuti: 89 / 82 / 77 / 71 / 69 / 67 / 65 € — consigliato 139–159 €
-- L, 1.200 minuti: 159 / 146 / 137 / 127 / 123 / 119 / 116 € — consigliato 239–269 €
+- S, 300 minuti: 20–49 licenze 55 € · 50–99 licenze 51 € · 100–199 licenze 47 € · 200–399 licenze 44 € · 400–599 licenze 43 € · 600–799 licenze 41 € · 800–999 licenze 40 € — consigliato al centro 89–99 €
+- M, 600 minuti: 20–49 licenze 89 € · 50–99 licenze 82 € · 100–199 licenze 77 € · 200–399 licenze 71 € · 400–599 licenze 69 € · 600–799 licenze 67 € · 800–999 licenze 65 € — consigliato al centro 139–159 €
+- L, 1.200 minuti: 20–49 licenze 159 € · 50–99 licenze 146 € · 100–199 licenze 137 € · 200–399 licenze 127 € · 400–599 licenze 123 € · 600–799 licenze 119 € · 800–999 licenze 116 € — consigliato al centro 239–269 €
 
 Solo WhatsApp (in entrata e in uscita, costi WhatsApp inclusi):
-- S, 1.000 risposte e 250 conferme/promemoria: 26 / 24 / 23 / 22 / 21 / 20 / 19 € — consigliato 39–49 €
-- M, 2.500 risposte, 500 conferme/promemoria, 100 marketing: 92 / 89 / 87 / 85 / 82 / 80 / 77 € — consigliato 139–159 €
-- L, 5.000 risposte, 1.000 conferme/promemoria, 250 marketing: 200 / 195 / 192 / 188 / 182 / 177 / 171 € — consigliato 279–319 €
+- S, 1.000 risposte e 250 conferme/promemoria: 20–49 licenze 26 € · 50–99 licenze 24 € · 100–199 licenze 23 € · 200–399 licenze 22 € · 400–599 licenze 21 € · 600–799 licenze 20 € · 800–999 licenze 19 € — consigliato al centro 39–49 €
+- M, 2.500 risposte, 500 conferme/promemoria, 100 marketing: 20–49 licenze 92 € · 50–99 licenze 89 € · 100–199 licenze 87 € · 200–399 licenze 85 € · 400–599 licenze 82 € · 600–799 licenze 80 € · 800–999 licenze 77 € — consigliato al centro 139–159 €
+- L, 5.000 risposte, 1.000 conferme/promemoria, 250 marketing: 20–49 licenze 200 € · 50–99 licenze 195 € · 100–199 licenze 192 € · 200–399 licenze 188 € · 400–599 licenze 182 € · 600–799 licenze 177 € · 800–999 licenze 171 € — consigliato al centro 279–319 €
 
 Combo voce + WhatsApp (voce in entrata e in uscita sullo stesso monte minuti + WhatsApp della stessa taglia, costi WhatsApp inclusi):
-- S, 300 minuti + WhatsApp S: 76 / 70 / 66 / 62 / 60 / 58 / 56 € — consigliato 119–139 €
-- M, 600 minuti + WhatsApp M: 172 / 163 / 156 / 149 / 145 / 140 / 136 € — consigliato 239–269 €
-- L, 1.200 minuti + WhatsApp L: 340 / 324 / 312 / 300 / 291 / 282 / 273 € — consigliato 459–499 €
+- S, 300 minuti + WhatsApp S: 20–49 licenze 76 € · 50–99 licenze 70 € · 100–199 licenze 66 € · 200–399 licenze 62 € · 400–599 licenze 60 € · 600–799 licenze 58 € · 800–999 licenze 56 € — consigliato al centro 119–139 €
+- M, 600 minuti + WhatsApp M: 20–49 licenze 172 € · 50–99 licenze 163 € · 100–199 licenze 156 € · 200–399 licenze 149 € · 400–599 licenze 145 € · 600–799 licenze 140 € · 800–999 licenze 136 € — consigliato al centro 239–269 €
+- L, 1.200 minuti + WhatsApp L: 20–49 licenze 340 € · 50–99 licenze 324 € · 100–199 licenze 312 € · 200–399 licenze 300 € · 400–599 licenze 291 € · 600–799 licenze 282 € · 800–999 licenze 273 € — consigliato al centro 459–499 €
 
 Il prezzo più basso del listino è 19 € a licenza al mese (WhatsApp S, scaglione 800–999): per questo il sito dice "da 19 €".
 Definizioni: risposte = messaggi dell'agente in risposta al cliente; conferme/promemoria = messaggi di servizio sugli appuntamenti; marketing = promozioni, compleanni, richiamo dei clienti inattivi.
@@ -89,7 +89,7 @@ Per gruppi multi-sede, catene di centri estetici, studi dentistici, poliambulato
 - Voce outbound: S 61 € · M 98 € · L 175 €
 - WhatsApp (costi WhatsApp inclusi): S 29 € · M 101 € · L 220 €
 - Combo voce + WhatsApp: S 84 € · M 189 € · L 374 €
-- Più sedi, prezzo più basso: dalla 20ª sede si applicano gli scaglioni del listino partner (stessi prezzi, stessi scaglioni). Oltre 1.000 sedi prezzo da trattare.
+- Più sedi, prezzo più basso: dalla 20ª sede si applicano gli scaglioni del listino partner (stessi prezzi, stessi scaglioni). Oltre 1.000 sedi prezzo da trattare. Esempio: un gruppo con 30 sedi rientra nello scaglione 20–49, quindi i prezzi partner di quello scaglione (voce inbound S 49 €, WhatsApp S 26 €, Combo S 76 € per sede al mese). Per il conto preciso sul proprio numero di sedi: call con il team.
 - Attivazione: 99 € per sede, una tantum. Extra a consumo: gli stessi del listino. Integrazione con il gestionale o l'agenda dell'azienda: su progetto.
 - Messaggio chiave: "la voce da 0,18 € al minuto".
 - Come si parte: verifica del gestionale, regole scritte nel codice, alcune sedi pilota per misurare, poi tutto il gruppo (con il gestionale collegato una nuova sede si attiva in circa dieci minuti).
