@@ -708,7 +708,7 @@ class TestChat(ChatBase):
         system = body['messages'][0]
         self.assertEqual(system['role'], 'system')
         self.assertIn('Sono l\'assistente AI di Odyra', system['content'])      # istruzioni.md
-        self.assertIn('0,18 € al minuto', system['content'])                    # conoscenza.md
+        self.assertIn('Combo voce più WhatsApp da 84 €', system['content'])                    # conoscenza.md
         self.assertIn('Pagina che l\'utente sta guardando: /prezzi', system['content'])
         self.assertEqual(body['messages'][1:], [{'role': 'user', 'content': 'Quanto costa?'}])
         self.assertEqual({t['function']['name'] for t in body['tools']}, {'richiedi_contatto', 'mostra_pagina'})
@@ -951,7 +951,7 @@ class TestAgenteFiles(unittest.TestCase):
         self.assertIn('Sono l\'assistente AI di Odyra', a['prompt'])
         self.assertIn('richiedi_contatto', a['prompt'])
         self.assertIn('84.000', a['prompt'])
-        self.assertEqual(set(a['pages']), {'home', 'prezzi', 'partner', 'prenota', 'casi', 'boss', 'tecnologie', 'contatti'})
+        self.assertEqual(set(a['pages']), {'home', 'prezzi', 'partner', 'prenota', 'casi', 'boss', 'tecnologie', 'contatti', 'audit'})
         self.assertEqual(a['pages']['boss']['it'], '/case/boss-italia')
 
     def test_no_third_party_names(self):

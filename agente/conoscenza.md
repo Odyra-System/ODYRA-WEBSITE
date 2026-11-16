@@ -5,7 +5,7 @@ Usa solo questi fatti. Prezzi in euro, IVA esclusa.
 ## Chi è Odyra
 - Odyra System è un marchio di Verypos S.r.l., Viale Papiniano 8, 20123 Milano. Partita IVA 11630390968. Contatto: team@odyrasystemautomation.it.
 - Gruppo tecnologico con una piattaforma propria (non un'agenzia), attivo in Italia e Spagna. Gli agenti parlano italiano, spagnolo e inglese.
-- Posizionamento: Odyra è la piattaforma di agenti AI vocali e WhatsApp che lavorano dentro i gestionali verticali, in white-label per le software house. L'obiettivo è diventare in Italia il riferimento per questo, partendo dai saloni con BOSS, e poi portare lo stesso motore agli altri settori su appuntamento (dentale, poliambulatori, servizi alla persona).
+- Posizionamento: Odyra costruisce e gestisce agenti AI vocali e WhatsApp che rispondono e prenotano dentro il gestionale. Li comprano direttamente le catene e i gruppi multi-sede (sede per sede, dopo un audit gratuito delle chiamate) e le software house, che li rivendono in white-label ai propri centri. Si vende il risultato in agenda, non i minuti. Partiti dai saloni con BOSS, lo stesso motore va agli altri settori su appuntamento (dentale, estetica ed epilazione, poliambulatori, assistenza delle concessionarie, veterinaria).
 - Frase guida: "Voi mettete il marchio. Noi il motore."
 - Tecnologia proprietaria: oltre 18 mesi di sviluppo di una piattaforma nostra. Motore, regole di settore, connettori, controllo qualità e cruscotti sono sviluppati e gestiti da Odyra.
 - Altre attività: progetti su misura per grandi aziende (agenti commerciali, customer service, back office) e prodotti propri come HAKO. Odyra NON fa formazione e non ha un'Academy.
@@ -75,9 +75,8 @@ Combo voce + WhatsApp (voce in entrata e in uscita sullo stesso monte minuti + W
 - M, 600 minuti + WhatsApp M: 20–49 licenze 172 € · 50–99 licenze 163 € · 100–199 licenze 156 € · 200–399 licenze 149 € · 400–599 licenze 145 € · 600–799 licenze 140 € · 800–999 licenze 136 € — consigliato al centro 239–269 €
 - L, 1.200 minuti + WhatsApp L: 20–49 licenze 340 € · 50–99 licenze 324 € · 100–199 licenze 312 € · 200–399 licenze 300 € · 400–599 licenze 291 € · 600–799 licenze 282 € · 800–999 licenze 273 € — consigliato al centro 459–499 €
 
-Il prezzo più basso del listino è 19 € a licenza al mese (WhatsApp S, scaglione 800–999): per questo il sito dice "da 19 €".
 Definizioni: risposte = messaggi dell'agente in risposta al cliente; conferme/promemoria = messaggi di servizio sugli appuntamenti; marketing = promozioni, compleanni, richiamo dei clienti inattivi.
-Esempi di margine pubblicati (al prezzo consigliato minimo, primo scaglione): voce inbound S 49 € → consigliato 79 €, margine 30 € al mese per centro, 7.200 € l'anno su 20 centri; Combo M 172 € → 239 €, margine 67 € al mese per centro. Sul sito c'è un calcolatore di margine (pagina /prezzi).
+Esempi di margine pubblicati (al prezzo consigliato minimo, primo scaglione), partendo dal Combo: Combo S 76 € → consigliato 119 €, margine 43 € al mese per centro; voce inbound S 49 € → consigliato 79 €, margine 30 € al mese per centro, 7.200 € l'anno su 20 centri; Combo M 172 € → 239 €, margine 67 € al mese per centro. Sul sito c'è un calcolatore di margine (pagina /prezzi).
 
 Attivazione per centro (una tantum: numero, canali, configurazione dell'agente): 20–49 licenze 69 €; 50–99 59 €; 100–199 49 €; da 200 in su gratis. Prezzo consigliato al centro 99–150 €.
 
@@ -85,13 +84,16 @@ Extra oltre il pacchetto (per centro, costi WhatsApp inclusi): minuto voce inbou
 
 ## Offerta per aziende (acquisto diretto)
 Per gruppi multi-sede, catene di centri estetici, studi dentistici, poliambulatori, reti in franchising, aziende con molte chiamate. Stessi pacchetti e taglie dei partner, prezzo unico per sede al mese:
-- Voce inbound: S 300 minuti 54 € (cioè 0,18 € al minuto) · M 600 minuti 87 € · L 1.200 minuti 153 €
+- Voce inbound: S 300 minuti 54 € · M 600 minuti 87 € · L 1.200 minuti 153 €
 - Voce outbound: S 61 € · M 98 € · L 175 €
 - WhatsApp (costi WhatsApp inclusi): S 29 € · M 101 € · L 220 €
 - Combo voce + WhatsApp: S 84 € · M 189 € · L 374 €
 - Più sedi, prezzo più basso: dalla 20ª sede si applicano gli scaglioni del listino partner (stessi prezzi, stessi scaglioni). Oltre 1.000 sedi prezzo da trattare. Esempio: un gruppo con 30 sedi rientra nello scaglione 20–49, quindi i prezzi partner di quello scaglione (voce inbound S 49 €, WhatsApp S 26 €, Combo S 76 € per sede al mese). Per il conto preciso sul proprio numero di sedi: call con il team.
 - Attivazione: 99 € per sede, una tantum. Extra a consumo: gli stessi del listino. Integrazione con il gestionale o l'agenda dell'azienda: su progetto.
-- Messaggio chiave: "la voce da 0,18 € al minuto".
+- Messaggio chiave: "prima misuriamo le vostre chiamate, gratis; poi il Combo voce più WhatsApp da 84 € per sede". Non vendere a minuti.
+- Audit gratuito delle chiamate (pagina /audit-chiamate): due settimane su 3–5 sedi scelte dal gruppo, senza costi né impegno. Con il consenso del gruppo Odyra fa chiamate di prova alle sedi in orari diversi e, dove possibile, legge il registro chiamate; misura chiamate senza risposta, tempi di risposta, richieste a sede chiusa e tempi di richiamata dei moduli "vi richiamiamo". Consegna un report per sede con il metodo. Se i numeri lo giustificano, propone un pilota sulle sedi dove serve di più.
+- Reti in franchising o di affiliati: ogni sede ha la propria agenda e decide se aderire; funziona bene se c'è un numero unico o un'agenda comune, altrimenti accordo con la casa madre e adesione sede per sede.
+- Non citare percentuali di mercato sulle chiamate perse: non esiste un dato italiano affidabile. Si misura sul cliente con l'audit.
 - Come si parte: verifica del gestionale, regole scritte nel codice, alcune sedi pilota per misurare, poi tutto il gruppo (con il gestionale collegato una nuova sede si attiva in circa dieci minuti).
 - Cosa ottiene un gruppo: centralino AI su tutte le sedi (ogni sede tiene il suo numero), segretaria AI che prenota nel gestionale, conferme e promemoria WhatsApp dal numero di ogni sede, configurazione sede per sede con un solo agente, cruscotto di gruppo e report, passaggio a una persona. Se una sede è piena, l'agente può proporre un'altra sede del gruppo con posto libero.
 - Se il gestionale che l'azienda usa offre già l'agente col proprio marchio, il prezzo lo decide la software house.
@@ -103,14 +105,14 @@ Per gruppi multi-sede, catene di centri estetici, studi dentistici, poliambulato
 - Oltre 7.000 conversazioni WhatsApp gestite.
 - 84.000 € di servizi messi in agenda dall'agente (somma dei servizi prenotati al prezzo di listino).
 - 40% delle richieste arrivate a centro chiuso, gestite lo stesso.
-- Oltre 600 ore di lavoro restituite allo staff: 7.200 € di costo del personale risparmiato dai clienti (calcolato a 12 € l'ora).
+- Oltre 600 ore di lavoro restituite allo staff (durata reale delle chiamate più tre minuti per conversazione WhatsApp). Non tradurle in euro risparmiati.
 Non esistono altre cifre di risultato: non stimare tassi di conversione, ritorni dell'investimento o risparmi per il caso dell'utente.
 
 ## Casi di successo (gli unici citabili)
-- **BOSS / GoAgent.** BOSS sviluppa GoWeb, il gestionale di oltre 1.500 saloni di parrucchieri e centri estetici. Odyra ha costruito per BOSS il suo agente AI white-label, col marchio GoAgent: risponde al telefono e su WhatsApp e prenota direttamente nell'agenda del salone, rispettando le regole del salone (pacchetti di servizi, piega dopo i servizi tecnici, preferenza per un'operatrice, ferie e chiusure, disdette). In produzione da giugno 2026. Il salone vede GoAgent, un servizio BOSS; nessun riferimento a Odyra davanti ai saloni. BOSS tiene relazione e contratto con il salone e dà accesso alle API; Odyra ha scritto il connettore con GoWeb, attiva ogni salone (circa dieci minuti), controlla la qualità, segue consumi e assistenza. Per BOSS: un nuovo prodotto AI col proprio marchio e un ricavo ricorrente in più per ogni salone, senza un team AI interno. Per i saloni: le chiamate che si perdevano diventano appuntamenti in agenda. Pagina: /case/boss-italia.
+- **BOSS / GoAgent.** BOSS sviluppa GoWeb, il gestionale di oltre 1.500 saloni di parrucchieri e centri estetici; GoAgent è offerto a quei saloni e ognuno lo attiva quando vuole (non dire che è attivo su tutti i 1.500). Odyra ha costruito per BOSS il suo agente AI white-label, col marchio GoAgent: risponde al telefono e su WhatsApp e prenota direttamente nell'agenda del salone, rispettando le regole del salone (pacchetti di servizi, piega dopo i servizi tecnici, preferenza per un'operatrice, ferie e chiusure, disdette). In produzione da giugno 2026. Il salone vede GoAgent, un servizio BOSS; nessun riferimento a Odyra davanti ai saloni. BOSS tiene relazione e contratto con il salone e dà accesso alle API; Odyra ha scritto il connettore con GoWeb, attiva ogni salone (circa dieci minuti), controlla la qualità, segue consumi e assistenza. Per BOSS: un nuovo prodotto AI col proprio marchio e un ricavo ricorrente in più per ogni salone, senza un team AI interno. Per i saloni: le chiamate che si perdevano diventano appuntamenti in agenda. Pagina: /case/boss-italia.
 - **Gruppo Colzani.** Progetto su misura: Gruppo Colzani genera centinaia di lead a ogni campagna. L'agente commerciale di Odyra scrive subito su WhatsApp (presentandosi come assistente AI), richiama in pochi secondi, fa le domande di qualifica decise con il team vendite, fissa l'appuntamento con il venditore giusto e registra riepilogo ed esito nel CRM aziendale. In seguito si è aggiunto il customer service via e-mail per i marketplace: le mail vengono classificate (resi, tracking, prodotti danneggiati...), l'agente legge gli ordini nel gestionale in sola lettura e prepara una bozza che un operatore approva, corregge o blocca; i casi delicati vanno subito a una persona.
 - **HAKO.** Software proprietario di Odyra per le portinerie dei condomini, venduto direttamente (hakocondomini.com): il portiere registra pacchi e raccomandate, i residenti ricevono l'avviso su WhatsApp, SMS o e-mail con solleciti automatici per le giacenze, l'amministratore vede tutto il condominio da un pannello con report mensile. Costruito e gestito interamente da Odyra. Per prezzi e attivazione di HAKO il riferimento è hakocondomini.com.
-- Settori: oggi in produzione nel beauty (saloni e centri estetici). Il dentale è il prossimo verticale, poi poliambulatori e altri servizi su appuntamento, sullo stesso motore.
+- Settori: oggi in produzione nel beauty (saloni e centri estetici). Verticali successivi, nell'ordine: studi dentistici, centri estetici ed epilazione (catene), poliambulatori, assistenza delle concessionarie, cliniche veterinarie; sullo stesso motore.
 
 ## Conformità e sicurezza
 - AI Act (Reg. UE 2024/1689): l'agente dice sempre di essere un'AI; supervisione umana (una persona può prendere la conversazione in qualsiasi momento); tracciabilità di conversazioni e azioni.
@@ -119,6 +121,7 @@ Non esistono altre cifre di risultato: non stimare tassi di conversione, ritorni
 - Per domande legali sul caso specifico: rispondono i referenti IT, sicurezza e legali del team Odyra in call.
 
 ## Prossimi passi offerti sul sito
+- Audit gratuito delle chiamate (/audit-chiamate): il primo passo consigliato a un gruppo multi-sede.
 - Prenotare una call di trenta minuti in videochiamata (pagina /prenota): gratuita, senza impegno. Si vede l'agente dal vivo, come si collega al gestionale, il modello white-label, listino, scaglioni e beta; per le aziende, come funziona su tutte le sedi. Utile sapere prima: per le software house quale gestionale sviluppano, per quale settore e quanti clienti lo usano; per le aziende quante sedi hanno e quale gestionale o agenda usano.
 - Demo dal vivo dell'agente nel browser: a voce (pulsante "Prova l'agente") o in questa chat.
 - Modulo contatti (/contatti) o email team@odyrasystemautomation.it: risposta entro un giorno lavorativo.

@@ -23,7 +23,7 @@ PAGINE = os.path.join(ROOT, 'pagine')
 
 SITE = 'https://odyrasystemautomation.it'
 EMAIL = 'team@odyrasystemautomation.it'
-UPDATED = '2026-11-11'  # data dell'ultimo aggiornamento dei contenuti (sitemap, JSON-LD)
+UPDATED = '2026-11-16'  # data dell'ultimo aggiornamento dei contenuti (sitemap, JSON-LD)
 LINK_HAKO = 'https://hakocondomini.com'
 # Pagina di prenotazione Google Calendar (Calendario → Programma di appuntamenti → Condividi → "Incorpora sul sito web":
 # l'indirizzo che inizia con https://calendar.google.com/calendar/appointments/schedules/...). Vuoto = la pagina /prenota
@@ -153,18 +153,18 @@ TEXT = {lg: {} for lg in LANGS}
 # testi fissi di testata, piede e pagine generate
 UI = {
     'it': dict(skip='Vai al contenuto', menu='Menu', nav='Principale', demo='Prenota una call', other='ES', other_name='Español',
-               about='Agenti AI vocali e WhatsApp dentro i gestionali verticali, in white-label per le software house. Milano, per l’Italia e la Spagna.',
+               about='Agenti AI voce e WhatsApp che rispondono e prenotano nel gestionale: per gruppi multi-sede e, in white-label, per le software house. Milano, per l’Italia e la Spagna.',
                solutions='Soluzioni', resources='Risorse', sw='Software house', big='Grandi aziende', fr='Franchising e reti', ag='Agenzie e integratori',
                agents='Agenti e servizi', vat='Partita IVA', source='Fonte', updated='Aggiornato il',
-               faq_lead='Modello partner, prezzi, canali, gestionali supportati, white-label, dati e AI Act: le risposte in breve.',
+               faq_lead='Audit gratuito delle chiamate, prezzi per sede, modello partner, canali, gestionali supportati, white-label, dati e AI Act: le risposte in breve.',
                faq_more='Non trovi la risposta? <a href="{c}">Scrivici</a>: rispondiamo entro un giorno lavorativo.',
                nf_title='Pagina non trovata', nf_lead='L’indirizzo non esiste o è stato spostato. Riparti dalla <a href="{h}">home</a> o <a href="{c}">scrivici</a>.',
                privacy_h1='Informativa sulla privacy.', privacy_lead='Come trattiamo i dati raccolti da questo sito.'),
     'es': dict(skip='Ir al contenido', menu='Menú', nav='Principal', demo='Reserva una llamada', other='IT', other_name='Italiano',
-               about='Agentes IA de voz y WhatsApp dentro de los programas de gestión verticales, en white-label para empresas de software. Milán, para Italia y España.',
+               about='Agentes IA de voz y WhatsApp que contestan y reservan en el software de gestión: para grupos multisede y, en white-label, para empresas de software. Milán, para Italia y España.',
                solutions='Soluciones', resources='Recursos', sw='Empresas de software', big='Grandes empresas', fr='Franquicias y redes', ag='Agencias e integradores',
                agents='Agentes y servicios', vat='NIF-IVA', source='Fuente', updated='Actualizado el',
-               faq_lead='Modelo de partners, precios, canales, software compatible, white-label, datos y AI Act: las respuestas en breve.',
+               faq_lead='Precios por sede, modelo de partners, canales, software compatible, white-label, datos y AI Act: las respuestas en breve.',
                faq_more='¿No encuentras la respuesta? <a href="{c}">Escríbenos</a>: respondemos en un día laborable.',
                nf_title='Página no encontrada', nf_lead='La dirección no existe o se ha movido. Vuelve al <a href="{h}">inicio</a> o <a href="{c}">escríbenos</a>.',
                privacy_h1='Política de privacidad.', privacy_lead='Cómo tratamos los datos que recoge este sitio.'),
@@ -209,8 +209,8 @@ def md_path(key, lang):
 def faq_home():
     return [
         (t('Cos’è Odyra System?', '¿Qué es Odyra System?'),
-         t('Odyra System, di Milano, è la piattaforma di agenti AI vocali e WhatsApp che lavorano dentro i gestionali verticali, in white-label per le software house. Gli agenti rispondono al telefono e su WhatsApp e prenotano, spostano e cancellano appuntamenti nel gestionale, seguendo le regole del settore. La software house li rivende ai propri centri col proprio marchio.',
-           'Odyra System, de Milán, es la plataforma de agentes IA de voz y WhatsApp que trabajan dentro de los programas de gestión verticales, en white-label para las empresas de software. Los agentes contestan al teléfono y por WhatsApp y reservan, cambian y cancelan citas en el programa, siguiendo las reglas del sector. La empresa de software los revende a sus centros con su propia marca.')),
+         t('Odyra System, di Milano, costruisce e gestisce agenti AI vocali e WhatsApp che lavorano dentro il gestionale. Gli agenti rispondono al telefono e su WhatsApp e prenotano, spostano e cancellano appuntamenti in agenda, seguendo le regole del settore. Li acquistano direttamente i gruppi multi-sede, sede per sede, e le software house, che li rivendono ai propri centri col proprio marchio.',
+           'Odyra System, de Milán, construye y gestiona agentes IA de voz y WhatsApp que trabajan dentro del software de gestión. Los agentes contestan al teléfono y por WhatsApp y reservan, cambian y cancelan citas en la agenda, siguiendo las reglas del sector. Los compran directamente los grupos multisede, sede por sede, y las empresas de software, que los revenden a sus centros con su propia marca.')),
         (t('Che differenza c’è tra un agente di settore e un’AI generica?', '¿Qué diferencia hay entre un agente sectorial y una IA genérica?'),
          t('Un agente di settore ha le regole di quel mestiere scritte nel codice, non solo in un prompt: per un salone, per esempio, l’ordine colore-taglio-piega, i pacchetti e la regola delle 24 ore per le disdette. Inoltre legge e scrive direttamente nel software di gestione, quindi prenota solo orari realmente liberi.',
            'Un agente sectorial tiene las reglas de ese oficio escritas en el código, no solo en un prompt: en un salón, por ejemplo, el orden color-corte-peinado, los paquetes y la regla de 24 horas para cancelar. Además lee y escribe directamente en el software de gestión, así que solo reserva horarios realmente libres.')),
@@ -218,8 +218,8 @@ def faq_home():
          t('Al telefono, con la voce in tempo reale, e su WhatsApp Business. È lo stesso agente su entrambi i canali, 24 ore su 24.',
            'Por teléfono, con voz en tiempo real, y por WhatsApp Business. Es el mismo agente en los dos canales, las 24 horas.')),
         (t('Dove è già in uso?', '¿Dónde se usa ya?'),
-         t('Nel settore beauty: GoAgent è il servizio AI di BOSS per i saloni che usano il gestionale GoWeb, una rete di oltre 1.500 saloni in Italia. È in produzione da giugno 2026.',
-           'En el sector de la belleza: GoAgent es el servicio IA de BOSS para los salones que usan el software GoWeb, una red de más de 1.500 salones en Italia. Está en producción desde junio de 2026.')),
+         t('Nel settore beauty: GoAgent è il servizio AI di BOSS per i saloni che usano il gestionale GoWeb, il gestionale di oltre 1.500 saloni in Italia, che ogni salone può attivare. È in produzione da giugno 2026.',
+           'En el sector de la belleza: GoAgent es el servicio IA de BOSS para los salones que usan el software GoWeb, el software de más de 1.500 salones en Italia, que cada salón puede activar. Está en producción desde junio de 2026.')),
     ]
 
 
@@ -229,8 +229,8 @@ def faq_partner():
          t('Dare accesso alle API per anagrafiche, agenda, turni e disponibilità. L’integrazione la scrive Odyra, a proprie spese, senza toccare il cuore del software.',
            'Dar acceso a las API de fichas de clientes, agenda, turnos y disponibilidad. La integración la escribe Odyra, a su cargo, sin tocar el núcleo del software.')),
         (t('Come guadagna il partner?', '¿Cómo gana el partner?'),
-         t('Acquista da Odyra le licenze all’ingrosso, una per centro al mese, e le rivende ai propri centri col proprio marchio, al prezzo che decide. Per esempio la voce inbound S costa al partner 49 € al mese al primo scaglione, e il prezzo consigliato al centro è 79–89 €.',
-           'Compra a Odyra las licencias al por mayor, una por centro al mes, y las revende a sus centros con su propia marca, al precio que decide. Por ejemplo, la voz entrante S le cuesta al partner 49 € al mes en el primer tramo, y el precio recomendado al centro es de 79–89 €.')),
+         t('Acquista da Odyra le licenze all’ingrosso, una per centro al mese, e le rivende ai propri centri col proprio marchio, al prezzo che decide. Per esempio il Combo S (voce in entrata e in uscita più WhatsApp, costi WhatsApp inclusi) costa al partner 76 € al mese al primo scaglione, e il prezzo consigliato al centro è 119–139 €.',
+           'Compra a Odyra las licencias al por mayor, una por centro al mes, y las revende a sus centros con su propia marca, al precio que decide. Por ejemplo, el Combo S (voz entrante y saliente más WhatsApp, costes de WhatsApp incluidos) le cuesta al partner 76 € al mes en el primer tramo, y el precio recomendado al centro es de 119–139 €.')),
         (t('Quanto costa partire?', '¿Cuánto cuesta empezar?'),
          t('Integrazione e dashboard white-label sono a carico di Odyra e la beta è gratuita fino a 5 centri per 60 giorni. Al termine della beta l’impegno minimo è di 20 licenze per 12 mesi, fatturate mensilmente.',
            'La integración y el panel white-label corren a cargo de Odyra y la beta es gratuita para hasta 5 centros durante 60 días. Al terminar la beta, el compromiso mínimo es de 20 licencias durante 12 meses, facturadas mensualmente.')),
@@ -243,13 +243,17 @@ def faq_partner():
 
 
 def faq_all():
-    return faq_home() + faq_partner() + [
+    return faq_home()[:1] + [
+        (t('Un gruppo multi-sede può acquistare direttamente?', '¿Un grupo multisede puede comprar directamente?'),
+         t('Sì. Gruppi multi-sede, catene e aziende con molte chiamate acquistano direttamente gli stessi pacchetti dei partner, a un prezzo unico per sede (il Combo voce più WhatsApp da 84 € al mese), dopo un audit gratuito delle chiamate su 3–5 sedi; dalla 20ª sede si applicano gli scaglioni del listino partner. Per le aziende con grandi volumi ci sono anche progetti su misura: agenti commerciali che richiamano i lead in pochi secondi, customer service e automazioni di back office, integrati con CRM ed ERP.',
+           'Sí. Los grupos multisede, las cadenas y las empresas con muchas llamadas compran directamente los mismos paquetes que los partners, a un precio único por sede (el Combo voz más WhatsApp desde 84 € al mes), tras una auditoría gratuita de las llamadas en 3–5 sedes; a partir de la sede número 20 se aplican los tramos de la tarifa para partners. Para empresas con grandes volúmenes hay también proyectos a medida: agentes comerciales que llaman a los leads en segundos, atención al cliente y automatizaciones de back office, integrados con CRM y ERP.')),
+    ] + faq_home()[1:] + faq_partner() + [
         (t('Con quali software di gestione funziona?', '¿Con qué software de gestión funciona?'),
          t('Con ogni software di gestione che espone le API per clienti, disponibilità e appuntamenti: per ciascuno Odyra scrive un connettore dedicato. Oggi è in produzione nel beauty con GoWeb di BOSS; dentale, poliambulatori e gli altri servizi su appuntamento sono i verticali successivi.',
            'Con cualquier software de gestión que exponga API de clientes, disponibilidad y citas: para cada uno Odyra escribe un conector dedicado. Hoy está en producción en el sector de la belleza con GoWeb de BOSS; clínicas dentales, policlínicas y los demás servicios con cita previa son los siguientes sectores.')),
         (t('Quanto costa?', '¿Cuánto cuesta?'),
-         t('Si paga una licenza per centro al mese: voce, WhatsApp o combo, in taglia S, M o L. Per le software house il prezzo è all’ingrosso, da 19 € a licenza, con scaglioni di volume (da 1.000 licenze il prezzo si tratta); il prezzo al centro lo decide il partner. Le aziende acquistano direttamente gli stessi pacchetti a un prezzo unico per sede: la voce da 0,18 € al minuto (54 € al mese per 300 minuti), WhatsApp da 29 €, attivazione 99 € per sede; dalla 20ª sede si applicano gli scaglioni del listino partner. I costi WhatsApp sono inclusi nei pacchetti WhatsApp e Combo. Prezzi IVA esclusa.',
-           'Se paga una licencia por centro al mes: voz, WhatsApp o combo, en talla S, M o L. Para las empresas de software el precio es mayorista, desde 19 € por licencia, con tramos de volumen (a partir de 1.000 licencias el precio se negocia); el precio al centro lo decide el partner. Las empresas compran directamente los mismos paquetes a un precio único por sede: la voz desde 0,18 € el minuto (54 € al mes por 300 minutos), WhatsApp desde 29 €, activación 99 € por sede; a partir de la sede número 20 se aplican los tramos de la tarifa para partners. Los costes de WhatsApp están incluidos en los paquetes WhatsApp y Combo. Precios sin IVA.')),
+         t('Le aziende pagano un prezzo per sede al mese: il Combo voce più WhatsApp, costi WhatsApp inclusi, da 84 €; la sola voce da 54 €, il solo WhatsApp da 29 €, attivazione 99 € per sede; dalla 20ª sede si applicano gli scaglioni del listino partner. Prima si può fare l’audit gratuito delle chiamate su 3–5 sedi. Le software house comprano all’ingrosso con scaglioni di volume (da 1.000 licenze il prezzo si tratta) e decidono il prezzo al centro: per esempio il Combo S costa al partner 76 € al primo scaglione. Prezzi IVA esclusa.',
+           'Las empresas pagan un precio por sede al mes: el Combo voz más WhatsApp, costes de WhatsApp incluidos, desde 84 €; solo voz desde 54 €, solo WhatsApp desde 29 €, activación 99 € por sede; a partir de la sede número 20 se aplican los tramos de la tarifa para partners. Las empresas de software compran al por mayor con tramos de volumen (a partir de 1.000 licencias el precio se negocia) y deciden el precio al centro: por ejemplo, el Combo S le cuesta al partner 76 € en el primer tramo. Precios sin IVA.')),
         (t('Quanto ci vuole per attivare un nuovo cliente?', '¿Cuánto se tarda en activar un cliente nuevo?'),
          t('Con il software di gestione già collegato, staff e listino si sincronizzano da soli e uno specialista Odyra attiva numero, WhatsApp e voce in circa dieci minuti.',
            'Con el software de gestión ya conectado, equipo y tarifas se sincronizan solos y un especialista de Odyra activa número, WhatsApp y voz en unos diez minutos.')),
@@ -267,9 +271,6 @@ def faq_all():
         (t('Cos’è HAKO?', '¿Qué es HAKO?'),
          t('HAKO è un software proprietario di Odyra per le portinerie dei condomini, venduto direttamente. Ha un sito dedicato: hakocondomini.com.',
            'HAKO es un software propio de Odyra para las conserjerías de comunidades de vecinos, vendido directamente. Tiene una web propia: hakocondomini.com.')),
-        (t('Odyra lavora anche con aziende che non sono software house?', '¿Odyra trabaja también con empresas que no son de software?'),
-         t('Sì. Gruppi multi-sede, catene e aziende con molte chiamate acquistano direttamente gli stessi pacchetti dei partner, a un prezzo unico per sede (la voce da 0,18 € al minuto); dalla 20ª sede si applicano gli scaglioni del listino partner. Per le aziende con grandi volumi ci sono anche progetti su misura: agenti commerciali che richiamano i lead in pochi secondi, customer service e automazioni di back office, integrati con CRM ed ERP.',
-           'Sí. Los grupos multisede, las cadenas y las empresas con muchas llamadas compran directamente los mismos paquetes que los partners, a un precio único por sede (la voz desde 0,18 € el minuto); a partir de la sede número 20 se aplican los tramos de la tarifa para partners. Para empresas con grandes volúmenes hay también proyectos a medida: agentes comerciales que llaman a los leads en segundos, atención al cliente y automatizaciones de back office, integrados con CRM y ERP.')),
         (t('Chi c’è dietro Odyra System?', '¿Quién está detrás de Odyra System?'),
          t('Odyra System è un marchio di Verypos S.r.l., con sede in Viale Papiniano 8, 20123 Milano. Partita IVA 11630390968.',
            'Odyra System es una marca de Verypos S.r.l., con sede en Viale Papiniano 8, 20123 Milán (Italia). NIF-IVA 11630390968.')),
@@ -284,8 +285,8 @@ def org_node():
         '@type': 'Organization', '@id': f'{SITE}/#org', 'name': 'Odyra System', 'legalName': COMPANY['legal'],
         'url': f'{SITE}/', 'logo': f'{SITE}/assets/logos/odyra-mark.png', 'image': f'{SITE}/assets/img/og.jpg', 'email': EMAIL,
         'vatID': 'IT' + COMPANY['vat'], 'foundingLocation': 'Milano',
-        'description': t('Piattaforma di agenti AI vocali e WhatsApp che lavorano dentro i gestionali verticali, in white-label per le software house, con licenze all’ingrosso per centro. Milano.',
-                         'Plataforma de agentes IA de voz y WhatsApp que trabajan dentro de los programas de gestión verticales, en white-label para las empresas de software, con licencias mayoristas por centro. Milán.'),
+        'description': t('Agenti AI vocali e WhatsApp che rispondono e prenotano nel gestionale: per catene e gruppi multi-sede, sede per sede, e in white-label per le software house. Milano.',
+                         'Agentes IA de voz y WhatsApp que contestan y reservan en el software de gestión: para cadenas y grupos multisede, sede por sede, y en white-label para las empresas de software. Milán.'),
         'slogan': t('Voi mettete il marchio. Noi il motore.', 'Vosotros ponéis la marca. Nosotros, el motor.'),
         'address': {'@type': 'PostalAddress', 'streetAddress': COMPANY['street'], 'postalCode': COMPANY['zip'], 'addressLocality': COMPANY['city'], 'addressRegion': 'MI', 'addressCountry': 'IT'},
         'contactPoint': {'@type': 'ContactPoint', 'contactType': 'sales', 'email': EMAIL, 'availableLanguage': ['it', 'es']},
@@ -468,9 +469,9 @@ def header(lang, current):
 # Colonne del piede: (titolo it, titolo es, [id di pagina o (etichetta, indirizzo)]). Le pagine mancanti in una lingua si saltano.
 # Le pagine legali (privacy, cookie, termini) stanno nella riga in fondo, accanto alle preferenze cookie.
 FOOTER = [
-    ('Soluzioni', 'Soluciones', ['soluzioni', 'centralino-ai', 'segretaria-ai', 'settore-estetica', 'settore-dentale', 'partner']),
+    ('Soluzioni', 'Soluciones', ['soluzioni', 'audit-chiamate', 'centralino-ai', 'segretaria-ai', 'settore-estetica', 'settore-dentale', 'partner']),
     ('Odyra', 'Odyra', ['prezzi', 'tecnologie', 'processo', 'lavori', 'studio', 'team']),
-    ('Risorse', 'Recursos', ['demo', 'contatti', 'domande', 'console']),
+    ('Risorse', 'Recursos', ['demo', 'segretaria-virtuale', 'risponditore-automatico', 'promemoria-whatsapp', 'contatti', 'domande', 'console']),
 ]
 FOOTER_LEGAL = ['privacy', 'cookie', 'termini']
 
@@ -755,12 +756,12 @@ def llms_txt(mds, full=False):
                 f'> Tutte le pagine pubbliche di {SITE} in Markdown, in italiano e in spagnolo. Aggiornato il {UPDATED}.\n\n')
         return head + '\n\n---\n\n'.join(mds[lg][k] for lg in LANGS for k in mds[lg])
     out = ['# Odyra System', '',
-           '> Odyra System (Milano, Verypos S.r.l.) è la piattaforma di agenti AI vocali e WhatsApp che lavorano dentro i gestionali verticali, in white-label per le software house. Si parte dai saloni con BOSS.', '',
+           '> Odyra System (Milano, Verypos S.r.l.) costruisce e gestisce agenti AI vocali e WhatsApp che rispondono e prenotano dentro il gestionale: per catene e gruppi multi-sede che li acquistano direttamente, e in white-label per le software house. In produzione con BOSS dal giugno 2026.', '',
            'Fatti chiave:', '',
            '- Agenti per voce (telefono in tempo reale, in entrata e in uscita) e WhatsApp Business: riconoscono il cliente, prenotano, spostano e cancellano appuntamenti nel gestionale, seguono le regole del centro e passano all’operatore quando serve.',
-           '- In produzione nel settore beauty con GoAgent, il servizio AI di BOSS per gli oltre 1.500 saloni che usano il gestionale GoWeb, da giugno 2026. Dentale, poliambulatori e altri servizi su appuntamento sono i verticali successivi.',
-           '- Modello wholesale per le software house: licenza per centro al mese (voce, WhatsApp o combo, taglie S, M, L), da 19 € all’ingrosso con scaglioni di volume su tutte le licenze (da 20–49 a 800–999; da 1.000 licenze prezzo da trattare); il partner rivende col proprio marchio e decide il prezzo al centro. Integrazione con le API del gestionale e dashboard white-label incluse, a carico di Odyra. Beta gratuita fino a 5 centri per 60 giorni. Costi WhatsApp inclusi nei pacchetti WhatsApp e Combo. Prezzi IVA esclusa.',
-           '- Secondo pubblico: gruppi multi-sede e aziende con molte chiamate, che acquistano gli stessi pacchetti direttamente a un prezzo unico per sede: la voce da 0,18 € al minuto (54 € al mese), WhatsApp da 29 €, attivazione 99 €, dalla 20ª sede gli scaglioni del listino partner; progetti su misura per le grandi aziende.',
+           '- In produzione nel settore beauty con GoAgent, il servizio AI di BOSS offerto agli oltre 1.500 saloni che usano il gestionale GoWeb, da giugno 2026. Dentale, poliambulatori e altri servizi su appuntamento sono i verticali successivi.',
+           '- Gruppi multi-sede e aziende con molte chiamate, che acquistano gli stessi pacchetti direttamente a un prezzo unico per sede: Combo voce più WhatsApp da 84 € al mese, sola voce da 54 €, solo WhatsApp da 29 €, attivazione 99 €, dalla 20ª sede gli scaglioni del listino partner; audit gratuito delle chiamate su 3–5 sedi prima dell’acquisto; progetti su misura per le grandi aziende.',
+           '- Modello wholesale per le software house: licenza per centro al mese (voce, WhatsApp o combo, taglie S, M, L), il Combo S a 76 € all’ingrosso al primo scaglione, con scaglioni di volume su tutte le licenze (da 20–49 a 800–999; da 1.000 licenze prezzo da trattare); il partner rivende col proprio marchio e decide il prezzo al centro. Integrazione con le API del gestionale e dashboard white-label incluse, a carico di Odyra. Beta gratuita fino a 5 centri per 60 giorni. Costi WhatsApp inclusi nei pacchetti WhatsApp e Combo. Prezzi IVA esclusa.',
            '- L’agente dice sempre di essere un’AI (AI Act); dati isolati per cliente, conforme al GDPR.',
            '- Altri prodotti e servizi: HAKO, software proprietario per le portinerie dei condomini (https://hakocondomini.com); progetti su misura (es. Gruppo Colzani).',
            '- In arrivo: la console Odyra (Accesso piattaforma), dove partner e aziende scrivono e versionano le istruzioni dell’agente, scelgono voce, lingua e canali, collegano il gestionale e vedono chiamate, conversazioni e KPI. Oggi la configurazione la fa Odyra.',

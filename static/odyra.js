@@ -479,7 +479,7 @@ $$('.reel').forEach((reel) => {
       })
     })
     if (tabs.length) {
-      const fromHash = /aziend/.test(location.hash) ? $('#tab-aziende') : tabs[0]
+      const fromHash = /aziend/.test(location.hash) ? $('#tab-aziende') : /^#(per-partner|calcolatore|listino|extra|attivazione|w-)/.test(location.hash) ? $('#tab-partner') : tabs[0]
       choose(fromHash || tabs[0])
       if (fromHash && fromHash !== tabs[0]) list.scrollIntoView()
       // Collegamenti interni alla pagina (#per-aziende, #per-partner): cambiano pannello senza ricaricare.

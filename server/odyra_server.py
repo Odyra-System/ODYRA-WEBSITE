@@ -499,6 +499,7 @@ CHAT_PAGES = {  # di riserva, se manca agente/pagine.json
     'home': {'it': '/', 'es': '/es/'}, 'prezzi': {'it': '/prezzi'}, 'partner': {'it': '/partner', 'es': '/es/socios'},
     'prenota': {'it': '/prenota'}, 'casi': {'it': '/lavori', 'es': '/es/casos'}, 'boss': {'it': '/case/boss-italia'},
     'tecnologie': {'it': '/tecnologie', 'es': '/es/plataforma'}, 'contatti': {'it': '/contatti', 'es': '/es/contacto'},
+    'audit': {'it': '/audit-chiamate'},
 }
 CHAT_FALLBACK = {
     'it': 'Non riesco a rispondere bene a questa domanda. Prenota una call con il team su /prenota: ti rispondiamo noi.',
