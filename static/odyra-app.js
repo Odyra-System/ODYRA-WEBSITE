@@ -344,7 +344,8 @@
     var PAGES = {
       home: { it: '/', es: '/es/' }, prezzi: { it: '/prezzi' }, partner: { it: '/partner', es: '/es/socios' },
       prenota: { it: '/prenota' }, casi: { it: '/lavori', es: '/es/casos' }, boss: { it: '/case/boss-italia' },
-      tecnologie: { it: '/tecnologie', es: '/es/plataforma' }, contatti: { it: '/contatti', es: '/es/contacto' }
+      tecnologie: { it: '/tecnologie', es: '/es/plataforma' }, contatti: { it: '/contatti', es: '/es/contacto' },
+      audit: { it: '/audit-chiamate' }
     }
     var PATH_KEY = {}
     Object.keys(PAGES).forEach(function (k) { PATH_KEY[PAGES[k].it] = k; if (PAGES[k].es) PATH_KEY[PAGES[k].es] = k })

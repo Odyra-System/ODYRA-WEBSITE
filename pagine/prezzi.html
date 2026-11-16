@@ -2,21 +2,21 @@
 id: prezzi
 slug: prezzi
 label: Prezzi
-title: Prezzi agenti AI voce e WhatsApp, listino wholesale | Odyra
-description: Listino Odyra: licenza per centro al mese per agenti AI voce e WhatsApp, wholesale per software house e prezzi per gruppi multi-sede. Integrazione inclusa.
-nav: 3
+title: Prezzi agente AI voce e WhatsApp, per sede e per partner | Odyra
+description: Prezzi pubblici dell’agente AI voce e WhatsApp: per sede al mese per gruppi multi-sede, all’ingrosso per software house. Combo con costi WhatsApp inclusi.
+nav: 2
 type: WebPage
 -->
 <section class="phead ink pz-head">
   <canvas class="hero-guilloche" aria-hidden="true"></canvas>
   <div class="wrap phead-in">
     <p class="crumbs"><a href="{{URL:home}}">Home</a> <span aria-hidden="true">/</span> Prezzi</p>
-    <h1 class="display">Prezzi chiari. Margini veri.</h1>
-    <p class="hero-lead">Una licenza per centro al mese. L’integrazione con il gestionale, la dashboard col vostro marchio e i costi WhatsApp sono già dentro. Il prezzo al centro lo decidete voi.</p>
-    <p class="actions"><a class="b b-cyan" href="{{URL:prenota}}">Prenota una call</a> <button class="b b-line" type="button" data-voice-demo>Parla con l’agente</button></p>
+    <h1 class="display">Prezzi chiari, per sede o all’ingrosso.</h1>
+    <p class="hero-lead">Una licenza per sede o per centro al mese. Il pacchetto che consigliamo è il Combo: voce in entrata e in uscita più WhatsApp, con i costi WhatsApp già dentro. I gruppi comprano per sede; le software house all’ingrosso e decidono il prezzo al centro.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:audit-chiamate}}">Audit gratuito delle chiamate</a> <a class="b b-line" href="{{URL:prenota}}">Prenota una call</a></p>
     <ul class="pz-seals">
-      <li><b>Integrazione inclusa</b><span>Il connettore con il gestionale lo scrive Odyra, a sue spese.</span></li>
-      <li><b>Beta gratuita</b><span>Fino a 5 centri per 60 giorni, senza costi.</span></li>
+      <li><b>Prima si misura</b><span>Audit gratuito delle chiamate per i gruppi; beta gratuita su 5 centri per i partner.</span></li>
+      <li><b>Integrazione inclusa per i partner</b><span>Il connettore con il gestionale lo scrive Odyra, a sue spese.</span></li>
       <li><b>Costi WhatsApp inclusi</b><span>Nessuna fattura separata per i volumi del pacchetto.</span></li>
     </ul>
   </div>
@@ -25,8 +25,85 @@ type: WebPage
 <section class="band paper pz-switch-band" id="listino">
   <div class="wrap">
     <div class="pz-switch" role="tablist" aria-label="Per chi è il listino" data-js-only>
-      <button type="button" role="tab" id="tab-partner" aria-controls="per-partner" aria-selected="true"><b>Software house e gestionali</b><span>Listino wholesale, col vostro marchio</span></button>
-      <button type="button" role="tab" id="tab-aziende" aria-controls="per-aziende" aria-selected="false" tabindex="-1"><b>Aziende e gruppi multi-sede</b><span>Prezzo per sede, acquisto diretto</span></button>
+      <button type="button" role="tab" id="tab-aziende" aria-controls="per-aziende" aria-selected="true"><b>Aziende e gruppi multi-sede</b><span>Prezzo per sede, acquisto diretto</span></button>
+      <button type="button" role="tab" id="tab-partner" aria-controls="per-partner" aria-selected="false" tabindex="-1"><b>Software house e gestionali</b><span>Listino wholesale, col vostro marchio</span></button>
+    </div>
+
+    <div class="pz-panel" id="per-aziende" role="tabpanel" aria-labelledby="tab-aziende">
+      <p class="kicker">Per aziende e gruppi multi-sede</p>
+      <h2 class="display-2">Un agente per tutte le sedi. Un prezzo per sede, chiaro.</h2>
+      <p class="sec-lead">Catene, gruppi multi-sede e aziende con tante chiamate comprano direttamente da Odyra. Stessi pacchetti, stesse taglie, un prezzo unico per sede al mese. Non pagate minuti di voce: pagate un agente che risponde, prenota nell’agenda e vi dice cosa ha fatto in ogni sede.</p>
+      <div class="pz-pv-hero">
+        <p class="pz-pv-big"><span class="pz-pv-big-k">Combo voce + WhatsApp da</span> <b>84 €</b> <span class="pz-pv-big-u">per sede al mese</span></p>
+        <ul class="pz-pv-facts">
+          <li><b>Prima l’audit gratuito</b>: due settimane su 3–5 sedi per misurare le chiamate perse. <a href="{{URL:audit-chiamate}}">Come funziona</a>.</li>
+          <li><b>Dalla 20ª sede</b> si applicano gli scaglioni del listino partner. Oltre 1.000 sedi, prezzo da trattare.</li>
+          <li><b>Attivazione 99 € per sede</b>, una tantum: numero, canali e configurazione dell’agente.</li>
+        </ul>
+      </div>
+      <div class="grid-2 pz-pv-grid">
+    <article class="card pz-pv pz-card-combo">
+      <p class="card-tag">Consigliato</p>
+      <h3>Combo voce + WhatsApp</h3>
+      <p class="pz-from">da <b>84 €</b> per sede al mese</p>
+      <p>Voce in entrata e in uscita sullo stesso monte minuti, più WhatsApp della stessa taglia. Costi WhatsApp inclusi.</p>
+      <ul class="pz-pv-rows">
+        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>300 minuti + WhatsApp S</span><span class="pz-pv-price">84 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>600 minuti + WhatsApp M</span><span class="pz-pv-price">189 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>1.200 minuti + WhatsApp L</span><span class="pz-pv-price">374 €</span></li>
+      </ul>
+    </article>
+    <article class="card pz-pv">
+      <h3>Voce inbound</h3>
+      <p class="pz-from">da <b>54 €</b> per sede al mese</p>
+      <p>Risponde al numero storico del centro, fisso o mobile. Riconosce il cliente, prenota, sposta e cancella in agenda.</p>
+      <ul class="pz-pv-rows">
+        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>300 minuti al mese</span><span class="pz-pv-price">54 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>600 minuti al mese</span><span class="pz-pv-price">87 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>1.200 minuti al mese</span><span class="pz-pv-price">153 €</span></li>
+      </ul>
+    </article>
+    <article class="card pz-pv">
+      <h3>Voce outbound</h3>
+      <p class="pz-from">da <b>61 €</b> per sede al mese</p>
+      <p>Richiama i clienti inattivi, fa gli auguri di compleanno, propone le promozioni e riempie i buchi in agenda.</p>
+      <ul class="pz-pv-rows">
+        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>300 minuti al mese</span><span class="pz-pv-price">61 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>600 minuti al mese</span><span class="pz-pv-price">98 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>1.200 minuti al mese</span><span class="pz-pv-price">175 €</span></li>
+      </ul>
+    </article>
+    <article class="card pz-pv">
+      <h3>WhatsApp</h3>
+      <p class="pz-from">da <b>29 €</b> per sede al mese</p>
+      <p>WhatsApp Business ufficiale, in entrata e in uscita: risposte, conferme, promemoria e messaggi di retention. Costi WhatsApp inclusi.</p>
+      <ul class="pz-pv-rows">
+        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>1.000 risposte, 250 conferme o promemoria</span><span class="pz-pv-price">29 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>2.500 risposte, 500 conferme o promemoria, 100 messaggi marketing</span><span class="pz-pv-price">101 €</span></li>
+        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>5.000 risposte, 1.000 conferme o promemoria, 250 messaggi marketing</span><span class="pz-pv-price">220 €</span></li>
+      </ul>
+    </article>
+      </div>
+      <div class="grid-2 pz-pv-terms">
+        <article class="card"><h3>Integrazione su progetto</h3><p>Colleghiamo l’agente al vostro gestionale o alla vostra agenda. Il lavoro si definisce insieme, sul vostro sistema.</p></article>
+        <article class="card"><h3>Extra a consumo</h3><p>Oltre il pacchetto pagate solo quello che usate: 0,10 € al minuto in entrata, 0,12 € in uscita, 0,045 € per risposta, conferma o promemoria WhatsApp, 0,10 € per messaggio marketing.</p></article>
+      </div>
+      <h3 class="pz-sub">Una persona in più alla reception, o un agente su tutte le sedi?</h3>
+      <div class="compare-wrap">
+        <table class="compare">
+          <caption>Confronto qualitativo. Il costo di una persona dipende da contratto e orari: fate il conto con i vostri numeri.</caption>
+          <thead><tr><th scope="col">Aspetto</th><th scope="col">Personale dedicato al telefono</th><th scope="col" class="us">Agente Odyra</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Costo</th><td>Uno stipendio per sede, con ferie e sostituzioni</td><td class="us">Una licenza per sede al mese, extra solo a consumo</td></tr>
+            <tr><th scope="row">Orari</th><td>Quelli dei turni</td><td class="us">24 ore su 24, festivi compresi</td></tr>
+            <tr><th scope="row">Picchi di chiamate</th><td>Una chiamata alla volta, le altre aspettano</td><td class="us">Più chiamate in parallelo</td></tr>
+            <tr><th scope="row">Agenda</th><td>Prenota quando non è al banco</td><td class="us">Prenota, sposta e cancella nel gestionale</td></tr>
+            <tr><th scope="row">WhatsApp e promemoria</th><td>A mano, quando c’è tempo</td><td class="us">Automatici, sullo stesso agente</td></tr>
+            <tr><th scope="row">Situazioni delicate</th><td>Empatia e giudizio umano</td><td class="us">Le riconosce e le passa al vostro personale</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="actions"><a class="b b-ink" href="{{URL:prenota}}">Prenota una call per le vostre sedi</a> <button class="b b-line" type="button" data-voice-demo>Parla con l’agente</button></p>
     </div>
 
     <div class="pz-panel" id="per-partner" role="tabpanel" aria-labelledby="tab-partner">
@@ -53,6 +130,32 @@ type: WebPage
       <p class="pz-nojs">Le schede mostrano i prezzi dello scaglione 20–49 licenze. Tutti gli scaglioni sono nel <a href="#listino-completo">listino completo</a> più sotto.</p>
 
       <div class="grid-2 pz-cards">
+    <article class="card pz-card pz-card-combo" id="w-combo">
+      <p class="card-tag">Consigliato</p>
+      <h3>Combo voce + WhatsApp</h3>
+      <p>Voce in entrata e in uscita sullo stesso monte minuti, più WhatsApp della stessa taglia. Costi WhatsApp inclusi.</p>
+      <ul class="pz-rows">
+        <li class="pz-row" data-w="76,70,66,62,60,58,56" data-r="119,139">
+          <p class="pz-size"><b class="pz-letter" aria-hidden="true">S</b><span><span class="sr">Taglia S: </span>300 minuti + WhatsApp S</span></p>
+          <p class="pz-price"><span class="pz-w" data-pz="w">76 €</span> <span class="pz-unit">al mese per centro, prezzo a voi</span></p>
+          <p class="pz-rec">Consigliato al centro 119–139 €</p>
+          <p class="pz-margin">Vostro margine <b data-pz="m">+43 €</b> al mese per centro. Su <span data-pz="n">20</span> centri: <b data-pz="y">10.320 €</b> l’anno.</p>
+        </li>
+        <li class="pz-row" data-w="172,163,156,149,145,140,136" data-r="239,269">
+          <p class="pz-size"><b class="pz-letter" aria-hidden="true">M</b><span><span class="sr">Taglia M: </span>600 minuti + WhatsApp M</span></p>
+          <p class="pz-price"><span class="pz-w" data-pz="w">172 €</span> <span class="pz-unit">al mese per centro, prezzo a voi</span></p>
+          <p class="pz-rec">Consigliato al centro 239–269 €</p>
+          <p class="pz-margin">Vostro margine <b data-pz="m">+67 €</b> al mese per centro. Su <span data-pz="n">20</span> centri: <b data-pz="y">16.080 €</b> l’anno.</p>
+        </li>
+        <li class="pz-row" data-w="340,324,312,300,291,282,273" data-r="459,499">
+          <p class="pz-size"><b class="pz-letter" aria-hidden="true">L</b><span><span class="sr">Taglia L: </span>1.200 minuti + WhatsApp L</span></p>
+          <p class="pz-price"><span class="pz-w" data-pz="w">340 €</span> <span class="pz-unit">al mese per centro, prezzo a voi</span></p>
+          <p class="pz-rec">Consigliato al centro 459–499 €</p>
+          <p class="pz-margin">Vostro margine <b data-pz="m">+119 €</b> al mese per centro. Su <span data-pz="n">20</span> centri: <b data-pz="y">28.560 €</b> l’anno.</p>
+        </li>
+      </ul>
+      <p class="pz-deal">Da 1.000 licenze il prezzo si definisce insieme. <a href="{{URL:prenota}}">Prenota una call</a></p>
+    </article>
     <article class="card pz-card" id="w-voce-in">
       <h3>Voce inbound</h3>
       <p>Risponde al numero storico del centro, fisso o mobile. Riconosce il cliente, prenota, sposta e cancella in agenda.</p>
@@ -128,112 +231,10 @@ type: WebPage
       </ul>
       <p class="pz-deal">Da 1.000 licenze il prezzo si definisce insieme. <a href="{{URL:prenota}}">Prenota una call</a></p>
     </article>
-    <article class="card pz-card pz-card-combo" id="w-combo">
-      <p class="card-tag">Il più completo</p>
-      <h3>Combo voce + WhatsApp</h3>
-      <p>Voce in entrata e in uscita sullo stesso monte minuti, più WhatsApp della stessa taglia. Costi WhatsApp inclusi.</p>
-      <ul class="pz-rows">
-        <li class="pz-row" data-w="76,70,66,62,60,58,56" data-r="119,139">
-          <p class="pz-size"><b class="pz-letter" aria-hidden="true">S</b><span><span class="sr">Taglia S: </span>300 minuti + WhatsApp S</span></p>
-          <p class="pz-price"><span class="pz-w" data-pz="w">76 €</span> <span class="pz-unit">al mese per centro, prezzo a voi</span></p>
-          <p class="pz-rec">Consigliato al centro 119–139 €</p>
-          <p class="pz-margin">Vostro margine <b data-pz="m">+43 €</b> al mese per centro. Su <span data-pz="n">20</span> centri: <b data-pz="y">10.320 €</b> l’anno.</p>
-        </li>
-        <li class="pz-row" data-w="172,163,156,149,145,140,136" data-r="239,269">
-          <p class="pz-size"><b class="pz-letter" aria-hidden="true">M</b><span><span class="sr">Taglia M: </span>600 minuti + WhatsApp M</span></p>
-          <p class="pz-price"><span class="pz-w" data-pz="w">172 €</span> <span class="pz-unit">al mese per centro, prezzo a voi</span></p>
-          <p class="pz-rec">Consigliato al centro 239–269 €</p>
-          <p class="pz-margin">Vostro margine <b data-pz="m">+67 €</b> al mese per centro. Su <span data-pz="n">20</span> centri: <b data-pz="y">16.080 €</b> l’anno.</p>
-        </li>
-        <li class="pz-row" data-w="340,324,312,300,291,282,273" data-r="459,499">
-          <p class="pz-size"><b class="pz-letter" aria-hidden="true">L</b><span><span class="sr">Taglia L: </span>1.200 minuti + WhatsApp L</span></p>
-          <p class="pz-price"><span class="pz-w" data-pz="w">340 €</span> <span class="pz-unit">al mese per centro, prezzo a voi</span></p>
-          <p class="pz-rec">Consigliato al centro 459–499 €</p>
-          <p class="pz-margin">Vostro margine <b data-pz="m">+119 €</b> al mese per centro. Su <span data-pz="n">20</span> centri: <b data-pz="y">28.560 €</b> l’anno.</p>
-        </li>
-      </ul>
-      <p class="pz-deal">Da 1.000 licenze il prezzo si definisce insieme. <a href="{{URL:prenota}}">Prenota una call</a></p>
-    </article>
       </div>
       <p class="pz-foot">Margine calcolato al prezzo consigliato minimo, al netto del prezzo wholesale. Euro, IVA esclusa. Il prezzo finale al centro lo decidete voi.</p>
     </div>
 
-    <div class="pz-panel" id="per-aziende" role="tabpanel" aria-labelledby="tab-aziende">
-      <p class="kicker">Per aziende e gruppi multi-sede</p>
-      <h2 class="display-2">Un agente per tutte le sedi. Un prezzo per sede, chiaro.</h2>
-      <p class="sec-lead">Catene, gruppi multi-sede e aziende con tante chiamate comprano direttamente da Odyra. Stessi pacchetti, stesse taglie, un prezzo unico per sede al mese.</p>
-      <div class="pz-pv-hero">
-        <p class="pz-pv-big"><span class="pz-pv-big-k">La voce da</span> <b>0,18 €</b> <span class="pz-pv-big-u">al minuto</span></p>
-        <ul class="pz-pv-facts">
-          <li><b>54 € per sede al mese</b> per 300 minuti di voce in entrata, taglia S.</li>
-          <li><b>Dalla 20ª sede</b> si applicano gli scaglioni del listino partner. Oltre 1.000 sedi, prezzo da trattare.</li>
-          <li><b>Attivazione 99 € per sede</b>, una tantum: numero, canali e configurazione dell’agente.</li>
-        </ul>
-      </div>
-      <div class="grid-2 pz-pv-grid">
-    <article class="card pz-pv">
-      <h3>Voce inbound</h3>
-      <p class="pz-from">da <b>54 €</b> per sede al mese</p>
-      <p>Risponde al numero storico del centro, fisso o mobile. Riconosce il cliente, prenota, sposta e cancella in agenda.</p>
-      <ul class="pz-pv-rows">
-        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>300 minuti al mese</span><span class="pz-pv-price">54 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>600 minuti al mese</span><span class="pz-pv-price">87 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>1.200 minuti al mese</span><span class="pz-pv-price">153 €</span></li>
-      </ul>
-    </article>
-    <article class="card pz-pv">
-      <h3>Voce outbound</h3>
-      <p class="pz-from">da <b>61 €</b> per sede al mese</p>
-      <p>Richiama i clienti inattivi, fa gli auguri di compleanno, propone le promozioni e riempie i buchi in agenda.</p>
-      <ul class="pz-pv-rows">
-        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>300 minuti al mese</span><span class="pz-pv-price">61 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>600 minuti al mese</span><span class="pz-pv-price">98 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>1.200 minuti al mese</span><span class="pz-pv-price">175 €</span></li>
-      </ul>
-    </article>
-    <article class="card pz-pv">
-      <h3>WhatsApp</h3>
-      <p class="pz-from">da <b>29 €</b> per sede al mese</p>
-      <p>WhatsApp Business ufficiale, in entrata e in uscita: risposte, conferme, promemoria e messaggi di retention. Costi WhatsApp inclusi.</p>
-      <ul class="pz-pv-rows">
-        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>1.000 risposte, 250 conferme o promemoria</span><span class="pz-pv-price">29 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>2.500 risposte, 500 conferme o promemoria, 100 messaggi marketing</span><span class="pz-pv-price">101 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>5.000 risposte, 1.000 conferme o promemoria, 250 messaggi marketing</span><span class="pz-pv-price">220 €</span></li>
-      </ul>
-    </article>
-    <article class="card pz-pv pz-card-combo">
-      <p class="card-tag">Il più completo</p>
-      <h3>Combo voce + WhatsApp</h3>
-      <p class="pz-from">da <b>84 €</b> per sede al mese</p>
-      <p>Voce in entrata e in uscita sullo stesso monte minuti, più WhatsApp della stessa taglia. Costi WhatsApp inclusi.</p>
-      <ul class="pz-pv-rows">
-        <li><span class="pz-letter" aria-hidden="true">S</span><span class="pz-pv-inc"><span class="sr">Taglia S: </span>300 minuti + WhatsApp S</span><span class="pz-pv-price">84 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">M</span><span class="pz-pv-inc"><span class="sr">Taglia M: </span>600 minuti + WhatsApp M</span><span class="pz-pv-price">189 €</span></li>
-        <li><span class="pz-letter" aria-hidden="true">L</span><span class="pz-pv-inc"><span class="sr">Taglia L: </span>1.200 minuti + WhatsApp L</span><span class="pz-pv-price">374 €</span></li>
-      </ul>
-    </article>
-      </div>
-      <div class="grid-2 pz-pv-terms">
-        <article class="card"><h3>Integrazione su progetto</h3><p>Colleghiamo l’agente al vostro gestionale o alla vostra agenda. Il lavoro si definisce insieme, sul vostro sistema.</p></article>
-        <article class="card"><h3>Extra a consumo</h3><p>Oltre il pacchetto pagate solo quello che usate: 0,10 € al minuto in entrata, 0,12 € in uscita, 0,045 € per risposta, conferma o promemoria WhatsApp, 0,10 € per messaggio marketing.</p></article>
-      </div>
-      <h3 class="pz-sub">Una persona in più alla reception, o un agente su tutte le sedi?</h3>
-      <div class="compare-wrap">
-        <table class="compare">
-          <caption>Confronto qualitativo. Il costo di una persona dipende da contratto e orari: fate il conto con i vostri numeri.</caption>
-          <thead><tr><th scope="col">Aspetto</th><th scope="col">Personale dedicato al telefono</th><th scope="col" class="us">Agente Odyra</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">Costo</th><td>Uno stipendio per sede, con ferie e sostituzioni</td><td class="us">Una licenza per sede al mese, extra solo a consumo</td></tr>
-            <tr><th scope="row">Orari</th><td>Quelli dei turni</td><td class="us">24 ore su 24, festivi compresi</td></tr>
-            <tr><th scope="row">Picchi di chiamate</th><td>Una chiamata alla volta, le altre aspettano</td><td class="us">Più chiamate in parallelo</td></tr>
-            <tr><th scope="row">Agenda</th><td>Prenota quando non è al banco</td><td class="us">Prenota, sposta e cancella nel gestionale</td></tr>
-            <tr><th scope="row">WhatsApp e promemoria</th><td>A mano, quando c’è tempo</td><td class="us">Automatici, sullo stesso agente</td></tr>
-            <tr><th scope="row">Situazioni delicate</th><td>Empatia e giudizio umano</td><td class="us">Le riconosce e le passa al vostro personale</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="actions"><a class="b b-ink" href="{{URL:prenota}}">Prenota una call per le vostre sedi</a> <button class="b b-line" type="button" data-voice-demo>Parla con l’agente</button></p>
-    </div>
   </div>
 </section>
 
@@ -392,17 +393,18 @@ type: WebPage
       <details><summary>I costi di WhatsApp sono a parte?</summary><p>No. Nei pacchetti WhatsApp e Combo i costi della piattaforma WhatsApp per i volumi compresi sono già dentro, senza fatture separate. Se le tariffe ufficiali WhatsApp cambiano, quei prezzi si aggiornano in proporzione. I pacchetti voce non hanno costi WhatsApp.</p></details>
       <details><summary>Come funzionano gli scaglioni?</summary><p>Contano tutte le licenze attive del partner, di qualsiasi tipo e taglia: 20–49, 50–99, 100–199, 200–399, 400–599, 600–799, 800–999. Da 1.000 licenze il prezzo si definisce insieme. Quando passate allo scaglione superiore, il nuovo prezzo vale dal mese successivo per tutte le licenze, non solo per quelle nuove. Da 200 licenze l’attivazione dei centri è gratuita.</p></details>
       <details><summary>Chi decide il prezzo al centro?</summary><p>Voi. Indichiamo una forchetta consigliata per ogni pacchetto, ma il prezzo al pubblico lo fissa il partner. Il vostro margine è la differenza tra quel prezzo e il prezzo wholesale.</p></details>
-      <details><summary>Quanto paga un’azienda con molte sedi?</summary><p>Un prezzo unico per sede al mese: la voce in entrata parte da 54 € (300 minuti, cioè 0,18 € al minuto), WhatsApp da 29 €, il Combo da 84 €. L’attivazione è di 99 € per sede. Dalla 20ª sede si applicano gli scaglioni del listino partner; oltre 1.000 sedi il prezzo si tratta.</p></details>
-      <details><summary>Posso provare prima di firmare?</summary><p>Sì. La beta è gratuita: fino a 5 centri per 60 giorni, senza costi. Intanto potete parlare subito con l’agente dalla demo vocale di questo sito.</p></details>
-      <details><summary>Che contratto c’è dopo la beta?</summary><p>Un impegno minimo di 20 licenze per 12 mesi, fatturate ogni mese. Per aziende e gruppi multi-sede l’offerta si definisce sul numero di sedi e sull’integrazione richiesta.</p></details>
+      <details><summary>Si può misurare prima di comprare?</summary><p>Sì. Per i gruppi c’è l’<a href="{{URL:audit-chiamate}}">audit gratuito delle chiamate</a>: due settimane su 3–5 sedi, senza costi né impegno. Per le software house c’è la beta gratuita su 5 centri per 60 giorni.</p></details>
+      <details><summary>Quanto paga un’azienda con molte sedi?</summary><p>Un prezzo unico per sede al mese: il Combo voce più WhatsApp parte da 84 €, la sola voce in entrata da 54 € (300 minuti), il solo WhatsApp da 29 €. L’attivazione è di 99 € per sede. Dalla 20ª sede si applicano gli scaglioni del listino partner; oltre 1.000 sedi il prezzo si tratta.</p></details>
+      <details><summary>Posso provare prima di firmare?</summary><p>Per le software house sì: beta gratuita fino a 5 centri per 60 giorni. Per i gruppi si parte dall’audit gratuito delle chiamate; il pilota successivo si definisce insieme. Intanto potete parlare subito con l’agente dalla demo vocale di questo sito.</p></details>
+      <details><summary>Che contratto c’è dopo la beta (software house)?</summary><p>Un impegno minimo di 20 licenze per 12 mesi, fatturate ogni mese. Per aziende e gruppi multi-sede l’offerta si definisce sul numero di sedi e sull’integrazione richiesta.</p></details>
     </div>
   </div>
 </section>
 
 <section class="cta-band ink pz-cta">
   <div class="wrap">
-    <h2 class="display-2">Mettete il vostro marchio su un agente che lavora già.</h2>
-    <p class="sec-lead">In mezz’ora vi mostriamo l’agente dal vivo, i numeri sul vostro parco clienti e come parte la beta.</p>
-    <p class="actions"><a class="b b-cyan" href="{{URL:prenota}}">Prenota una call</a> <button class="b b-line" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="{{URL:partner}}">Diventa partner</a></p>
+    <h2 class="display-2">Prima i vostri numeri, poi il prezzo.</h2>
+    <p class="sec-lead">Per un gruppo: l’audit gratuito delle chiamate su 3–5 sedi. Per una software house: mezz’ora per vedere l’agente dal vivo e come parte la beta.</p>
+    <p class="actions"><a class="b b-cyan" href="{{URL:audit-chiamate}}">Audit gratuito</a> <a class="b b-line" href="{{URL:prenota}}">Prenota una call</a> <button class="b b-line" type="button" data-voice-demo>Parla con l’agente</button> <a class="b b-line" href="{{URL:partner}}">Diventa partner</a></p>
   </div>
 </section>

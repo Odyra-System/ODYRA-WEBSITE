@@ -7,5 +7,6 @@
   "casi": {"it": "/lavori", "es": "/es/casos"},
   "boss": {"it": "/case/boss-italia", "es": "/case/boss-italia"},
   "tecnologie": {"it": "/tecnologie", "es": "/es/plataforma"},
-  "contatti": {"it": "/contatti", "es": "/es/contacto"}
+  "contatti": {"it": "/contatti", "es": "/es/contacto"},
+  "audit": {"it": "/audit-chiamate", "es": "/audit-chiamate"}
 }
